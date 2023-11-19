@@ -10,4 +10,4 @@ const Local_DB = `postgres://${process.env.DB_USERNAME}:${process.env.DB_PASSWOR
 const pool = new pg_1.Pool({
     connectionString: process.env.NODE_ENV === "production" ? process.env.PROD_DB_URL : Local_DB
 });
-module.exports = pool;
+exports.default = pool;

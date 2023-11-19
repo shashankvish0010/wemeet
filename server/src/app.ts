@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 dotenv.config()
 import cors from 'cors'
 
+import './routers/UserRoutes';
+
 app.use(cors())
 app.use(express.json())
 

@@ -9,4 +9,4 @@ const pool = new Pool({
     connectionString : process.env.NODE_ENV === "production" ? process.env.PROD_DB_URL : Local_DB
 })
 
-module.exports = pool;
+export default pool;
