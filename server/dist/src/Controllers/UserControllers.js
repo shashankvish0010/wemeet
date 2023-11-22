@@ -12,12 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userRegistration = void 0;
+exports.userRegistration = exports.actualotp = void 0;
 const dbconnect_1 = __importDefault(require("../../dbconnect"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const uuid_1 = require("uuid");
-const Email_1 = require("../Services/Email");
-let actualotp;
+const OtpGenerate_1 = __importDefault(require("../Services/OtpGenerate"));
+const sendEmail = require('../Services/Email');
 const userRegistration = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { firstname, lastname, email, password, confirm_password } = req.body;
     try {
@@ -36,15 +36,15 @@ const userRegistration = (req, res) => __awaiter(void 0, void 0, void 0, functio
                         const salt = Number(bcrypt_1.default.genSalt(10));
                         const hashedPassword = yield bcrypt_1.default.hash(password, salt);
                         if (hashedPassword) {
-                            const generatedOtp = Number(`${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}`);
-                            actualotp = generatedOtp;
+                            yield (0, OtpGenerate_1.default)();
+                            console.log(exports.actualotp);
                             const email_message = {
                                 from: process.env.EMAIL_USER,
                                 to: email,
                                 subject: 'Please Verify your Zen Account',
-                                text: `Your verification code for zen is ${actualotp}`
+                                text: `Your verification code for zen is ${exports.actualotp}`
                             };
-                            const result = yield (0, Email_1.sendEmail)(email_message);
+                            const result = yield sendEmail(email_message);
                             if (result == true) {
                                 const id = (0, uuid_1.v4)();
                                 if (id) {

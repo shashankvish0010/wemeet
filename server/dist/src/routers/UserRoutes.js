@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
-const UserControllers_1 = require("../Controllers/UserControllers");
-router.post('/user/regitser', (req, res) => (0, UserControllers_1.userRegistration)(req, res));
+const userRegistration = require('../Controllers/UserControllers');
+const { generateOTP } = require('../Services/OtpSender');
+router.post('/user/regitser', (req, res) => { userRegistration(req, res); });
+router.post('/otp/verification/:id', (req, res) => { generateOTP(req, res); });
 exports.default = router;

@@ -1,10 +1,11 @@
 import pool from '../../dbconnect'
 import bcrypt from 'bcrypt'
 import {v4 as uuidv4} from 'uuid'
+import OTPgenerator from '../Services/OtpGenerate';
 
 const sendEmail = require('../Services/Email');
 
-let actualotp: Number;
+export let actualotp: Number;
 export const userRegistration = async (req: any, res: any) => {
     const { firstname, lastname, email, password, confirm_password } = req.body;
 
@@ -22,9 +23,8 @@ export const userRegistration = async (req: any, res: any) => {
                         const salt = Number(bcrypt.genSalt(10))
                         const hashedPassword = await bcrypt.hash(password, salt)
                         if (hashedPassword) {
-                            const generatedOtp = Number(`${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}`)
-                            actualotp = generatedOtp
-
+                            await OTPgenerator();
+                            console.log(actualotp);
                             const email_message = {
                                 from: process.env.EMAIL_USER,
                                 to: email,
@@ -55,4 +55,7 @@ export const userRegistration = async (req: any, res: any) => {
     } catch (error) {
         console.log(error);
     }
-}
+};
+
+
+
