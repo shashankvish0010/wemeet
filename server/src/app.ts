@@ -1,12 +1,14 @@
 import express from 'express';
-const app = express()
+import bodyParser from 'body-parser';
 import dotenv from 'dotenv'
-dotenv.config()
 import cors from 'cors'
+const app = express()
 
-import './routers/UserRoutes';
-
+dotenv.config()
 app.use(cors())
 app.use(express.json())
+app.use(bodyParser.json())
+app.use(require('./routers/UserRoutes'));
 
-app.listen(process.env.PORT, () => console.log("Server Running"))
+
+app.listen(process.env.PORT, () => console.log(`Server Running at ${process.env.PORT}`))

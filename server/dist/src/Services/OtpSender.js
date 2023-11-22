@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.resendOTP = exports.generateOTP = void 0;
 const dbconnect_1 = __importDefault(require("../../dbconnect"));
 const actualotp = require("../Controllers/UserControllers");
+const OTPgenerator = require('../Services/OtpGenerate');
+const sendEmail = require('../Services/Email');
 const generateOTP = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { otp } = req.body;
@@ -39,5 +41,15 @@ const generateOTP = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.generateOTP = generateOTP;
 const resendOTP = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    yield OTPgenerator();
+    const email = yield dbconnect_1.default.query('SELECT email FROM Users WHERE id=$1', [id]);
+    const email_message = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Please Verify your Zen Account',
+        text: `Your verification code for zen is ${actualotp}`
+    };
+    const result = yield sendEmail(email_message);
 });
 exports.resendOTP = resendOTP;

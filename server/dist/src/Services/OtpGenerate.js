@@ -8,10 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-let actualotp = require("../Controllers/UserControllers");
 const OTPgenerator = () => __awaiter(void 0, void 0, void 0, function* () {
     const generatedOtp = Number(`${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}`);
-    actualotp = generatedOtp;
+    return generatedOtp;
 });
-exports.default = OTPgenerator;
+module.exports = OTPgenerator;

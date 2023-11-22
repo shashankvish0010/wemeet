@@ -16,7 +16,7 @@ exports.userRegistration = exports.actualotp = void 0;
 const dbconnect_1 = __importDefault(require("../../dbconnect"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const uuid_1 = require("uuid");
-const OtpGenerate_1 = __importDefault(require("../Services/OtpGenerate"));
+const OTPgenerator = require('../Services/OtpGenerate');
 const sendEmail = require('../Services/Email');
 const userRegistration = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { firstname, lastname, email, password, confirm_password } = req.body;
@@ -36,7 +36,7 @@ const userRegistration = (req, res) => __awaiter(void 0, void 0, void 0, functio
                         const salt = Number(bcrypt_1.default.genSalt(10));
                         const hashedPassword = yield bcrypt_1.default.hash(password, salt);
                         if (hashedPassword) {
-                            yield (0, OtpGenerate_1.default)();
+                            yield OTPgenerator();
                             console.log(exports.actualotp);
                             const email_message = {
                                 from: process.env.EMAIL_USER,

@@ -29,7 +29,7 @@ const Register: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        const { firstname, lastname, email, password, confirm_password } = user
+        const { firstname, lastname, email, password, confirm_password } = user        
         try {
             const response = await fetch('/user/register', {
                 method: "POST",

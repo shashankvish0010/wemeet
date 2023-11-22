@@ -1,12 +1,13 @@
 import pool from '../../dbconnect'
 import bcrypt from 'bcrypt'
 import {v4 as uuidv4} from 'uuid'
-import OTPgenerator from '../Services/OtpGenerate';
+const OTPgenerator = require('../Services/OtpGenerate');
 
 const sendEmail = require('../Services/Email');
 
 export let actualotp: Number;
 export const userRegistration = async (req: any, res: any) => {
+    
     const { firstname, lastname, email, password, confirm_password } = req.body;
 
     try {
