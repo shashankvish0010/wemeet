@@ -13,4 +13,5 @@ app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(body_parser_1.default.json());
 app.use(require('./routers/UserRoutes'));
+app.use(require('./routers/EventsRoutes'));
 app.listen(process.env.PORT, () => console.log(`Server Running at ${process.env.PORT}`));

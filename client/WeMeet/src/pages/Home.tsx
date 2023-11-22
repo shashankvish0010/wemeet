@@ -1,32 +1,57 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Icon } from '@iconify/react'
+import { useNavigate } from 'react-router'
+import { userAuthContext } from '../contexts/UserAuth'
 import HeadBanner from '../assets/wemeet-group-video-chat.avif'
+import { EventsContext } from '../contexts/EventsContext'
+import EventCard from '../components/EventCard'
 
 const Home: React.FC = () => {
+  const navigate = useNavigate()
+  const userContext = useContext(userAuthContext)
+  const eventContext = useContext(EventsContext)
+  useEffect(() => {
+    eventContext?.getEvents(userContext?.currentuser.id);
+  }, [])
+
   return (
     <div className='bg-slate-100 h-screen w-[100vw] flex flex-col gap-5 p-3'>
-      <div className='flex md:flex-row flex-col items-center justify-evenly p-4 rounded-2xl border-slate-800'>
+      <div className='flex md:flex-row flex-col items-center justify-evenly p-4'>
         <div className='h-[100%] md:w-[40%] p-4 rounded-md flex flex-col justify-evenly gap-2 items-center'>
           <h1 className='md:text-6xl text-2xl text-center md:text-start font-bold uppercase'>Simplifying your Meetings.</h1>
           <div className='h-max w-[100%] flex flex-col gap-2 p-3'>
-              <li className='flex gap-2 items-center'>
-              <Icon icon="mdi:star-three-points" height={'2vh'}/>
+            <li className='flex gap-2 items-center'>
+              <Icon icon="mdi:star-three-points" height={'2vh'} />
               <p className='font-semibold text-md text-gray-800'>
                 Schedule and host your meetings.
               </p>
-              </li>
-              <li className='flex gap-2 items-center'>
-              <Icon icon="mdi:star-three-points" height={'2vh'}/>
+            </li>
+            <li className='flex gap-2 items-center'>
+              <Icon icon="mdi:star-three-points" height={'2vh'} />
               <p className='font-semibold text-md text-gray-800'>
                 Offers you immersive scheduling and group video chat experience.
               </p>
-              </li>
+            </li>
           </div>
           <button className='text-md font-medium w-max rounded-full bg-slate-800 p-3 shadow-lg text-white'>GET STARTED</button>
         </div>
         <div className='md:w-[40%] w-[85vw] flex justify-center items-center'>
-          <img className='rounded-2xl shadow-xl' src={HeadBanner} width={"400dvw"}/>
+          <img className='rounded-2xl shadow-xl' src={HeadBanner} width={"400dvw"} />
         </div>
+      </div>
+      <div className='h-max w-screen flex items-center justify-center p-3'>
+        <button onClick={() => { navigate('/add/event/' + userContext?.currentuser?.id) }} className='text-md font-medium w-max rounded-full bg-slate-800 p-3 shadow-lg text-white'>Add Your Events</button>
+      </div>
+      <div className='h-max w-screen flex flex-row justify-evenly p-3'>
+        { eventContext?.userEvents && eventContext.userEvents.length > 0
+          ? eventContext.userEvents.map((current: any) => (
+            <EventCard
+              name={current.name}
+              duration={current.duration}
+              description={current.description}
+            />
+          ))
+          : null}
       </div>
     </div>
   )

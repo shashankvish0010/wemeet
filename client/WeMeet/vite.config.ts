@@ -17,6 +17,9 @@ export default defineConfig({
       },
       '/user/login': {
         target: "http://localhost:8080"
+      },
+      '/create/event': {
+        target: "http://localhost:8080"
       }
     }
   },

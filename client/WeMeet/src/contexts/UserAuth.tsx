@@ -17,7 +17,7 @@ interface ContextValue {
 
 export const userAuthContext = createContext<ContextValue | null>(null);
 
-export const UserAuthProvider = (props: any) => {
+export const UserAuthProvider = ({children}: any) => {
     const storedUser = localStorage.getItem("current_user");
     const initialUser = storedUser ? JSON.parse(storedUser) : null
     const [currentuser, setCurrentUser] = useState(initialUser || null)
@@ -55,7 +55,7 @@ export const UserAuthProvider = (props: any) => {
                     })
                     if (response) {
                         const data = await response.json();
-                        if (data.success == true) {
+                        if (data.success == true) {                            
                             setMessage(data.message)
                             document.cookie = `user_access=${data.token}; path=/`
                             setCurrentUser(data.userdata)
@@ -99,7 +99,7 @@ export const UserAuthProvider = (props: any) => {
     const info: ContextValue = { state, dispatch, handleChange, login, message, currentuser, user}
     return (
         <userAuthContext.Provider value={info}>
-            {props.children}
+            {children}
         </userAuthContext.Provider>
     )
 }
