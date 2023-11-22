@@ -2,7 +2,7 @@ import pool from '../../dbconnect'
 import bcrypt from 'bcrypt'
 import {v4 as uuidv4} from 'uuid'
 
-import {sendEmail} from '../Services/Email'
+const sendEmail = require('../Services/Email');
 
 let actualotp: Number;
 export const userRegistration = async (req: any, res: any) => {

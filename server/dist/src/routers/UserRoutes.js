@@ -7,4 +7,4 @@ const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const UserControllers_1 = require("../Controllers/UserControllers");
 router.post('/user/regitser', (req, res) => (0, UserControllers_1.userRegistration)(req, res));
-module.exports = router;
+exports.default = router;
