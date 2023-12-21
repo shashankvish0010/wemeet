@@ -20,7 +20,16 @@ export default defineConfig({
       },
       '/create/event': {
         target: "http://localhost:8080"
-      }
+      },
+      '/get/event': {
+        target: "http://localhost:8080"
+      },
+      '/event': {
+        target: "http://localhost:8080"
+      },
+      '/schedule/event': {
+        target: "http://localhost:8080"
+      },
     }
   },
 })

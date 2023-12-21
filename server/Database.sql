@@ -17,3 +17,11 @@ CREATE TABLE Events(
     event_description VARCHAR,
     active BOOLEAN
 )
+
+CREATE TABLE Meetings(
+    id VARCHAR PRIMARY KEY,
+    user_email VARCHAR,
+    host_email VARCHAR,
+    scheduled_time VARCHAR,
+    scheduled_date VARCHAR
+)

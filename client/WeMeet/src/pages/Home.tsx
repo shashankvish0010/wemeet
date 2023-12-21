@@ -11,11 +11,11 @@ const Home: React.FC = () => {
   const userContext = useContext(userAuthContext)
   const eventContext = useContext(EventsContext)
   useEffect(() => {
-    eventContext?.getEvents(userContext?.currentuser.id);
+    eventContext?.getEvents(userContext?.currentuser?.id);
   }, [])
 
   return (
-    <div className='bg-slate-100 h-screen w-[100vw] flex flex-col gap-5 p-3'>
+    <div className='bg-slate-100 h-max w-[100vw] flex flex-col gap-5 p-3'>
       <div className='flex md:flex-row flex-col items-center justify-evenly p-4'>
         <div className='h-[100%] md:w-[40%] p-4 rounded-md flex flex-col justify-evenly gap-2 items-center'>
           <h1 className='md:text-6xl text-2xl text-center md:text-start font-bold uppercase'>Simplifying your Meetings.</h1>
@@ -42,15 +42,18 @@ const Home: React.FC = () => {
       <div className='h-max w-screen flex items-center justify-center p-3'>
         <button onClick={() => { navigate('/add/event/' + userContext?.currentuser?.id) }} className='text-md font-medium w-max rounded-full bg-slate-800 p-3 shadow-lg text-white'>Add Your Events</button>
       </div>
-      <div className='h-max w-screen flex flex-row justify-evenly p-3'>
-        { eventContext?.userEvents && eventContext.userEvents.length > 0
-          ? eventContext.userEvents.map((current: any) => (
-            <EventCard
-              name={current.name}
-              duration={current.duration}
-              description={current.description}
-            />
-          ))
+      <div className='mt-5 h-max w-screen flex flex-row justify-evenly p-3'>
+        {userContext?.login === true ?
+          eventContext?.userEvents && eventContext.userEvents.length > 0
+            ? eventContext.userEvents.map((current: any) => (
+              <EventCard
+                id={current.id}
+                name={current.event_name}
+                duration={current.duration}
+                description={current.event_description}
+              />
+            ))
+            : null
           : null}
       </div>
     </div>
