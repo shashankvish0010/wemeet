@@ -5,7 +5,6 @@ import { useParams } from 'react-router'
 import { userAuthContext } from '../contexts/UserAuth'
 import { useNavigate } from 'react-router'
 const Booking: React.FC = () => {
-    const [eventData, setEventData] = useState<any[]>([]);
     const [email, setEmail] = useState<string>('')
     const [date, setdate] = useState<string>('')
     const [time, setTime] = useState<string>('')
