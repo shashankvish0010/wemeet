@@ -9,6 +9,8 @@ interface ContextValue {
     userEvents: any
     time: number[]
     intervals: number[]
+    array: any[]
+    calcTime: (eventDuration: number) => void
     timing: any
     settiming: any
 }
@@ -31,11 +33,39 @@ export const EventsContextProvider = ({ children }: any) => {
             description: ''
         }
     );
+
     let time: any[] = [
         12 , 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
     ]
 
-    let intervals: number[] = [ 0o0, 15, 30, 45 ]
+    let intervals: number[] = [ 0, 15, 30, 45 ]
+
+    let array: any[]=[];
+
+    const calcTime = async (eventDuration: number) => {
+        console.log("calcTime", eventDuration);
+        
+        if (eventDuration == 15) {
+             time.map((time: number) => {                
+                array.push(`${time}:${intervals[0]}`);
+                array.push(`${time}:${intervals[1]}`);
+                array.push(`${time}:${intervals[2]}`);
+                array.push(`${time}:${intervals[3]}`);    
+            })
+        } else if (eventDuration == 30) {
+            time.map((time: number) => {
+                array.push(`${time}:${intervals[0]}`);
+                array.push(`${time}:${intervals[2]}`);
+            })
+        } else if (eventDuration == 45) {
+            time.map((time: number) => {
+                array.push(`${time}:${intervals[0]}`);
+                array.push(`${time}:${intervals[3]}`);
+            })
+        } else {
+            return 0
+        }
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -126,7 +156,7 @@ export const EventsContextProvider = ({ children }: any) => {
             console.log(error);
         }
     }
-    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, message, userEvents, time, intervals, timing, settiming }
+    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime,array, message, userEvents, time, intervals, timing, settiming }
     return (
         <EventsContext.Provider value={info}>
             {children}

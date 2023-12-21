@@ -5,7 +5,6 @@ import { useParams } from 'react-router'
 import { userAuthContext } from '../contexts/UserAuth'
 import { useNavigate } from 'react-router'
 const Booking: React.FC = () => {
-    let array: any[];
     const [eventData, setEventData] = useState<any[]>([]);
     const [email, setEmail] = useState<string>('')
     const [date, setdate] = useState<string>('')
@@ -18,7 +17,7 @@ const Booking: React.FC = () => {
     useEffect(() => {
         // const Time = new Date();
         // const currentTime = Time.toLocaleTimeString();
-
+        eventContext?.calcTime(15);        
     }, [])
     const bookEvent = async (id: string) => {
         try {
@@ -44,28 +43,7 @@ const Booking: React.FC = () => {
             console.log(error);
         }
     }
-    const calcTime = (eventDuration: number) => {
-        if (eventDuration == 15) {
-            eventContext?.time.map((time: number) => {
-                array.push(`${time}:${eventContext?.intervals[0]}`);
-                array.push(`${time}:${eventContext?.intervals[1]}`);
-                array.push(`${time}:${eventContext?.intervals[2]}`);
-                array.push(`${time}:${eventContext?.intervals[3]}`);
-            })
-        } else if (eventDuration == 30) {
-            eventContext?.time.map((time: number) => {
-                array.push(`${time}:${eventContext?.intervals[0]}`);
-                array.push(`${time}:${eventContext?.intervals[2]}`);
-            })
-        } else if (eventDuration == 45) {
-            eventContext?.time.map((time: number) => {
-                array.push(`${time}:${eventContext?.intervals[0]}`);
-                array.push(`${time}:${eventContext?.intervals[3]}`);
-            })
-        } else {
-            return 0
-        }
-    }
+
     return (
         userContext?.login == true ?
             <div className='bg-slate-100 h-max w-screen flex flex-col gap-4 p-3'>
@@ -83,11 +61,11 @@ const Booking: React.FC = () => {
                     </div>
                     <div className='h-max w-max flex flex-col gap-3 items-center'>
                         {enable == true ?
-                            array = eventContext?.time?.map((time: any, index: number) => time >= 12 ?
-                                <TimeCard onClick={() => setTime(`${time}`)} duration={`${time}:${index}${index}`} notation={'PM'} /> : null)
+                            eventContext?.array?.map((time: any) => Number(time.slice(0,2)) >= 12 ?
+                                <TimeCard onClick={() => setTime(`${time}`)} duration={`${time}`} notation={'PM'} /> : null)
                             :
 
-                            eventContext?.time?.map((time: any) => time <= 12 ?
+                            eventContext?.array?.map((time: any) => Number(time.slice(0,2)) <= 12 ?
                                 <TimeCard onClick={() => setTime(`${time}`)} duration={time} notation={'AM'} /> : null)
                         }
                     </div>
