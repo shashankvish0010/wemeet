@@ -13,7 +13,10 @@ const Booking: React.FC = () => {
     const [enable, setEnable] = useState<boolean>()
     const params: any = useParams()
     const navigate = useNavigate()
-    const temparray: any = useMemo(()=> eventContext?.calcTime(15), [])
+
+    let temparray: any | string[] | void | undefined = useMemo(() => eventContext?.calcTime(30), []);
+    console.log(temparray);
+
     const bookEvent = async (id: string) => {
         try {
             const response = await fetch('/schedule/event/' + id, {
@@ -29,7 +32,6 @@ const Booking: React.FC = () => {
                 const data = await response.json();
                 if (data.succes == true) {
                     console.log(data);
-
                 } else {
                     console.log(data);
                 }
@@ -56,12 +58,12 @@ const Booking: React.FC = () => {
                     </div>
                     <div className='h-max w-max flex flex-col gap-3 items-center'>
                         {enable == true ?
-                            temparray?.map((time: any) => Number(time.slice(0,2)) >= 12 ?
-                                <TimeCard action={setTime(`${time}`)} duration={`${time}`} notation={'PM'} /> : null)
+                            temparray?.map((time: any) => Number(time.slice(0, 2)) <= 12 ?
+                                <TimeCard action={setTime(time)} duration={`${time}`} notation={'AM'} /> : null)
                             :
 
-                            temparray?.map((time: any) => Number(time.slice(0,2)) <= 12 ?
-                                <TimeCard action={setTime(`${time}`)} duration={time} notation={'AM'} /> : null)
+                            temparray?.map((time: any) => Number(time.slice(0, 2)) >= 12 ?
+                                <TimeCard action={setTime(time)} duration={time} notation={'PM'} /> : null)
                         }
                     </div>
                     <span className='flex flex-col gap-1'>

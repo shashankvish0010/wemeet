@@ -9,7 +9,6 @@ interface ContextValue {
     userEvents: any
     time: number[]
     intervals: number[]
-    array: any[]
     calcTime: (eventDuration: number) => void
     timing: any
     settiming: any
@@ -40,15 +39,14 @@ export const EventsContextProvider = ({ children }: any) => {
 
     let intervals: any[] = [ "00", "15", "30", "45" ]
 
-    let array: any[]=[];
 
-    const calcTime = async (eventDuration: number) => {        
+    const calcTime = (eventDuration: number) => {        
+        let array: any[]=[];
         if (eventDuration == 15) {
              time.map((time: number) => {     
                 for(let i=0 ; i<intervals.length ; i++){
                     array.push(`${time}:${intervals[i]}`);
                 }
-                return array             
             })
         } else if (eventDuration == 30) {
             time.map((time: number) => {
@@ -58,7 +56,6 @@ export const EventsContextProvider = ({ children }: any) => {
                     :
                     null
                 }
-                return array             
             })
         } else if (eventDuration == 45) {
             time.map((time: number) => {
@@ -68,13 +65,39 @@ export const EventsContextProvider = ({ children }: any) => {
                     :
                     null
                 }
-                return array             
             })
         } else {
             return 0
         }
+        return array
     }
 
+    // const calcTime = (eventDuration: number) => {
+    //     let array: any[]=[];
+    //     if (eventDuration === 15) {
+    //         time.forEach((time: number) => {
+    //             intervals.forEach((interval: string) => {
+    //                 array.push(`${time}:${interval}`);
+    //             });
+    //         });
+    //     } else if (eventDuration === 30) {
+    //         time.forEach((time: number) => {
+    //             intervals.slice(0, 3).forEach((interval: string) => {
+    //                 array.push(`${time}:${interval}`);
+    //             });
+    //         });
+    //     } else if (eventDuration === 45) {
+    //         time.forEach((time: number) => {
+    //             intervals.filter((_, i) => i === 0 || i === 3).forEach((interval: string) => {
+    //                 array.push(`${time}:${interval}`);
+    //             });
+    //         });
+    //     } else {
+    //         return [];
+    //     }
+    //     return array
+    //     };
+        
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setEvent(event => ({
@@ -164,7 +187,7 @@ export const EventsContextProvider = ({ children }: any) => {
             console.log(error);
         }
     }
-    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, array, message, userEvents, time, intervals, timing, settiming }
+    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, message, userEvents, time, intervals, timing, settiming }
     return (
         <EventsContext.Provider value={info}>
             {children}
