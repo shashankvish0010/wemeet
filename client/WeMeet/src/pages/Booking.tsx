@@ -16,7 +16,9 @@ const Booking: React.FC = () => {
     useEffect(() => {
         // const Time = new Date();
         // const currentTime = Time.toLocaleTimeString();
-        eventContext?.calcTime(15);        
+        eventContext?.calcTime(15);      
+        console.log(eventContext?.array);
+          
     }, [])
     const bookEvent = async (id: string) => {
         try {
@@ -61,11 +63,11 @@ const Booking: React.FC = () => {
                     <div className='h-max w-max flex flex-col gap-3 items-center'>
                         {enable == true ?
                             eventContext?.array?.map((time: any) => Number(time.slice(0,2)) >= 12 ?
-                                <TimeCard onClick={() => setTime(`${time}`)} duration={`${time}`} notation={'PM'} /> : null)
+                                <TimeCard action={setTime(`${time}`)} duration={`${time}`} notation={'PM'} /> : null)
                             :
 
                             eventContext?.array?.map((time: any) => Number(time.slice(0,2)) <= 12 ?
-                                <TimeCard onClick={() => setTime(`${time}`)} duration={time} notation={'AM'} /> : null)
+                                <TimeCard action={setTime(`${time}`)} duration={time} notation={'AM'} /> : null)
                         }
                     </div>
                     <span className='flex flex-col gap-1'>

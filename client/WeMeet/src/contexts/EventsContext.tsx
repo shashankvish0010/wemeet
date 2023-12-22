@@ -42,9 +42,7 @@ export const EventsContextProvider = ({ children }: any) => {
 
     let array: any[]=[];
 
-    const calcTime = async (eventDuration: number) => {
-        console.log("calcTime", eventDuration);
-        
+    const calcTime = async (eventDuration: number) => {        
         if (eventDuration == 15) {
              time.map((time: number) => {                
                 array.push(`${time}:${intervals[0]}`);
@@ -156,7 +154,7 @@ export const EventsContextProvider = ({ children }: any) => {
             console.log(error);
         }
     }
-    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime,array, message, userEvents, time, intervals, timing, settiming }
+    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, array, message, userEvents, time, intervals, timing, settiming }
     return (
         <EventsContext.Provider value={info}>
             {children}
