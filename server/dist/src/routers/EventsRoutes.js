@@ -22,6 +22,7 @@ dotenv_1.default.config();
 router.post('/create/event/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, duration, description } = req.body;
     const { id } = req.params;
+    var proceed = true;
     try {
         if (!name || !duration || !description) {
             res.json({ succes: false, message: "Fill all the fields" });
@@ -32,9 +33,14 @@ router.post('/create/event/:id', (req, res) => __awaiter(void 0, void 0, void 0,
             const email = user.rows[0].email;
             const isExists = yield dbconnect_1.default.query('SELECT duration FROM Events WHERE user_email=$1', [email]);
             if (isExists.rows.length > 0) {
-                res.json({ succes: false, message: `Event of ${duration} min already exists` });
+                isExists.rows.map((fetchedDuration) => {
+                    if (fetchedDuration.duration == duration) {
+                        res.json({ succes: false, message: `Event of ${duration} min already exists` });
+                        proceed = false;
+                    }
+                });
             }
-            else {
+            if (proceed == true) {
                 const id = (0, uuid_1.v4)();
                 const newEvent = yield dbconnect_1.default.query('INSERT INTO Events(id, event_name, duration, event_description, user_email, active) VALUES($1, $2, $3, $4, $5, $6)', [id, name, duration, description, email, true]);
                 if (newEvent) {

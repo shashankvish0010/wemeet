@@ -74,32 +74,6 @@ export const EventsContextProvider = ({ children }: any) => {
         }
         return array
     }
-
-    // const calcTime = (eventDuration: number) => {
-    //     let array: any[]=[];
-    //     if (eventDuration === 15) {
-    //         time.forEach((time: number) => {
-    //             intervals.forEach((interval: string) => {
-    //                 array.push(`${time}:${interval}`);
-    //             });
-    //         });
-    //     } else if (eventDuration === 30) {
-    //         time.forEach((time: number) => {
-    //             intervals.slice(0, 3).forEach((interval: string) => {
-    //                 array.push(`${time}:${interval}`);
-    //             });
-    //         });
-    //     } else if (eventDuration === 45) {
-    //         time.forEach((time: number) => {
-    //             intervals.filter((_, i) => i === 0 || i === 3).forEach((interval: string) => {
-    //                 array.push(`${time}:${interval}`);
-    //             });
-    //         });
-    //     } else {
-    //         return [];
-    //     }
-    //     return array
-    //     };
         
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -121,16 +95,7 @@ export const EventsContextProvider = ({ children }: any) => {
             if (response) {
                 const data = await response.json();
                 if (data.succes == true) {
-                    // for (let i = 0; i < data.events.length; i++) {
-                    //     setUserEvents((userEvents: any) => [
-                    //         ...userEvents,
-                    //         data.events[i]
-                    //     ])
-                    // }
-                    setUserEvents((userEvents) => [...userEvents, ...data.events]);
-
-                    console.log(data);
-
+                    setUserEvents(data.events)
                 } else {
                     console.log(data);
                 }
@@ -139,27 +104,6 @@ export const EventsContextProvider = ({ children }: any) => {
             console.log(error);
         }
     }
-
-    // const eventinfo = async (id: string) => {
-    //     try {
-    //         const response = await fetch('/event/'+id, {
-    //             method: "GET",
-    //             headers:{
-    //                 "Content-Type": "application/json"
-    //             }
-    //         });
-    //         if(response){
-    //             const data = await response.json();
-    //             if(data.success == true){
-    //                 console.log(data);
-    //             }else{
-    //                 console.log(data);
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
 
     const [timing, settiming] = useState<string>('')
 

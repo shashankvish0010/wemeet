@@ -9,6 +9,7 @@ dotenv.config()
 router.post('/create/event/:id', async (req: any, res: any) => {
     const { name, duration, description } = req.body;
     const { id } = req.params;
+    var proceed : boolean = true;
     try {
         if (!name || !duration || !description) {
             res.json({ succes: false, message: "Fill all the fields" })
@@ -18,9 +19,14 @@ router.post('/create/event/:id', async (req: any, res: any) => {
 
             const email = user.rows[0].email;
             const isExists = await pool.query('SELECT duration FROM Events WHERE user_email=$1', [email]);
-            if (isExists.rows.length > 0) {
-                res.json({ succes: false, message: `Event of ${duration} min already exists` })
-            } else {
+            if (isExists.rows.length>0) {
+                isExists.rows.map((fetchedDuration)=>{
+                    if(fetchedDuration.duration == duration){ 
+                        res.json({ succes: false, message: `Event of ${duration} min already exists` });
+                        proceed = false 
+                    }
+                })
+            }  if(proceed == true){
                 const id = uuidv4()
                 const newEvent = await pool.query('INSERT INTO Events(id, event_name, duration, event_description, user_email, active) VALUES($1, $2, $3, $4, $5, $6)', [id, name, duration, description, email, true]);
                 if (newEvent) {
