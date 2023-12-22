@@ -35,30 +35,37 @@ export const EventsContextProvider = ({ children }: any) => {
     );
 
     let time: any[] = [
-        12 , 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+        "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"
     ]
 
-    let intervals: number[] = [ 0, 15, 30, 45 ]
+    let intervals: any[] = [ "00", "15", "30", "45" ]
 
     let array: any[]=[];
 
     const calcTime = async (eventDuration: number) => {        
         if (eventDuration == 15) {
-             time.map((time: number) => {                
-                array.push(`${time}:${intervals[0]}`);
-                array.push(`${time}:${intervals[1]}`);
-                array.push(`${time}:${intervals[2]}`);
-                array.push(`${time}:${intervals[3]}`);    
+             time.map((time: number) => {     
+                for(let i=0 ; i<intervals.length ; i++){
+                    array.push(`${time}:${intervals[i]}`);
+                }             
             })
         } else if (eventDuration == 30) {
             time.map((time: number) => {
-                array.push(`${time}:${intervals[0]}`);
-                array.push(`${time}:${intervals[2]}`);
+                for(let i=0 ; i<3 ; i++){
+                    i==0 || i==2 ?
+                    array.push(`${time}:${intervals[i]}`)
+                    :
+                    null
+                }
             })
         } else if (eventDuration == 45) {
             time.map((time: number) => {
-                array.push(`${time}:${intervals[0]}`);
-                array.push(`${time}:${intervals[3]}`);
+                for(let i=0 ; i<intervals.length ; i++){
+                    i==0 || i==3 ?
+                    array.push(`${time}:${intervals[i]}`)
+                    :
+                    null
+                }
             })
         } else {
             return 0
