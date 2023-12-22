@@ -47,7 +47,8 @@ export const EventsContextProvider = ({ children }: any) => {
              time.map((time: number) => {     
                 for(let i=0 ; i<intervals.length ; i++){
                     array.push(`${time}:${intervals[i]}`);
-                }             
+                }
+                return array             
             })
         } else if (eventDuration == 30) {
             time.map((time: number) => {
@@ -57,6 +58,7 @@ export const EventsContextProvider = ({ children }: any) => {
                     :
                     null
                 }
+                return array             
             })
         } else if (eventDuration == 45) {
             time.map((time: number) => {
@@ -66,6 +68,7 @@ export const EventsContextProvider = ({ children }: any) => {
                     :
                     null
                 }
+                return array             
             })
         } else {
             return 0

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState, useMemo } from 'react'
 import { EventsContext } from '../contexts/EventsContext'
 import TimeCard from '../components/TimeCard'
 import { useParams } from 'react-router'
@@ -13,13 +13,7 @@ const Booking: React.FC = () => {
     const [enable, setEnable] = useState<boolean>()
     const params: any = useParams()
     const navigate = useNavigate()
-    useEffect(() => {
-        // const Time = new Date();
-        // const currentTime = Time.toLocaleTimeString();
-        eventContext?.calcTime(15);      
-        console.log(eventContext?.array);
-          
-    }, [])
+    const temparray: any = useMemo(()=> eventContext?.calcTime(15), [])
     const bookEvent = async (id: string) => {
         try {
             const response = await fetch('/schedule/event/' + id, {
@@ -62,11 +56,11 @@ const Booking: React.FC = () => {
                     </div>
                     <div className='h-max w-max flex flex-col gap-3 items-center'>
                         {enable == true ?
-                            eventContext?.array?.map((time: any) => Number(time.slice(0,2)) >= 12 ?
+                            temparray?.map((time: any) => Number(time.slice(0,2)) >= 12 ?
                                 <TimeCard action={setTime(`${time}`)} duration={`${time}`} notation={'PM'} /> : null)
                             :
 
-                            eventContext?.array?.map((time: any) => Number(time.slice(0,2)) <= 12 ?
+                            temparray?.map((time: any) => Number(time.slice(0,2)) <= 12 ?
                                 <TimeCard action={setTime(`${time}`)} duration={time} notation={'AM'} /> : null)
                         }
                     </div>
