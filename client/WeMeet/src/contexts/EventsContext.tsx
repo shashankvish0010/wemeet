@@ -9,6 +9,8 @@ interface ContextValue {
     userEvents: any
     time: number[]
     intervals: number[]
+    bookTime: string
+    setBookTime: any
     calcTime: (eventDuration: number) => void
     timing: any
     settiming: any
@@ -39,6 +41,7 @@ export const EventsContextProvider = ({ children }: any) => {
 
     let intervals: any[] = [ "00", "15", "30", "45" ]
 
+    const [bookTime, setBookTime] = useState<string>('')
 
     const calcTime = (eventDuration: number) => {        
         let array: any[]=[];
@@ -187,7 +190,7 @@ export const EventsContextProvider = ({ children }: any) => {
             console.log(error);
         }
     }
-    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, message, userEvents, time, intervals, timing, settiming }
+    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
     return (
         <EventsContext.Provider value={info}>
             {children}

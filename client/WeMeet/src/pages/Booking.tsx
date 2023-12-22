@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router'
 const Booking: React.FC = () => {
     const [email, setEmail] = useState<string>('')
     const [date, setdate] = useState<string>('')
-    const [time, setTime] = useState<string>('')
     const eventContext = useContext(EventsContext)
     const userContext = useContext(userAuthContext)
     const [enable, setEnable] = useState<boolean>()
@@ -18,6 +17,7 @@ const Booking: React.FC = () => {
     console.log(temparray);
 
     const bookEvent = async (id: string) => {
+        const time = eventContext?.bookTime
         try {
             const response = await fetch('/schedule/event/' + id, {
                 method: "POST",
@@ -59,11 +59,11 @@ const Booking: React.FC = () => {
                     <div className='h-max w-max flex flex-col gap-3 items-center'>
                         {enable == true ?
                             temparray?.map((time: any) => Number(time.slice(0, 2)) <= 12 ?
-                                <TimeCard action={setTime(time)} duration={`${time}`} notation={'AM'} /> : null)
+                                <TimeCard action={eventContext?.setBookTime(time)} duration={`${time}`} notation={'AM'} /> : null)
                             :
 
                             temparray?.map((time: any) => Number(time.slice(0, 2)) >= 12 ?
-                                <TimeCard action={setTime(time)} duration={time} notation={'PM'} /> : null)
+                                <TimeCard action={eventContext?.setBookTime(time)} duration={time} notation={'PM'} /> : null)
                         }
                     </div>
                     <span className='flex flex-col gap-1'>
