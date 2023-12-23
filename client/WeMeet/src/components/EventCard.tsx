@@ -27,7 +27,7 @@ const EventCard: React.FC<CardType> = (props: CardType) => {
             <span className='text-medium md:text-xl text-base font-semibold'>
                     Event scheduling URL:
                 </span>                <span className='w-[100%] text-medium md:text-base text-sm font-normal'>
-                    {`http://localhost:5173/book/${props.id}`}
+                    {`http://localhost:5173/book/${props.duration}/${props.id}`}
                 </span>
             </div>
         </div>
