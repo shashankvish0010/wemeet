@@ -65,9 +65,9 @@ router.get('/event/:id', async (req, res) => {
         if (id) {
             const eventdata = await pool.query('SELECT * FROM Events WHERE id=$1', [id]);
             console.log(eventdata.rows);
-            res.json({ succes: true, eventdata: eventdata.rows, message: "Event receieved" })
+            res.json({ success: true, eventdata: eventdata.rows, message: "Event receieved" })
         } else {
-            res.json({ succes: false, message: "Event ID not receieved" })
+            res.json({ success: false, message: "Event ID not receieved" })
         }
     } catch (error) {
         console.log(error);

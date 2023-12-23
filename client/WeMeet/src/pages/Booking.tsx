@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo } from 'react'
+import React, { useContext, useState, useMemo, useEffect } from 'react'
 import { EventsContext } from '../contexts/EventsContext'
 import TimeCard from '../components/TimeCard'
 import { useParams } from 'react-router'
@@ -14,7 +14,8 @@ const Booking: React.FC = () => {
     const navigate = useNavigate()
 
     let temparray: any | string[] | void | undefined = useMemo(() => eventContext?.calcTime(30), []);
-    console.log(temparray);
+
+    useEffect(()=> eventContext?.getEventDetails(params.id),[])
 
     const bookEvent = async (id: string) => {
         const time = eventContext?.bookTime

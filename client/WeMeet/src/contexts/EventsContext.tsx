@@ -1,16 +1,18 @@
 import { createContext, useState } from 'react'
 
 interface ContextValue {
-    event: eventType;
-    handleSubmit: (e: React.FormEvent, id: string | undefined) => any;
-    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    getEvents: (id: string) => void;
-    message: string | undefined | null;
+    event: eventType
+    handleSubmit: (e: React.FormEvent, id: string | undefined) => any
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    getEvents: (id: string) => void
+    getEventDetails: (meetingId: string) => void
+    message: string | undefined | null
     userEvents: any
     time: number[]
     intervals: number[]
     bookTime: string
     setBookTime: any
+    currentEvent: any 
     calcTime: (eventDuration: number) => void
     timing: any
     settiming: any
@@ -25,6 +27,7 @@ interface eventType {
 export const EventsContext = createContext<ContextValue | null>(null)
 export const EventsContextProvider = ({ children }: any) => {
     const [userEvents, setUserEvents] = useState<eventType[]>([]);
+    const [currentEvent, setCurrentEvent] = useState<any>();
     const [message, setMessage] = useState<string | undefined | null>();
     const [event, setEvent] = useState<eventType>(
         {
@@ -105,6 +108,27 @@ export const EventsContextProvider = ({ children }: any) => {
         }
     }
 
+    const getEventDetails = async (meetingId: string) => {
+        try {
+            const response = await fetch('/event/'+meetingId, {
+                method: 'GET',
+                headers: {
+                    "Content-Type" : "application/json"
+                }
+            });
+            if(response){
+                const data = await response.json();
+                if(data.success == true){
+                    setCurrentEvent(data.eventdata)                    
+                }else{
+                    console.log(data);                
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const [timing, settiming] = useState<string>('')
 
     const handleSubmit = async (e: React.FormEvent, id: string | undefined) => {
@@ -134,7 +158,7 @@ export const EventsContextProvider = ({ children }: any) => {
             console.log(error);
         }
     }
-    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
+    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, getEventDetails, currentEvent, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
     return (
         <EventsContext.Provider value={info}>
             {children}
