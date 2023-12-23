@@ -4,18 +4,50 @@ import TimeCard from '../components/TimeCard'
 import { useParams } from 'react-router'
 import { userAuthContext } from '../contexts/UserAuth'
 import { useNavigate } from 'react-router'
+
+interface eventDataType {
+    firstname: string,
+    lastname: string,
+    event_name: string,
+    duartion: any,
+    event_description: string
+}
+
 const Booking: React.FC = () => {
     const [email, setEmail] = useState<string>('')
     const [date, setdate] = useState<string>('')
     const eventContext = useContext(EventsContext)
     const userContext = useContext(userAuthContext)
+    const [currentEvent, setCurrentEvent] = useState<eventDataType>();
     const [enable, setEnable] = useState<boolean>()
     const params: any = useParams()
     const navigate = useNavigate()
 
     let temparray: any | string[] | void | undefined = useMemo(() => eventContext?.calcTime(30), []);
 
-    useEffect(()=> eventContext?.getEventDetails(params.id),[])
+    const getEventDetails = async (meetingId: string) => {
+        try {
+            const response = await fetch('/event/' + meetingId, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            if (response) {
+                const data = await response.json();
+                if (data.success == true) {
+                    setCurrentEvent(data.eventdata)
+                } else {
+                    console.log(data);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => { getEventDetails(params.id) }, [])
+
 
     const bookEvent = async (id: string) => {
         const time = eventContext?.bookTime
@@ -44,8 +76,14 @@ const Booking: React.FC = () => {
 
     return (
         userContext?.login == true ?
-            <div className='bg-slate-100 h-max w-screen flex flex-col gap-4 p-3'>
-                <div className='w-screen h-max flex flex-col gap-5 items-center p-3'>
+            <div className='bg-slate-100 h-max w-screen flex flex-row gap-4 p-3'>
+                <div className='w-[45%] h-max flex flex-row'>
+                    <div className='h-max w-[100%] flex md:flex-row flex-col gap-4 items-center justify-evenly'>
+                        <h1 className='text-xl font-semibold'>{currentEvent?.firstname}</h1>
+                        <p className='text-base font-medium'>gfgf</p>
+                    </div>
+                </div>
+                <div className='w-[45%] h-max flex flex-col gap-5 items-center p-3'>
                     {/* <div className='h-max w-screen flex md:flex-row flex-col gap-4 items-center justify-evenly'>
                     <h1 className='text-xl font-semibold'>{eventData}</h1>
                     <p className='text-base font-medium'>{eventData}</p>

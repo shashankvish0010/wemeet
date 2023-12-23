@@ -77,7 +77,7 @@ router.get('/event/:id', (req, res) => __awaiter(void 0, void 0, void 0, functio
     console.log(id);
     try {
         if (id) {
-            const eventdata = yield dbconnect_1.default.query('SELECT * FROM Events WHERE id=$1', [id]);
+            const eventdata = yield dbconnect_1.default.query('SELECT usd.firstname, usd.lastname, ed.event_name, ed.duration, ed.event_description FROM Users as usd left join Events as ed on usd.email=ed.user_email WHERE ed.id=$1 ', [id]);
             console.log(eventdata.rows);
             res.json({ success: true, eventdata: eventdata.rows, message: "Event receieved" });
         }
