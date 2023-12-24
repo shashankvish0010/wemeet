@@ -16,7 +16,7 @@ const Home: React.FC = () => {
   }, [])
 
   return (
-    <div className='bg-slate-100 h-max w-[100vw] flex flex-col gap-5 p-3'>
+    <div className='bg-slate-100 h-max w-[100vw] flex flex-col gap-5 p-3 items-center'>
       <div className='flex md:flex-row flex-col items-center justify-evenly p-4'>
         <div className='h-[100%] md:w-[40%] p-4 rounded-md flex flex-col justify-evenly gap-2 items-center'>
           <h1 className='md:text-6xl text-2xl text-center md:text-start font-bold uppercase'>Simplifying your Meetings.</h1>
@@ -43,7 +43,7 @@ const Home: React.FC = () => {
       <div className='h-max w-screen flex items-center justify-center p-3'>
         <button onClick={() => { navigate('/add/event/' + userContext?.currentuser?.id) }} className='text-md font-medium w-max rounded-full bg-slate-800 p-3 shadow-lg text-white'>Add Your Events</button>
       </div>
-      <div className='mt-5 h-max w-screen flex flex-row justify-evenly p-3'>
+      <div className='mt-5 h-max w-screen flex md:flex-row gap-3 flex-col items-center md:justify-evenly p-3'>
         {userContext?.login === true ?
           eventContext?.userEvents && eventContext.userEvents.length > 0
             ? eventContext.userEvents.map((current: any) => (
@@ -57,8 +57,15 @@ const Home: React.FC = () => {
             : null
           : null}
       </div>
-      <div className='mt-5 h-max w-screen flex flex-row justify-evenly p-3 rounded shadow-xl'>
+      <div className='bg-slate-800 mt-5 h-max md:w-[70vw] w-[90vw] flex flex-col justify-evenly gap-4 items-center p-3 rounded-b-full shadow-xl'>
+      <span className='h-max w-[100%] flex flex-row items-center justify-center gap-2'>
+      <Icon icon="gridicons:scheduled" color='cyan' height={'5vh'}/>
+      <p className='text-xl font-semibold text-white uppercase'>Upcoming Meetings</p>
+      </span>
       <BookingCard/>
+      <BookingCard/>
+      <BookingCard/>
+      <button onClick={() => { navigate('/add/event/' + userContext?.currentuser?.id) }} className='text-md flex flex-row items-center gap-2 font-semibold w-max rounded-full bg-slate-100 p-3 shadow-lg'>See More <Icon icon="material-symbols:more-up" height={'3vh'}/></button>
       </div>
     </div>
   )
