@@ -5,6 +5,7 @@ import { userAuthContext } from '../contexts/UserAuth'
 import HeadBanner from '../assets/wemeet-group-video-chat.avif'
 import { EventsContext } from '../contexts/EventsContext'
 import EventCard from '../components/EventCard'
+import BookingCard from '../components/BookingCard'
 
 const Home: React.FC = () => {
   const navigate = useNavigate()
@@ -56,6 +57,7 @@ const Home: React.FC = () => {
             : null
           : null}
       </div>
+      <BookingCard/>
     </div>
   )
 }
