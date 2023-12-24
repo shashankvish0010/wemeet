@@ -3,12 +3,12 @@ import { Icon } from '@iconify/react';
 
 const BookingCard: React.FC = () => {
     return (
-        <div className='h-[20vh] md:w-[40vw] p-2 shadow-2xl rounded-xl flex flex-row'>
-            <div className='h-[100%] w-[10vw] p-2 flex flex-col gap-4 justify-center'>
-                <span><p>JAN</p></span>
-                <span><p className='text-2xl font-semibold'>23</p></span>
+        <div className='bg-slate-800 text-white h-[20vh] md:w-[44vw] p-2 shadow-2xl rounded-xl flex flex-row'>
+            <div className='h-[100%] w-[10vw] p-2 flex flex-col items-center'>
+                <span className='h-max w-[100%] p-1'>JAN</span>
+                <span className='h-max w-[100%] bg-orange-400 text-center rounded-full'><p className='text-2xl text-white font-semibold p-2'>23</p></span>
             </div>
-            <span className='w-[0.5rem] h-[100%] rounded bg-slate-800'></span>
+            <span className='w-[0.5rem] h-[100%] rounded bg-cyan-400'></span>
             <div className='h-[100%] w-max flex flex-row gap-3 p-2 items-center'>
                 <div className='h-[100%] flex flex-col justify-evenly'>
                     <span className='flex flex-row gap-1 items-center'>

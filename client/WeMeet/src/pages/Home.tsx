@@ -57,7 +57,9 @@ const Home: React.FC = () => {
             : null
           : null}
       </div>
+      <div className='mt-5 h-max w-screen flex flex-row justify-evenly p-3 rounded shadow-xl'>
       <BookingCard/>
+      </div>
     </div>
   )
 }
