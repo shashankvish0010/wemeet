@@ -13,6 +13,7 @@ const Home: React.FC = () => {
   const eventContext = useContext(EventsContext)
   useEffect(() => {
     eventContext?.getEvents(userContext?.currentuser?.id);
+    eventContext?.getAllMeetings(userContext?.currentuser?.email)
   }, [])
 
   return (

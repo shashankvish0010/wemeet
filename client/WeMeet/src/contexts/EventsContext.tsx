@@ -5,12 +5,14 @@ interface ContextValue {
     handleSubmit: (e: React.FormEvent, id: string | undefined) => any
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     getEvents: (id: string) => void
+    getAllMeetings: (userEmail: string) => void
     message: string | undefined | null
     userEvents: any
     time: number[]
     intervals: number[]
     bookTime: string
     setBookTime: any
+    userMeetings: any
     calcTime: (eventDuration: number) => void
     timing: any
     settiming: any
@@ -26,6 +28,7 @@ interface eventType {
 export const EventsContext = createContext<ContextValue | null>(null)
 export const EventsContextProvider = ({ children }: any) => {
     const [userEvents, setUserEvents] = useState<eventType[]>([]);
+    const [userMeetings, setUserMeetings] = useState<any>([]);
     const [message, setMessage] = useState<string | undefined | null>();
     const [event, setEvent] = useState<eventType>(
         {
@@ -97,6 +100,8 @@ export const EventsContextProvider = ({ children }: any) => {
                 const data = await response.json();
                 if (data.succes == true) {
                     setUserEvents(data.events)
+                    console.log(data);
+                    
                 } else {
                     console.log(data);
                 }
@@ -135,7 +140,29 @@ export const EventsContextProvider = ({ children }: any) => {
             console.log(error);
         }
     }
-    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
+
+    const getAllMeetings = async (userEmail: string) => {
+        try {
+            const response = await fetch('/fetch/meetings'+userEmail, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            if(response){
+                const data = await response.json();
+                if(data.success == true){
+                    setUserMeetings(data.meetingsdata)
+                }else{
+                    console.log(data);                    
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, getAllMeetings, userMeetings, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
     return (
         <EventsContext.Provider value={info}>
             {children}

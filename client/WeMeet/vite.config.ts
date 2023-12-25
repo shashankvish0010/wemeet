@@ -30,6 +30,9 @@ export default defineConfig({
       '/schedule/event': {
         target: "http://localhost:8080"
       },
+      '/fetch/meetings': {
+        target: "http://localhost:8080"
+      },
     }
   },
 })

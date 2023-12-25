@@ -55,7 +55,9 @@ export const UserAuthProvider = ({children}: any) => {
                     })
                     if (response) {
                         const data = await response.json();
-                        if (data.success == true) {                            
+                        if (data.success == true) {    
+                            console.log(data);
+                                                    
                             setMessage(data.message)
                             document.cookie = `user_access=${data.token}; path=/`
                             setCurrentUser(data.userdata)
