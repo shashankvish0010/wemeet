@@ -13,7 +13,9 @@ const Home: React.FC = () => {
   const eventContext = useContext(EventsContext)
   useEffect(() => {
     eventContext?.getEvents(userContext?.currentuser?.id);
-    eventContext?.getAllMeetings(userContext?.currentuser?.email)
+    eventContext?.getAllMeetings(userContext?.currentuser?.email)   
+    console.log(eventContext?.userMeetings);
+     
   }, [])
 
   return (
@@ -63,9 +65,20 @@ const Home: React.FC = () => {
       <Icon icon="gridicons:scheduled" color='cyan' height={'5vh'}/>
       <p className='text-xl font-semibold text-white uppercase'>Upcoming Meetings</p>
       </span>
+      {
+        eventContext?.userMeetings?.map((currentMeeting: any)=>{
+          
+          <BookingCard
+          name={currentMeeting.firstname}
+          month={currentMeeting.scheduled_date}
+          date={currentMeeting.scheduled_date}
+          time={currentMeeting.scheduled_time}
+          />
+        })
+      }
+      {/* <BookingCard/>
       <BookingCard/>
-      <BookingCard/>
-      <BookingCard/>
+      <BookingCard/> */}
       <button onClick={() => { navigate('/add/event/' + userContext?.currentuser?.id) }} className='text-md flex flex-row items-center gap-2 font-semibold w-max rounded-full bg-slate-100 p-3 shadow-lg'>See More <Icon icon="material-symbols:more-up" height={'3vh'}/></button>
       </div>
     </div>

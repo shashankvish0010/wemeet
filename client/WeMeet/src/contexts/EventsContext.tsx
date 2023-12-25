@@ -10,6 +10,7 @@ interface ContextValue {
     userEvents: any
     time: number[]
     intervals: number[]
+    months: string[]
     bookTime: string
     setBookTime: any
     userMeetings: any
@@ -28,7 +29,7 @@ interface eventType {
 export const EventsContext = createContext<ContextValue | null>(null)
 export const EventsContextProvider = ({ children }: any) => {
     const [userEvents, setUserEvents] = useState<eventType[]>([]);
-    const [userMeetings, setUserMeetings] = useState<any>([]);
+    const [userMeetings, setUserMeetings] = useState<any[]>([]);
     const [message, setMessage] = useState<string | undefined | null>();
     const [event, setEvent] = useState<eventType>(
         {
@@ -43,34 +44,34 @@ export const EventsContextProvider = ({ children }: any) => {
         "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"
     ]
 
-    let intervals: any[] = [ "00", "15", "30", "45" ]
+    let intervals: any[] = ["00", "15", "30", "45"]
 
     const [bookTime, setBookTime] = useState<string>('')
 
-    const calcTime = (eventDuration: number) => {        
-        let array: any[]=[];
+    const calcTime = (eventDuration: number) => {
+        let array: any[] = [];
         if (eventDuration == 15) {
-             time.map((time: number) => {     
-                for(let i=0 ; i<intervals.length ; i++){
+            time.map((time: number) => {
+                for (let i = 0; i < intervals.length; i++) {
                     array.push(`${time}:${intervals[i]}`);
                 }
             })
         } else if (eventDuration == 30) {
             time.map((time: number) => {
-                for(let i=0 ; i<3 ; i++){
-                    i==0 || i==2 ?
-                    array.push(`${time}:${intervals[i]}`)
-                    :
-                    null
+                for (let i = 0; i < 3; i++) {
+                    i == 0 || i == 2 ?
+                        array.push(`${time}:${intervals[i]}`)
+                        :
+                        null
                 }
             })
         } else if (eventDuration == 45) {
             time.map((time: number) => {
-                for(let i=0 ; i<intervals.length ; i++){
-                    i==0 || i==3 ?
-                    array.push(`${time}:${intervals[i]}`)
-                    :
-                    null
+                for (let i = 0; i < intervals.length; i++) {
+                    i == 0 || i == 3 ?
+                        array.push(`${time}:${intervals[i]}`)
+                        :
+                        null
                 }
             })
         } else {
@@ -78,7 +79,7 @@ export const EventsContextProvider = ({ children }: any) => {
         }
         return array
     }
-        
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setEvent(event => ({
@@ -101,7 +102,7 @@ export const EventsContextProvider = ({ children }: any) => {
                 if (data.succes == true) {
                     setUserEvents(data.events)
                     console.log(data);
-                    
+
                 } else {
                     console.log(data);
                 }
@@ -141,23 +142,27 @@ export const EventsContextProvider = ({ children }: any) => {
         }
     }
 
+    let months: string[] = [
+        "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+    ]
+
     const getAllMeetings = async (userEmail: string) => {
         console.log("enter", userEmail);
-        
+
         try {
-            const response = await fetch('/fetch/meetings/'+userEmail, {
+            const response = await fetch('/fetch/meetings/' + userEmail, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
                 }
             });
-            if(response){
+            if (response) {
                 const data = await response.json();
-                if(data.success == true){
-                    setUserMeetings(data.meetingsdata)
-                    console.log(data);                    
-                }else{
-                    console.log(data);                    
+                if (data.success == true) {
+                    setUserMeetings(data.meetingData)
+                    console.log(data);
+                } else {
+                    console.log(data);
                 }
             }
         } catch (error) {
@@ -165,7 +170,7 @@ export const EventsContextProvider = ({ children }: any) => {
         }
     }
 
-    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, getAllMeetings, userMeetings, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
+    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, getAllMeetings, months, userMeetings, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
     return (
         <EventsContext.Provider value={info}>
             {children}
