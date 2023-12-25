@@ -85,8 +85,8 @@ router.post('/schedule/event/:id', async (req, res) => {
             if (hostEmail) {
                 const meetingId = uuidv4();
                 if (meetingId) {
-                     await pool.query('INSERT INTO Meetings(id, user_email, host_email, scheduled_time, scheduled_date ) VALUES($1, $2, $3, $4, $5)',
-                        [meetingId, email, hostEmail, time, date])
+                     await pool.query('INSERT INTO Meetings(id, event_id, user_email, host_email, scheduled_time, scheduled_date ) VALUES($1, $2, $3, $4, $5)',
+                        [meetingId, id, email, hostEmail, time, date])
 
                             const email_message = {
                                 from: process.env.EMAIL_USER,

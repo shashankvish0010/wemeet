@@ -20,6 +20,7 @@ CREATE TABLE Events(
 
 CREATE TABLE Meetings(
     id VARCHAR PRIMARY KEY,
+    meeting_id VARCHAR,
     user_email VARCHAR,
     host_email VARCHAR,
     scheduled_time VARCHAR,
