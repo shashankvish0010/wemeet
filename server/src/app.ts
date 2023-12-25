@@ -12,7 +12,8 @@ app.use(cors())
 app.use(express.json())
 app.use(bodyParser.json())
 app.use(require('./routers/UserRoutes'));
-app.use(require('./routers/EventsRoutes'))
+app.use(require('./routers/EventsRoutes'));
+app.use(require('./routers/MeetingsRoutes'))
 
 const server = http.createServer(app)
 app.use(cors())

@@ -100,7 +100,7 @@ router.post('/schedule/event/:id', (req, res) => __awaiter(void 0, void 0, void 
             if (hostEmail) {
                 const meetingId = (0, uuid_1.v4)();
                 if (meetingId) {
-                    yield dbconnect_1.default.query('INSERT INTO Meetings(id, event_id, user_email, host_email, scheduled_time, scheduled_date ) VALUES($1, $2, $3, $4, $5)', [meetingId, id, email, hostEmail, time, date]);
+                    yield dbconnect_1.default.query('INSERT INTO Meetings(id, meeting_id, user_email, host_email, scheduled_time, scheduled_date ) VALUES($1, $2, $3, $4, $5, $6)', [meetingId, id, email, hostEmail, time, date]);
                     const email_message = {
                         from: process.env.EMAIL_USER,
                         to: hostEmail,

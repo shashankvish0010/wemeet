@@ -142,8 +142,10 @@ export const EventsContextProvider = ({ children }: any) => {
     }
 
     const getAllMeetings = async (userEmail: string) => {
+        console.log("enter", userEmail);
+        
         try {
-            const response = await fetch('/fetch/meetings'+userEmail, {
+            const response = await fetch('/fetch/meetings/'+userEmail, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
@@ -153,6 +155,7 @@ export const EventsContextProvider = ({ children }: any) => {
                 const data = await response.json();
                 if(data.success == true){
                     setUserMeetings(data.meetingsdata)
+                    console.log(data);                    
                 }else{
                     console.log(data);                    
                 }

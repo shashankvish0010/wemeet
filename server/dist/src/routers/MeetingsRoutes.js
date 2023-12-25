@@ -17,9 +17,11 @@ const router = express_1.default.Router();
 const dbconnect_1 = __importDefault(require("../../dbconnect"));
 router.get('/fetch/meetings/:userEmail', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userEmail } = req.params;
+    console.log(userEmail);
     try {
-        const meetingData = yield dbconnect_1.default.query('SELECT ud.firstname, md.scheduled_time, md.scheduled_date, ed.event_name, ed.duration, ed.event_description from Users as ud INNER JOIN meetings as md on md.host_email=ud.email INNER JOIN events as ed on ed.id=md.meeting_id WHERE ed.user_email=$1', [userEmail]);
-        console.log(meetingData.rows[0]);
+        const meetingData = yield dbconnect_1.default.query('SELECT ud.firstname, md.scheduled_time, md.scheduled_date, ed.event_name, ed.duration, ed.event_description from events as ed INNER JOIN meetings as md on md.host_email=ed.user_email INNER JOIN users as ud on md.host_email=ud.email');
+        console.log(meetingData);
+        res.json({ success: true, meetingData });
     }
     catch (error) {
         console.log(error);
