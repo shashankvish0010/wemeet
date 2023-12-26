@@ -13,7 +13,6 @@ interface ContextValue {
     months: string[]
     bookTime: string
     setBookTime: any
-    userMeetings: any
     calcTime: (eventDuration: number) => void
     timing: any
     settiming: any
@@ -29,7 +28,6 @@ interface eventType {
 export const EventsContext = createContext<ContextValue | null>(null)
 export const EventsContextProvider = ({ children }: any) => {
     const [userEvents, setUserEvents] = useState<eventType[]>([]);
-    const [userMeetings, setUserMeetings] = useState<any[]>([]);
     const [message, setMessage] = useState<string | undefined | null>();
     const [event, setEvent] = useState<eventType>(
         {
@@ -159,8 +157,7 @@ export const EventsContextProvider = ({ children }: any) => {
             if (response) {
                 const data = await response.json();
                 if (data.success == true) {
-                    setUserMeetings(data.meetingData)
-                    console.log(data);
+                    return data.meetingData
                 } else {
                     console.log(data);
                 }
@@ -170,7 +167,7 @@ export const EventsContextProvider = ({ children }: any) => {
         }
     }
 
-    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, getAllMeetings, months, userMeetings, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
+    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, getAllMeetings, months, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
     return (
         <EventsContext.Provider value={info}>
             {children}

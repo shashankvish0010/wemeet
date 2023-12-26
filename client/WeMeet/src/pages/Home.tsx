@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useMemo } from 'react'
 import { Icon } from '@iconify/react'
 import { useNavigate } from 'react-router'
 import { userAuthContext } from '../contexts/UserAuth'
@@ -7,16 +7,24 @@ import { EventsContext } from '../contexts/EventsContext'
 import EventCard from '../components/EventCard'
 import BookingCard from '../components/BookingCard'
 
+interface meetingType {
+  duration: string
+  event_description: string
+  event_name: string
+  firstname: string
+  scheduled_date: string
+  scheduled_time: string
+}
+
 const Home: React.FC = () => {
   const navigate = useNavigate()
   const userContext = useContext(userAuthContext)
   const eventContext = useContext(EventsContext)
   useEffect(() => {
-    eventContext?.getEvents(userContext?.currentuser?.id);
-    eventContext?.getAllMeetings(userContext?.currentuser?.email)   
-    console.log(eventContext?.userMeetings);
-     
+    eventContext?.getEvents(userContext?.currentuser?.id);        
   }, [])
+
+  let userMeetings: meetingType[] | any = useMemo(()=> {eventContext?.getAllMeetings(userContext?.currentuser?.email)}, [])
 
   return (
     <div className='bg-slate-100 h-max w-[100vw] flex flex-col gap-5 p-3 items-center'>
@@ -66,7 +74,7 @@ const Home: React.FC = () => {
       <p className='text-xl font-semibold text-white uppercase'>Upcoming Meetings</p>
       </span>
       {
-        eventContext?.userMeetings?.map((currentMeeting: any)=>{
+        userMeetings?.map((currentMeeting: any)=>{
           
           <BookingCard
           name={currentMeeting.firstname}
