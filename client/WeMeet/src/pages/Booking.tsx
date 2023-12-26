@@ -121,7 +121,7 @@ const Booking: React.FC = () => {
                                             <TimeCard action={eventContext?.setBookTime(time)} duration={time} notation={'PM'} /> : null)
                                     }
                                 </div>
-                                <button onClick={() => {setEnableInfo(true); setEnableTime(false)}} className='bg-slate-800 p-2 font-medium text-white rounded'>Proceed</button>
+                                <button onClick={() => { setEnableInfo(true); setEnableTime(false) }} className='bg-slate-800 p-2 font-medium text-white rounded'>Proceed</button>
                             </>
                             : null
                     }

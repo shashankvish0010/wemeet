@@ -8,6 +8,7 @@ import OtpVerification from './pages/OTP';
 import Events from './pages/Events';
 import Booking from './pages/Booking';
 import Meet from './pages/Meet';
+import Profile from './pages/Profile';
 
 
 const App: React.FC = () => {
@@ -22,6 +23,7 @@ const App: React.FC = () => {
         <Route path='/add/event/:id' element={<Events />} />
         <Route path='/book/:duration/:id' element={<Booking />} />
         <Route path='/meeting/:id' element={<Meet/>} />
+        <Route path='/profile' element={<Profile/>} />
       </Routes>
     </Router>
   )

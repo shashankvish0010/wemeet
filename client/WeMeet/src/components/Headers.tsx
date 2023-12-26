@@ -23,7 +23,7 @@ const Headers: React.FC = () => {
       <div className='h-max w-max'>
         {usercontext?.login == true ?
           (<span className='flex flex-row items-center'>
-            <Icon className='lg:h-max md:h-max h-[4vh] cursor-pointer' height={'6vh'} icon="prime:user" />
+            <Icon className='lg:h-max md:h-max h-[4vh] cursor-pointer' height={'6vh'} icon="prime:user" onClick={() => {navigate('/profile')}}/>
             <Icon className='lg:h-max md:h-max h-[4vh] cursor-pointer' height={'6vh'} icon="solar:logout-outline" onClick={() => { usercontext.dispatch({ type: "LOGOUT" }) }} />
           </span>)
           : (<Link to='/register'>
