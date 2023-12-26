@@ -7,24 +7,27 @@ import { EventsContext } from '../contexts/EventsContext'
 import EventCard from '../components/EventCard'
 import BookingCard from '../components/BookingCard'
 
-interface meetingType {
-  duration: string
-  event_description: string
-  event_name: string
-  firstname: string
-  scheduled_date: string
-  scheduled_time: string
-}
+// interface meetingType {
+//   duration: string
+//   event_description: string
+//   event_name: string
+//   firstname: string
+//   scheduled_date: string
+//   scheduled_time: string
+// }
 
 const Home: React.FC = () => {
   const navigate = useNavigate()
   const userContext = useContext(userAuthContext)
   const eventContext = useContext(EventsContext)
   useEffect(() => {
-    eventContext?.getEvents(userContext?.currentuser?.id);        
+    eventContext?.getEvents(userContext?.currentuser?.id);
   }, [])
 
-  let userMeetings: meetingType[] | any = useMemo(()=> {eventContext?.getAllMeetings(userContext?.currentuser?.email)}, [])
+  let userMeetings: any | string[] | void | undefined = [];
+  useMemo(() => eventContext?.getAllMeetings(userContext?.currentuser?.email), []).then((value: any) => {
+    userMeetings= [...value]
+  }).catch((error: Error) => console.log(error))
 
   return (
     <div className='bg-slate-100 h-max w-[100vw] flex flex-col gap-5 p-3 items-center'>
@@ -69,25 +72,22 @@ const Home: React.FC = () => {
           : null}
       </div>
       <div className='bg-slate-800 mt-5 h-max md:w-[70vw] w-[90vw] flex flex-col justify-evenly gap-4 items-center p-3 rounded-b-full shadow-xl'>
-      <span className='h-max w-[100%] flex flex-row items-center justify-center gap-2'>
-      <Icon icon="gridicons:scheduled" color='cyan' height={'5vh'}/>
-      <p className='text-xl font-semibold text-white uppercase'>Upcoming Meetings</p>
-      </span>
-      {
-        userMeetings?.map((currentMeeting: any)=>{
-          
-          <BookingCard
-          name={currentMeeting.firstname}
-          month={currentMeeting.scheduled_date}
-          date={currentMeeting.scheduled_date}
-          time={currentMeeting.scheduled_time}
-          />
-        })
-      }
-      {/* <BookingCard/>
-      <BookingCard/>
-      <BookingCard/> */}
-      <button onClick={() => { navigate('/add/event/' + userContext?.currentuser?.id) }} className='text-md flex flex-row items-center gap-2 font-semibold w-max rounded-full bg-slate-100 p-3 shadow-lg'>See More <Icon icon="material-symbols:more-up" height={'3vh'}/></button>
+        <span className='h-max w-[100%] flex flex-row items-center justify-center gap-2'>
+          <Icon icon="gridicons:scheduled" color='cyan' height={'5vh'} />
+          <p className='text-xl font-semibold text-white uppercase'>Upcoming Meetings</p>
+        </span>
+        {
+            userMeetings?.map((current: any) => (
+              <BookingCard
+              name={current.firstname}
+              month={current.scheduled_date}
+              date={current.scheduled_date}
+              time={current.scheduled_time}
+              />
+            ))
+            
+        }
+        <button onClick={() => { navigate('/add/event/' + userContext?.currentuser?.id) }} className='text-md flex flex-row items-center gap-2 font-semibold w-max rounded-full bg-slate-100 p-3 shadow-lg'>See More <Icon icon="material-symbols:more-up" height={'3vh'} /></button>
       </div>
     </div>
   )

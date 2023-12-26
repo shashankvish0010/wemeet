@@ -5,7 +5,7 @@ interface ContextValue {
     handleSubmit: (e: React.FormEvent, id: string | undefined) => any
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     getEvents: (id: string) => void
-    getAllMeetings: (userEmail: string) => void
+    getAllMeetings: (userEmail: string) => any
     message: string | undefined | null
     userEvents: any
     time: number[]
@@ -146,7 +146,6 @@ export const EventsContextProvider = ({ children }: any) => {
 
     const getAllMeetings = async (userEmail: string) => {
         console.log("enter", userEmail);
-
         try {
             const response = await fetch('/fetch/meetings/' + userEmail, {
                 method: "GET",
@@ -156,11 +155,14 @@ export const EventsContextProvider = ({ children }: any) => {
             });
             if (response) {
                 const data = await response.json();
-                if (data.success == true) {
+                if (data.success == true) {   
+                    console.log(data.meetingData);
                     return data.meetingData
                 } else {
                     console.log(data);
                 }
+            }else{
+                console.log("Didn't Got any Response");   
             }
         } catch (error) {
             console.log(error);

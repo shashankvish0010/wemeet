@@ -9,6 +9,8 @@ interface CardType {
 }
 
 const BookingCard: React.FC<CardType> = (props: CardType) => {
+    console.log(props);
+    
     return (
         <div className='bg-slate-100 h-[25vh] md:w-[45vw] w-[80vw] p-3 shadow-2xl rounded-xl flex flex-row gap-3'>
             <div className='h-[100%] w-[12dvw] p-2 flex flex-col items-center gap-3'>
