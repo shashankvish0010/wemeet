@@ -5,16 +5,15 @@ interface CardType {
     name: string,
     month: string,
     date: string,
-    time: string
+    time: string,
+    description: string,
 }
 
-const BookingCard: React.FC<CardType> = (props: CardType) => {
-    console.log(props);
-    
+const BookingCard: React.FC<CardType> = (props: CardType) => {    
     return (
-        <div className='bg-slate-100 h-[25vh] md:w-[45vw] w-[80vw] p-3 shadow-2xl rounded-xl flex flex-row gap-3'>
-            <div className='h-[100%] w-[12dvw] p-2 flex flex-col items-center gap-3'>
-                <span className='h-max w-[100%]'><p className='text-base p-1'>{props.month}</p></span>
+        <div className='bg-slate-100 h-[25vh] md:w-[45vw] w-[80vw] md:p-3 p-2 shadow-2xl rounded-xl flex flex-row md:gap-3 gap-2'>
+            <div className='h-[100%] w-[12dvw] p-2 flex flex-col items-center justify-evenly'>
+                <span><p className='text-base p-1 font-semibold uppercase'>{`${props.month}`.slice(0,3)}</p></span>
                 <span><p className='text-2xl bg-orange-400 rounded-full px-2 py-1 text-center font-semibold'>{props.date}</p></span>
             </div>
             <span className='w-[0.5rem] h-[100%] rounded bg-orange-400'></span>
@@ -31,7 +30,7 @@ const BookingCard: React.FC<CardType> = (props: CardType) => {
                 </div>
                 <div className='h-[100%] w-[100%] flex flex-col p-2 justify-evenly gap-4'>
                     <span>
-                        <p className='md:text-base text-sm'>{("Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum, ducimus repellendus. Aliquam eius minus suscipit cumque et delectus maxime corrupti!").slice(0,50)}</p>
+                        <p className='md:text-base text-sm'>{(`${props.description}`).slice(0,80)}</p>
                     </span>
                     <span>
                         <p className='md:text-base text-sm font-medium'>Shashank {'<>'} {props.name}</p>

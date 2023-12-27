@@ -10,7 +10,6 @@ interface ContextValue {
     userEvents: any
     time: number[]
     intervals: number[]
-    months: string[]
     bookTime: string
     setBookTime: any
     calcTime: (eventDuration: number) => void
@@ -144,6 +143,34 @@ export const EventsContextProvider = ({ children }: any) => {
         "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
     ]
 
+    const filterMeetingData = (meetingData: any) => {
+        const filteredData: any [] = []
+        let monthNo: number;
+        let date: number
+        let month: string | undefined
+        console.log("meetingData");
+        
+        for (let x=0 ; x<meetingData.length ; x++) {
+            monthNo = Number(`${meetingData[x].scheduled_date}`.slice(5,7)) - 1;
+            date = Number(`${meetingData[x].scheduled_date}`.slice(8,10)) - 1;
+            months.map((monthValue: string, index: number)=>{
+                if(index == monthNo){
+                    month = monthValue
+                }
+            })
+                filteredData.push({
+                    eventName: meetingData[x].event_name,
+                    eventDescription: meetingData[x].event_description,
+                    eventDuration: meetingData[x].duration,
+                    hostName: meetingData[x].firstname,
+                    meetingDate: date,
+                    meetingMonth: month,
+                    meetingTime: meetingData[x].scheduled_time,
+                })
+            }        
+            return filteredData    
+        }
+
     const getAllMeetings = async (userEmail: string) => {
         console.log("enter", userEmail);
         try {
@@ -155,9 +182,8 @@ export const EventsContextProvider = ({ children }: any) => {
             });
             if (response) {
                 const data = await response.json();
-                if (data.success == true) {   
-                    console.log(data.meetingData);
-                    return data.meetingData
+                if (data.success == true) {                       
+                 return filterMeetingData(data.meetingData)
                 } else {
                     console.log(data);
                 }
@@ -169,7 +195,7 @@ export const EventsContextProvider = ({ children }: any) => {
         }
     }
 
-    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, getAllMeetings, months, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
+    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, getAllMeetings, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
     return (
         <EventsContext.Provider value={info}>
             {children}

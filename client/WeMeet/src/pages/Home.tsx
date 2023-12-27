@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { Icon } from '@iconify/react'
 import { useNavigate } from 'react-router'
 import { userAuthContext } from '../contexts/UserAuth'
@@ -7,14 +7,14 @@ import { EventsContext } from '../contexts/EventsContext'
 import EventCard from '../components/EventCard'
 import BookingCard from '../components/BookingCard'
 
-// interface meetingType {
-//   duration: string
-//   event_description: string
-//   event_name: string
-//   firstname: string
-//   scheduled_date: string
-//   scheduled_time: string
-// }
+interface meetingType {
+  duration: string
+  event_description: string
+  event_name: string
+  firstname: string
+  scheduled_date: string
+  scheduled_time: string
+}
 
 const Home: React.FC = () => {
   const navigate = useNavigate()
@@ -24,10 +24,12 @@ const Home: React.FC = () => {
     eventContext?.getEvents(userContext?.currentuser?.id);
   }, [])
 
-  let userMeetings: any | string[] | void | undefined = [];
+  const [userMeetings, setUserMeetings] = useState<meetingType[]>([])
   useMemo(() => eventContext?.getAllMeetings(userContext?.currentuser?.email), []).then((value: any) => {
-    userMeetings= [...value]
+    setUserMeetings(value)
   }).catch((error: Error) => console.log(error))
+
+  console.log(userMeetings)
 
   return (
     <div className='bg-slate-100 h-max w-[100vw] flex flex-col gap-5 p-3 items-center'>
@@ -76,16 +78,19 @@ const Home: React.FC = () => {
           <Icon icon="gridicons:scheduled" color='cyan' height={'5vh'} />
           <p className='text-xl font-semibold text-white uppercase'>Upcoming Meetings</p>
         </span>
-        {
+        {userContext?.login == true ?
+          userMeetings.length > 0 ?
             userMeetings?.map((current: any) => (
               <BookingCard
-              name={current.firstname}
-              month={current.scheduled_date}
-              date={current.scheduled_date}
-              time={current.scheduled_time}
+                name={current.hostName}
+                month={current.meetingMonth}
+                date={current.meetingDate}
+                time={current.meetingTime}
+                description={current.eventDescription}
               />
             ))
-            
+            : null
+          : null
         }
         <button onClick={() => { navigate('/add/event/' + userContext?.currentuser?.id) }} className='text-md flex flex-row items-center gap-2 font-semibold w-max rounded-full bg-slate-100 p-3 shadow-lg'>See More <Icon icon="material-symbols:more-up" height={'3vh'} /></button>
       </div>
