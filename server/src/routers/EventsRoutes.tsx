@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 const router = express.Router();
 import dotenv from 'dotenv'
 const { sendEmail } = require('../Services/Email');
+const client = require('../Services/redis')
 dotenv.config()
 
 router.post('/create/event/:id', async (req: any, res: any) => {
@@ -87,7 +88,6 @@ router.post('/schedule/event/:id', async (req, res) => {
                 if (meetingId) {
                     await pool.query('INSERT INTO Meetings(id, meeting_id, user_email, host_email, scheduled_time, scheduled_date ) VALUES($1, $2, $3, $4, $5, $6)',
                         [meetingId, id, email, hostEmail, time, date])
-
                     const email_message = {
                         from: process.env.EMAIL_USER,
                         to: hostEmail,
@@ -101,7 +101,7 @@ router.post('/schedule/event/:id', async (req, res) => {
                         subject: 'You Scheduled a Meeting',
                         text: `You scheduled a meeting at ${time} on ${date} so all the best. Join the meeting using http://localhost:5173/meet/${meetingId}`
                     }
-
+                    client.expireat('meetings:1',5)
                     try {
                         await sendEmail(email_message);
                         await sendEmail(user_email_message);

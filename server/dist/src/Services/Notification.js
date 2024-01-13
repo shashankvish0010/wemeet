@@ -16,11 +16,14 @@ exports.Notification = void 0;
 const client = require('./redis');
 const dbconnect_1 = __importDefault(require("../../dbconnect"));
 const date = new Date;
-let todayMeetings;
+let todayMeetings = [];
+let todayDate;
 const sortTodaysMeetings = (array) => {
-    let meetings;
+    let meetings = [];
+    console.log(array);
     array === null || array === void 0 ? void 0 : array.map((data) => {
-        data.scheduled_time = Number(data.scheduled_time.split(':'));
+        let currentTimeArray = data.scheduled_time.split(':');
+        data.scheduled_time = Number(currentTimeArray[0] + currentTimeArray[1]);
     });
     console.log(array);
 };
@@ -30,13 +33,17 @@ const Notification = () => __awaiter(void 0, void 0, void 0, function* () {
         const cacheValue = yield client.get('meetings:1');
         if (cacheValue) {
             const cacheData = JSON.parse(cacheValue);
-            console.log(date.toLocaleDateString().split('/'));
-            const todayDate = date.toLocaleDateString().split('/');
+            date.getMonth() < 8 ? todayDate = [`${date.getDate()}`, `0${date.getMonth() + 1}`, `${date.getFullYear()}`]
+                : todayDate = [`${date.getDate()}`, `${date.getMonth() + 1}`, `${date.getFullYear()}`];
+            console.log(todayDate);
             if (cacheData.length > 1) {
-                cacheData.map((data) => {
-                    data.scheduled_date.split('-').reverse() == todayDate ?
+                cacheData === null || cacheData === void 0 ? void 0 : cacheData.map((data) => {
+                    console.log("dat", data.scheduled_date.split('-').reverse());
+                    const currentDataTime = data.scheduled_date.split('-').reverse();
+                    currentDataTime[0] == todayDate[0] && currentDataTime[1] == todayDate[1] ?
                         todayMeetings.push(data) : null;
                 });
+                console.log("td", todayMeetings);
                 sortTodaysMeetings(todayMeetings);
             }
             else {

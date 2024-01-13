@@ -18,9 +18,7 @@ router.get('/fetch/meetings/:userEmail', async (req, res) => {
             }
         } else {
             const meetingData = await pool.query('SELECT ud.firstname, md.scheduled_time, md.scheduled_date, md.host_email, ed.event_name, ed.duration, ed.event_description from events as ed INNER JOIN meetings as md on md.host_email=ed.user_email INNER JOIN users as ud on md.host_email=ud.email')
-            if (meetingData.rows.length > 0) {
-                console.log(meetingData.rows);
-                
+            if (meetingData.rows.length > 0) {                
                 await client.set('meetings:1', JSON.stringify(meetingData.rows))
                 res.json({ success: true, meetingData: meetingData.rows, message: "Meeting data fetched successfully" })
             } else {

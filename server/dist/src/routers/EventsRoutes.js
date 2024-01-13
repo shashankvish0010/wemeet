@@ -18,6 +18,7 @@ const uuid_1 = require("uuid");
 const router = express_1.default.Router();
 const dotenv_1 = __importDefault(require("dotenv"));
 const { sendEmail } = require('../Services/Email');
+const client = require('../Services/redis');
 dotenv_1.default.config();
 router.post('/create/event/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, duration, description } = req.body;
@@ -113,6 +114,7 @@ router.post('/schedule/event/:id', (req, res) => __awaiter(void 0, void 0, void 
                         subject: 'You Scheduled a Meeting',
                         text: `You scheduled a meeting at ${time} on ${date} so all the best. Join the meeting using http://localhost:5173/meet/${meetingId}`
                     };
+                    client.expireat('meetings:1', 5);
                     try {
                         yield sendEmail(email_message);
                         yield sendEmail(user_email_message);
