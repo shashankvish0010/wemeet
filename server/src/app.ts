@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import { Server } from 'socket.io'
 import pool from '../dbconnect'
+const { Notification } = require('./Services/Notification');
 const app = express()
 
 dotenv.config()
@@ -14,7 +15,6 @@ app.use(bodyParser.json())
 app.use(require('./routers/UserRoutes'));
 app.use(require('./routers/EventsRoutes'));
 app.use(require('./routers/MeetingsRoutes'))
-
 const server = http.createServer(app)
 app.use(cors())
 const io = new Server(server, ({
@@ -62,4 +62,4 @@ io.on('connection', (socket) => {
     socket.on('done', () => { io.emit('videocall') })
 })
 
-server.listen(process.env.PORT, () => console.log(`Server Running at ${process.env.PORT}`))
+server.listen(process.env.PORT, () => {Notification(); console.log(`Server Running at ${process.env.PORT}`)})

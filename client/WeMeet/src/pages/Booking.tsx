@@ -77,6 +77,9 @@ const Booking: React.FC = () => {
         }
     }
 
+    useEffect(() => console.log(eventContext?.bookTime)
+        , [eventContext?.bookTime])
+
     return (
         userContext?.login == true ?
             <div className='bg-slate-100 h-max w-screen flex flex-col gap-4 p-3'>
@@ -114,11 +117,16 @@ const Booking: React.FC = () => {
                                 <div className='h-max w-max flex flex-col gap-3 items-center'>
                                     {enable == true ?
                                         temparray?.map((time: any) => Number(time.slice(0, 2)) <= 12 ?
-                                            <TimeCard action={eventContext?.setBookTime(time)} duration={`${time}`} notation={'AM'} /> : null)
+                                            <span onClick={eventContext?.setBookTime(time)}>
+                                                <TimeCard duration={`${time}`} notation={'AM'} />
+                                            </span>
+                                            : null)
                                         :
 
                                         temparray?.map((time: any) => Number(time.slice(0, 2)) >= 12 ?
-                                            <TimeCard action={eventContext?.setBookTime(time)} duration={time} notation={'PM'} /> : null)
+                                            <span onClick={eventContext?.setBookTime(time)}>
+                                                <TimeCard duration={`${time}`} notation={'AM'} />
+                                            </span> : null)
                                     }
                                 </div>
                                 <button onClick={() => { setEnableInfo(true); setEnableTime(false) }} className='bg-slate-800 p-2 font-medium text-white rounded'>Proceed</button>

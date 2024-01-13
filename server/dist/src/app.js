@@ -19,6 +19,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 const socket_io_1 = require("socket.io");
 const dbconnect_1 = __importDefault(require("../dbconnect"));
+const { Notification } = require('./Services/Notification');
 const app = (0, express_1.default)();
 dotenv_1.default.config();
 app.use((0, cors_1.default)());
@@ -66,4 +67,4 @@ io.on('connection', (socket) => {
     });
     socket.on('done', () => { io.emit('videocall'); });
 });
-server.listen(process.env.PORT, () => console.log(`Server Running at ${process.env.PORT}`));
+server.listen(process.env.PORT, () => { Notification(); console.log(`Server Running at ${process.env.PORT}`); });

@@ -182,7 +182,9 @@ export const EventsContextProvider = ({ children }: any) => {
             });
             if (response) {
                 const data = await response.json();
-                if (data.success == true) {                       
+                if (data.success == true) { 
+                    console.log(data);
+                                          
                  return filterMeetingData(data.meetingData)
                 } else {
                     console.log(data);
