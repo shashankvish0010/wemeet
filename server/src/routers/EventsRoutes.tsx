@@ -62,11 +62,16 @@ router.get('/get/events/:id', async (req: any, res: any) => {
 router.get('/event/:id', async (req, res) => {
     const { id } = req.params;
     console.log(id);
+    const cacheValue = client.get('events:1')
     try {
         if (id) {
-            const eventdata = await pool.query('SELECT usd.firstname, usd.lastname, ed.event_name, ed.duration, ed.event_description FROM Users as usd left join Events as ed on usd.email=ed.user_email WHERE ed.id=$1 ', [id]);
-            console.log(eventdata.rows);
-            res.json({ success: true, eventdata: eventdata.rows, message: "Event receieved" })
+            if (cacheValue) {
+                res.json({ success: true, eventdata: JSON.parse(cacheValue), message: "Event receieved" })
+            } else {
+                const eventdata = await pool.query('SELECT usd.firstname, usd.lastname, ed.event_name, ed.duration, ed.event_description FROM Users as usd left join Events as ed on usd.email=ed.user_email WHERE ed.id=$1 ', [id]);
+                res.json({ success: true, eventdata: eventdata.rows, message: "Event receieved" })
+                await client.set('events:1', JSON.stringify(eventdata.rows))
+            }
         } else {
             res.json({ success: false, message: "Event ID not receieved" })
         }
@@ -79,10 +84,17 @@ router.post('/schedule/event/:id', async (req, res) => {
     const { id } = req.params;
     const { email, time, date } = req.body
     console.log(email, time, date);
+    const eventsCacheValue = await client.get('events:1')
+    let hostEmail
     try {
         if (id) {
-            const eventdata = await pool.query('SELECT * FROM Events WHERE id=$1', [id]);
-            const hostEmail = eventdata.rows[0].user_email
+            if (eventsCacheValue) {
+                hostEmail = eventsCacheValue.rows[0].user_email
+            } else {
+                const eventdata = await pool.query('SELECT * FROM Events WHERE id=$1', [id]);
+                await client.set('events:1', JSON.stringify(eventdata.rows))
+                hostEmail = eventdata.rows[0].user_email
+            }
             if (hostEmail) {
                 const meetingId = uuidv4();
                 if (meetingId) {
@@ -101,11 +113,11 @@ router.post('/schedule/event/:id', async (req, res) => {
                         subject: 'You Scheduled a Meeting',
                         text: `You scheduled a meeting at ${time} on ${date} so all the best. Join the meeting using http://localhost:5173/meet/${meetingId}`
                     }
-                    client.expireat('meetings:1',5)
                     try {
                         await sendEmail(email_message);
                         await sendEmail(user_email_message);
                         res.json({ success: true, message: "Meeting booked" });
+                        client.expireat('meetings:1', 5)
                     } catch (emailError) {
                         console.error("Error sending email:", emailError);
                         res.json({ success: false, message: "Error sending email", error: emailError });
