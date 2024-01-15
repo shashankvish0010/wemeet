@@ -76,11 +76,17 @@ router.get('/get/events/:id', (req, res) => __awaiter(void 0, void 0, void 0, fu
 router.get('/event/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     console.log(id);
+    const cacheValue = client.get('events:1');
     try {
         if (id) {
-            const eventdata = yield dbconnect_1.default.query('SELECT usd.firstname, usd.lastname, ed.event_name, ed.duration, ed.event_description FROM Users as usd left join Events as ed on usd.email=ed.user_email WHERE ed.id=$1 ', [id]);
-            console.log(eventdata.rows);
-            res.json({ success: true, eventdata: eventdata.rows, message: "Event receieved" });
+            if (cacheValue) {
+                res.json({ success: true, eventdata: JSON.parse(cacheValue), message: "Event receieved" });
+            }
+            else {
+                const eventdata = yield dbconnect_1.default.query('SELECT usd.firstname, usd.lastname, ed.event_name, ed.duration, ed.event_description FROM Users as usd left join Events as ed on usd.email=ed.user_email WHERE ed.id=$1 ', [id]);
+                res.json({ success: true, eventdata: eventdata.rows, message: "Event receieved" });
+                yield client.set('events:1', JSON.stringify(eventdata.rows));
+            }
         }
         else {
             res.json({ success: false, message: "Event ID not receieved" });
@@ -94,10 +100,18 @@ router.post('/schedule/event/:id', (req, res) => __awaiter(void 0, void 0, void 
     const { id } = req.params;
     const { email, time, date } = req.body;
     console.log(email, time, date);
+    const eventsCacheValue = yield client.get('events:1');
+    let hostEmail;
     try {
         if (id) {
-            const eventdata = yield dbconnect_1.default.query('SELECT * FROM Events WHERE id=$1', [id]);
-            const hostEmail = eventdata.rows[0].user_email;
+            if (eventsCacheValue) {
+                hostEmail = eventsCacheValue.rows[0].user_email;
+            }
+            else {
+                const eventdata = yield dbconnect_1.default.query('SELECT * FROM Events WHERE id=$1', [id]);
+                yield client.set('events:1', JSON.stringify(eventdata.rows));
+                hostEmail = eventdata.rows[0].user_email;
+            }
             if (hostEmail) {
                 const meetingId = (0, uuid_1.v4)();
                 if (meetingId) {
@@ -114,11 +128,11 @@ router.post('/schedule/event/:id', (req, res) => __awaiter(void 0, void 0, void 
                         subject: 'You Scheduled a Meeting',
                         text: `You scheduled a meeting at ${time} on ${date} so all the best. Join the meeting using http://localhost:5173/meet/${meetingId}`
                     };
-                    client.expireat('meetings:1', 5);
                     try {
                         yield sendEmail(email_message);
                         yield sendEmail(user_email_message);
                         res.json({ success: true, message: "Meeting booked" });
+                        client.expireat('meetings:1', 5);
                     }
                     catch (emailError) {
                         console.error("Error sending email:", emailError);
