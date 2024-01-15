@@ -15,17 +15,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Notification = void 0;
 const client = require('./redis');
 const dbconnect_1 = __importDefault(require("../../dbconnect"));
+const schedule = require('node-schedule');
 const date = new Date;
+let meetings = [];
 let todayMeetings = [];
 let todayDate;
 const sortTodaysMeetings = (array) => {
-    let meetings = [];
     console.log(array);
     array === null || array === void 0 ? void 0 : array.map((data) => {
         let currentTimeArray = data.scheduled_time.split(':');
         data.scheduled_time = Number(currentTimeArray[0] + currentTimeArray[1]);
     });
-    console.log(array);
+    // meetings = [...array]
+    meetings = [{ scheduled_time: 1707 }];
+    if (todayDate && meetings) {
+        const taskDate = `${Number(todayDate[2])}, ${Number(todayDate[1]) - 1}, ${Number(todayDate[0])}, ${Number(String(meetings[0].scheduled_time).slice(0, 2))},  ${Number(String(meetings[0].scheduled_time).slice(1, 4).slice(1, 4))}, 0`;
+        const date = new Date(Number(todayDate[2]), Number(todayDate[1]) - 1, Number(todayDate[0]), Number(String(meetings[0].scheduled_time).slice(0, 2)), Number(String(meetings[0].scheduled_time).slice(2, 4)), 0);
+        // const date = new Date (taskDate)
+        console.log(date);
+        schedule.scheduleJob(date, () => {
+            console.log("task executed");
+        });
+    }
 };
 const Notification = () => __awaiter(void 0, void 0, void 0, function* () {
     console.log("enter");
