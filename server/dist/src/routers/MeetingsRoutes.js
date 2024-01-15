@@ -22,8 +22,8 @@ router.get('/fetch/meetings/:userEmail', (req, res) => __awaiter(void 0, void 0,
     const { userEmail } = req.params;
     console.log(userEmail);
     try {
-        const cacheValue = yield client.get('meetings:1');
-        if (cacheValue) {
+        const cacheValue = yield client.get('events:1');
+        if (cacheValue.length > 0) {
             if (cacheValue.length > 0) {
                 res.json({ success: true, meetingData: JSON.parse(cacheValue), message: "Meeting data fetched successfully" });
             }
@@ -34,7 +34,7 @@ router.get('/fetch/meetings/:userEmail', (req, res) => __awaiter(void 0, void 0,
         else {
             const meetingData = yield dbconnect_1.default.query('SELECT ud.firstname, md.scheduled_time, md.scheduled_date, md.host_email, ed.event_name, ed.duration, ed.event_description from events as ed INNER JOIN meetings as md on md.host_email=ed.user_email INNER JOIN users as ud on md.host_email=ud.email');
             if (meetingData.rows.length > 0) {
-                yield client.set('meetings:1', JSON.stringify(meetingData.rows));
+                yield client.set('events:1', JSON.stringify(meetingData.rows));
                 res.json({ success: true, meetingData: meetingData.rows, message: "Meeting data fetched successfully" });
             }
             else {

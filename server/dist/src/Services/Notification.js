@@ -17,11 +17,11 @@ const client = require('./redis');
 const dbconnect_1 = __importDefault(require("../../dbconnect"));
 const schedule = require('node-schedule');
 const sendEmail = require("./Email");
-const date = new Date;
+const date = new Date();
+const todayDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 let meetings = [];
 let todayMeetings = [];
 let sendUpdates = [];
-let todayDate;
 let time;
 let reminderTime;
 let sendToTime;
@@ -32,8 +32,9 @@ const sortTodaysMeetings = (array) => {
         data.scheduled_time = Number(currentTimeArray[0] + currentTimeArray[1]);
     });
     meetings = [...array];
+    console.log(todayDate);
     if (todayDate && meetings.length > 0) {
-        const date = new Date(Number(todayDate[2]), Number(todayDate[1]) - 1, Number(todayDate[0]), Number(String(meetings[0].scheduled_time).slice(0, 2)), Number(String(meetings[0].scheduled_time).slice(2, 4)), 0);
+        // const date = new Date(Number(todayDate[2]), Number(todayDate[1]) - 1, Number(todayDate[0]), Number(String(meetings[0].scheduled_time).slice(0, 2)), Number(String(meetings[0].scheduled_time).slice(2, 4)), 0)
         time = Number(`{${date.getHours()}${date.getMinutes()}`);
         schedule.scheduleJob('* /1 * * * *', () => {
             let updateTime;
@@ -45,8 +46,8 @@ const sortTodaysMeetings = (array) => {
                     sendTime = meetings[i].scheduled_time;
                 }
             }
-            reminderTime = new Date(Number(todayDate[2]), Number(todayDate[1]) - 1, Number(todayDate[0]), Number(String(updateTime).slice(0, 2)), Number(String(updateTime).slice(2, 4)), 0);
-            sendToTime = new Date(Number(todayDate[2]), Number(todayDate[1]) - 1, Number(todayDate[0]), Number(String(sendTime).slice(0, 2)), Number(String(sendTime).slice(2, 4)), 0);
+            reminderTime = new Date(Number(date.getFullYear()), Number(date.getMonth()) + 1, Number(date.getDay()), Number(String(updateTime).slice(0, 2)), Number(String(updateTime).slice(2, 4)), 0);
+            sendToTime = new Date(Number(date.getFullYear()), Number(date.getMonth()) + 1, Number(date.getDay()), Number(String(sendTime).slice(0, 2)), Number(String(sendTime).slice(2, 4)), 0);
             schedule.scheduleJob(reminderTime, () => {
                 sendUpdates === null || sendUpdates === void 0 ? void 0 : sendUpdates.map((data) => __awaiter(void 0, void 0, void 0, function* () {
                     const host_email_message = {
@@ -100,14 +101,11 @@ const Notification = () => __awaiter(void 0, void 0, void 0, function* () {
         const cacheValue = yield client.get('meetings:1');
         if (cacheValue) {
             const cacheData = JSON.parse(cacheValue);
-            date.getMonth() < 8 ? todayDate = [`${date.getDate()}`, `0${date.getMonth() + 1}`, `${date.getFullYear()}`]
-                : todayDate = [`${date.getDate()}`, `${date.getMonth() + 1}`, `${date.getFullYear()}`];
-            console.log(todayDate);
             if (cacheData.length > 1) {
                 cacheData === null || cacheData === void 0 ? void 0 : cacheData.map((data) => {
-                    console.log("dat", data.scheduled_date.split('-').reverse());
-                    const currentDataTime = data.scheduled_date.split('-').reverse();
-                    currentDataTime[0] == todayDate[0] && currentDataTime[1] == todayDate[1] ?
+                    console.log("dat", data.scheduled_date);
+                    const currentDataTime = data.scheduled_date;
+                    todayDate == currentDataTime ?
                         todayMeetings.push(data) : null;
                 });
                 console.log("td", todayMeetings);

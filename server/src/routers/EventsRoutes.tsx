@@ -62,10 +62,11 @@ router.get('/get/events/:id', async (req: any, res: any) => {
 router.get('/event/:id', async (req, res) => {
     const { id } = req.params;
     console.log(id);
-    const cacheValue = client.get('events:1')
     try {
         if (id) {
+            const cacheValue = await client.get('events:1')
             if (cacheValue) {
+                console.log("events",cacheValue);
                 res.json({ success: true, eventdata: JSON.parse(cacheValue), message: "Event receieved" })
             } else {
                 const eventdata = await pool.query('SELECT usd.firstname, usd.lastname, ed.event_name, ed.duration, ed.event_description FROM Users as usd left join Events as ed on usd.email=ed.user_email WHERE ed.id=$1 ', [id]);
@@ -84,45 +85,42 @@ router.post('/schedule/event/:id', async (req, res) => {
     const { id } = req.params;
     const { email, time, date } = req.body
     console.log(email, time, date);
-    const eventsCacheValue = await client.get('events:1')
-    let hostEmail
+    const eventsCacheValue = await client.get('eventdata:1')
     try {
         if (id) {
-            if (eventsCacheValue) {
-                hostEmail = eventsCacheValue.rows[0].user_email
-            } else {
+            let hostEmail
                 const eventdata = await pool.query('SELECT * FROM Events WHERE id=$1', [id]);
-                await client.set('events:1', JSON.stringify(eventdata.rows))
+                await client.set('eventdata:1', JSON.stringify(eventdata.rows))
                 hostEmail = eventdata.rows[0].user_email
-            }
-            if (hostEmail) {
-                const meetingId = uuidv4();
-                if (meetingId) {
-                    await pool.query('INSERT INTO Meetings(id, meeting_id, user_email, host_email, scheduled_time, scheduled_date ) VALUES($1, $2, $3, $4, $5, $6)',
-                        [meetingId, id, email, hostEmail, time, date])
-                    const email_message = {
-                        from: process.env.EMAIL_USER,
-                        to: hostEmail,
-                        subject: 'Meeting Scheduled',
-                        text: `Your meeting is scheduled at ${time} on ${date} so all the best. Join the meeting using http://localhost:5173/meet/${meetingId}`
-                    }
-
-                    const user_email_message = {
-                        from: process.env.EMAIL_USER,
-                        to: email,
-                        subject: 'You Scheduled a Meeting',
-                        text: `You scheduled a meeting at ${time} on ${date} so all the best. Join the meeting using http://localhost:5173/meet/${meetingId}`
-                    }
-                    try {
-                        await sendEmail(email_message);
-                        await sendEmail(user_email_message);
-                        res.json({ success: true, message: "Meeting booked" });
-                        client.expireat('meetings:1', 5)
-                    } catch (emailError) {
-                        console.error("Error sending email:", emailError);
-                        res.json({ success: false, message: "Error sending email", error: emailError });
-                    }
+            
+            const meetingId = uuidv4();
+            if (meetingId) {
+                await pool.query('INSERT INTO Meetings(id, meeting_id, user_email, host_email, scheduled_time, scheduled_date ) VALUES($1, $2, $3, $4, $5, $6)',
+                    [meetingId, id, email, hostEmail, time, date])
+                    
+                const email_message = {
+                    from: process.env.EMAIL_USER,
+                    to: hostEmail,
+                    subject: 'Meeting Scheduled',
+                    text: `Your meeting is scheduled at ${time} on ${date} so all the best. Join the meeting using http://localhost:5173/meet/${meetingId}`
                 }
+
+                const user_email_message = {
+                    from: process.env.EMAIL_USER,
+                    to: email,
+                    subject: 'You Scheduled a Meeting',
+                    text: `You scheduled a meeting at ${time} on ${date} so all the best. Join the meeting using http://localhost:5173/meet/${meetingId}`
+                }
+                try {
+                    await sendEmail(email_message);
+                    await sendEmail(user_email_message);
+                    res.json({ success: true, message: "Meeting booked" });
+                    await client.expireat('meetings:1', 5)
+                } catch (emailError) {
+                    console.error("Error sending email:", emailError);
+                    res.json({ success: false, message: "Error sending email", error: emailError });
+                }
+
             }
         } else {
             res.json({ succes: false, message: "Host email not found" })

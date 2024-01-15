@@ -3,11 +3,11 @@ import pool from "../../dbconnect"
 const schedule = require('node-schedule')
 const sendEmail = require("./Email");
 
-const date = new Date;
+const date = new Date();
+const todayDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 let meetings: any[] = []
 let todayMeetings: any[] = []
 let sendUpdates: any[] = []
-let todayDate: any
 let time: any
 let reminderTime
 let sendToTime
@@ -20,8 +20,10 @@ const sortTodaysMeetings = (array: any[]) => {
         data.scheduled_time = Number(currentTimeArray[0] + currentTimeArray[1])
     })
     meetings = [...array]
+    console.log(todayDate);
+
     if (todayDate && meetings.length > 0) {
-        const date = new Date(Number(todayDate[2]), Number(todayDate[1]) - 1, Number(todayDate[0]), Number(String(meetings[0].scheduled_time).slice(0, 2)), Number(String(meetings[0].scheduled_time).slice(2, 4)), 0)
+        // const date = new Date(Number(todayDate[2]), Number(todayDate[1]) - 1, Number(todayDate[0]), Number(String(meetings[0].scheduled_time).slice(0, 2)), Number(String(meetings[0].scheduled_time).slice(2, 4)), 0)
         time = Number(`{${date.getHours()}${date.getMinutes()}`)
 
         schedule.scheduleJob('* /1 * * * *', () => {
@@ -34,8 +36,8 @@ const sortTodaysMeetings = (array: any[]) => {
                     sendTime = meetings[i].scheduled_time
                 }
             }
-            reminderTime = new Date(Number(todayDate[2]), Number(todayDate[1]) - 1, Number(todayDate[0]), Number(String(updateTime).slice(0, 2)), Number(String(updateTime).slice(2, 4)), 0)
-            sendToTime = new Date(Number(todayDate[2]), Number(todayDate[1]) - 1, Number(todayDate[0]), Number(String(sendTime).slice(0, 2)), Number(String(sendTime).slice(2, 4)), 0)
+            reminderTime = new Date(Number(date.getFullYear()), Number(date.getMonth()) + 1, Number(date.getDay()), Number(String(updateTime).slice(0, 2)), Number(String(updateTime).slice(2, 4)), 0)
+            sendToTime = new Date(Number(date.getFullYear()), Number(date.getMonth()) + 1, Number(date.getDay()), Number(String(sendTime).slice(0, 2)), Number(String(sendTime).slice(2, 4)), 0)
 
             schedule.scheduleJob(reminderTime, () => {
                 sendUpdates?.map(async (data) => {
@@ -81,11 +83,10 @@ const sortTodaysMeetings = (array: any[]) => {
                 console.log("task executed");
             })
         })
-    }else{
-        console.log("No meetings today");   
+    } else {
+        console.log("No meetings today");
     }
 }
-
 
 export const Notification = async () => {
     console.log("enter")
@@ -93,19 +94,14 @@ export const Notification = async () => {
         const cacheValue = await client.get('meetings:1')
         if (cacheValue) {
             const cacheData = JSON.parse(cacheValue)
-            date.getMonth() < 8 ? todayDate = [`${date.getDate()}`, `0${date.getMonth() + 1}`, `${date.getFullYear()}`]
-                : todayDate = [`${date.getDate()}`, `${date.getMonth() + 1}`, `${date.getFullYear()}`]
-            console.log(todayDate);
-
             if (cacheData.length > 1) {
                 cacheData?.map((data: any) => {
-                    console.log("dat", data.scheduled_date.split('-').reverse());
-                    const currentDataTime = data.scheduled_date.split('-').reverse()
-                    currentDataTime[0] == todayDate[0] && currentDataTime[1] == todayDate[1] ?
+                    console.log("dat", data.scheduled_date);
+                    const currentDataTime = data.scheduled_date
+                    todayDate == currentDataTime ?
                         todayMeetings.push(data) : null
                 })
                 console.log("td", todayMeetings);
-
                 sortTodaysMeetings(todayMeetings)
             }
             else {

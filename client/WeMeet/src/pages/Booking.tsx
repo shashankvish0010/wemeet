@@ -5,6 +5,8 @@ import { useParams } from 'react-router'
 import { userAuthContext } from '../contexts/UserAuth'
 import { useNavigate } from 'react-router'
 import { Icon } from '@iconify/react'
+import 'react-calendar/dist/Calendar.css';
+import Calendar from 'react-calendar';
 
 interface eventDataType {
     firstname: string,
@@ -13,16 +15,18 @@ interface eventDataType {
     duration: any,
     event_description: string
 }
+type Value = Date | null | [Date | null, Date | null];
 
 const Booking: React.FC = () => {
+    const activeDate = new Date()
     const [email, setEmail] = useState<string>('')
-    const [date, setdate] = useState<string>('')
     const eventContext = useContext(EventsContext)
     const userContext = useContext(userAuthContext)
     const [currentEvent, setCurrentEvent] = useState<eventDataType[]>([])
     const [enableTime, setEnableTime] = useState<boolean>(false)
     const [enableInfo, setEnableInfo] = useState<boolean>(false)
     const [enable, setEnable] = useState<boolean>()
+    const [date, onChange] = useState<Value>(new Date(activeDate.getFullYear(), activeDate.getMonth(), activeDate.getDate()));
     const params: any = useParams()
     const navigate = useNavigate()
 
@@ -50,7 +54,6 @@ const Booking: React.FC = () => {
     }
 
     useEffect(() => { getEventDetails(params.id) }, [])
-
 
     const bookEvent = async (id: string) => {
         const time = eventContext?.bookTime
@@ -97,7 +100,7 @@ const Booking: React.FC = () => {
                         Select an appointment date
                     </div>
                     <div className='w-max h-max'>
-                        <input className='bg-white p-2 shadow-xl font-medium rounded uppercase date' type="date" value={date} onChange={(e) => setdate(e.target.value)} />
+                    <Calendar onChange={onChange} value={date} />
                     </div>
                     <button onClick={() => setEnableTime(true)} className='bg-slate-800 p-2 font-medium text-white rounded'>Select</button>
 
