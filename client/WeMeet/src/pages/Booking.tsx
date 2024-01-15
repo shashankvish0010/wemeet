@@ -114,13 +114,13 @@ const Booking: React.FC = () => {
                                 <div className='h-max w-max flex flex-col gap-3 items-center'>
                                     {enable == true ?
                                         temparray?.map((time: any) => Number(time.slice(0, 2)) <= 12 ?
-                                                <TimeCard duration={`${time}`} notation={'AM'} />
+                                            <TimeCard duration={`${time}`} notation={'AM'} />
                                             : null)
                                         :
 
                                         temparray?.map((time: any) => Number(time.slice(0, 2)) >= 12 ?
-                                                <TimeCard duration={`${time}`} notation={'PM'} />
-                                                : null)
+                                            <TimeCard duration={`${time}`} notation={'PM'} />
+                                            : null)
                                     }
                                 </div>
                                 <button onClick={() => { setEnableInfo(true); setEnableTime(false) }} className='bg-slate-800 p-2 font-medium text-white rounded'>Proceed</button>
