@@ -20,7 +20,7 @@ const sortTodaysMeetings = (array: any[]) => {
         data.scheduled_time = Number(currentTimeArray[0] + currentTimeArray[1])
     })
     meetings = [...array]
-    if (todayDate && meetings) {
+    if (todayDate && meetings.length > 0) {
         const date = new Date(Number(todayDate[2]), Number(todayDate[1]) - 1, Number(todayDate[0]), Number(String(meetings[0].scheduled_time).slice(0, 2)), Number(String(meetings[0].scheduled_time).slice(2, 4)), 0)
         time = Number(`{${date.getHours()}${date.getMinutes()}`)
 
@@ -81,6 +81,8 @@ const sortTodaysMeetings = (array: any[]) => {
                 console.log("task executed");
             })
         })
+    }else{
+        console.log("No meetings today");   
     }
 }
 

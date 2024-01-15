@@ -16,26 +16,82 @@ exports.Notification = void 0;
 const client = require('./redis');
 const dbconnect_1 = __importDefault(require("../../dbconnect"));
 const schedule = require('node-schedule');
+const sendEmail = require("./Email");
 const date = new Date;
 let meetings = [];
 let todayMeetings = [];
+let sendUpdates = [];
 let todayDate;
+let time;
+let reminderTime;
+let sendToTime;
 const sortTodaysMeetings = (array) => {
     console.log(array);
     array === null || array === void 0 ? void 0 : array.map((data) => {
         let currentTimeArray = data.scheduled_time.split(':');
         data.scheduled_time = Number(currentTimeArray[0] + currentTimeArray[1]);
     });
-    // meetings = [...array]
-    meetings = [{ scheduled_time: 1707 }];
-    if (todayDate && meetings) {
-        const taskDate = `${Number(todayDate[2])}, ${Number(todayDate[1]) - 1}, ${Number(todayDate[0])}, ${Number(String(meetings[0].scheduled_time).slice(0, 2))},  ${Number(String(meetings[0].scheduled_time).slice(1, 4).slice(1, 4))}, 0`;
+    meetings = [...array];
+    if (todayDate && meetings.length > 0) {
         const date = new Date(Number(todayDate[2]), Number(todayDate[1]) - 1, Number(todayDate[0]), Number(String(meetings[0].scheduled_time).slice(0, 2)), Number(String(meetings[0].scheduled_time).slice(2, 4)), 0);
-        // const date = new Date (taskDate)
-        console.log(date);
-        schedule.scheduleJob(date, () => {
-            console.log("task executed");
+        time = Number(`{${date.getHours()}${date.getMinutes()}`);
+        schedule.scheduleJob('* /1 * * * *', () => {
+            let updateTime;
+            let sendTime;
+            for (let i = 0; i < meetings.length; i++) {
+                if (time + 15 === meetings[i].scheduled_time) {
+                    sendUpdates.push(meetings[i]);
+                    updateTime = meetings[i].scheduled_time - 15;
+                    sendTime = meetings[i].scheduled_time;
+                }
+            }
+            reminderTime = new Date(Number(todayDate[2]), Number(todayDate[1]) - 1, Number(todayDate[0]), Number(String(updateTime).slice(0, 2)), Number(String(updateTime).slice(2, 4)), 0);
+            sendToTime = new Date(Number(todayDate[2]), Number(todayDate[1]) - 1, Number(todayDate[0]), Number(String(sendTime).slice(0, 2)), Number(String(sendTime).slice(2, 4)), 0);
+            schedule.scheduleJob(reminderTime, () => {
+                sendUpdates === null || sendUpdates === void 0 ? void 0 : sendUpdates.map((data) => __awaiter(void 0, void 0, void 0, function* () {
+                    const host_email_message = {
+                        from: process.env.EMAIL_USER,
+                        to: data.host_email,
+                        subject: `Reminder: ${data.event_name} with ${data.user_email}`,
+                        text: `Hi, This is a friendly reminder for the ${data.event_name} with ${data.user_email} at ${data.scheduled_time}`
+                    };
+                    yield sendEmail(host_email_message);
+                    const user_email_message = {
+                        from: process.env.EMAIL_USER,
+                        to: data.user_email,
+                        subject: `Reminder: ${data.event_name} with ${data.host_email}`,
+                        text: `Hi, This is a friendly reminder for the ${data.event_name} with ${data.host_email} at ${data.scheduled_time}`
+                    };
+                    yield sendEmail(user_email_message);
+                }));
+            });
+            schedule.scheduleJob(sendToTime, () => {
+                sendUpdates === null || sendUpdates === void 0 ? void 0 : sendUpdates.map((data) => __awaiter(void 0, void 0, void 0, function* () {
+                    const host_email_message = {
+                        from: process.env.EMAIL_USER,
+                        to: data.host_email,
+                        subject: `Reminder: ${data.event_name} with ${data.user_email}`,
+                        text: `Hi, This is a friendly reminder for the ${data.event_name} with ${data.user_email} at ${data.scheduled_time}`
+                    };
+                    yield sendEmail(host_email_message);
+                    const user_email_message = {
+                        from: process.env.EMAIL_USER,
+                        to: data.user_email,
+                        subject: `Reminder: ${data.event_name} with ${data.host_email}`,
+                        text: `Hi, This is a friendly reminder for the ${data.event_name} with ${data.host_email} at ${data.scheduled_time}`
+                    };
+                    yield sendEmail(user_email_message);
+                    sendUpdates.pop();
+                }));
+                time = Number(`{${date.getHours()}${date.getMinutes()}`);
+            });
+            schedule.scheduleJob(date, () => {
+                console.log("task executed");
+            });
         });
+    }
+    else {
+        console.log("No meetings today");
     }
 };
 const Notification = () => __awaiter(void 0, void 0, void 0, function* () {
