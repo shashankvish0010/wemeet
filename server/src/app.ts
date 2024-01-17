@@ -15,6 +15,7 @@ app.use(bodyParser.json())
 app.use(require('./routers/UserRoutes'));
 app.use(require('./routers/EventsRoutes'));
 app.use(require('./routers/MeetingsRoutes'))
+app.use(require('./routers/Payment'))
 const server = http.createServer(app)
 app.use(cors())
 const io = new Server(server, ({

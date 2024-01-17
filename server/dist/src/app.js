@@ -28,6 +28,7 @@ app.use(body_parser_1.default.json());
 app.use(require('./routers/UserRoutes'));
 app.use(require('./routers/EventsRoutes'));
 app.use(require('./routers/MeetingsRoutes'));
+app.use(require('./routers/Payment'));
 const server = http_1.default.createServer(app);
 app.use((0, cors_1.default)());
 const io = new socket_io_1.Server(server, ({
