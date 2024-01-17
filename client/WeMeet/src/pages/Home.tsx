@@ -6,6 +6,8 @@ import HeadBanner from '../assets/wemeet-group-video-chat.avif'
 import { EventsContext } from '../contexts/EventsContext'
 import EventCard from '../components/EventCard'
 import BookingCard from '../components/BookingCard'
+import BenefitsCard from '../components/BenefitsCard'
+import PricePlans from '../components/PricePlans'
 
 interface meetingType {
   duration: string
@@ -39,13 +41,13 @@ const Home: React.FC = () => {
           <div className='h-max w-[100%] flex flex-col gap-2 p-3'>
             <li className='flex gap-2 items-center'>
               <Icon icon="mdi:star-three-points" height={'2vh'} />
-              <p className='font-semibold text-md text-gray-800'>
+              <p className='font-semibold text-md text-slate-800'>
                 Schedule and host your meetings.
               </p>
             </li>
             <li className='flex gap-2 items-center'>
               <Icon icon="mdi:star-three-points" height={'2vh'} />
-              <p className='font-semibold text-md text-gray-800'>
+              <p className='font-semibold text-md text-slate-800'>
                 Offers you immersive scheduling and group video chat experience.
               </p>
             </li>
@@ -87,12 +89,63 @@ const Home: React.FC = () => {
                 date={current.meetingDate}
                 time={current.meetingTime}
                 description={current.eventDescription}
+                username={userContext?.currentuser?.firstname}
               />
             ))
             : null
           : null
         }
         <button onClick={() => { navigate('/add/event/' + userContext?.currentuser?.id) }} className='text-md flex flex-row items-center gap-2 font-semibold w-max rounded-full bg-slate-100 p-3 shadow-lg'>See More <Icon icon="material-symbols:more-up" height={'3vh'} /></button>
+      </div>
+      <div className='h-max w-max flex flex-col p-3'>
+        <div className='h-max w-[85vw] flex flex-col justify-evenly items-center p-3'>
+          <span className='h-max w-[100%] p-3 flex items-center rounded-lg'>
+            <p className='title h-[20vh] md:w-[50%] md:text-5xl bg-gradient-to-r from-slate-800 via-slate-600 to-slate-800 text-transparent bg-clip-text text-3xl'>We've got a plan that's perfect for you.</p>
+          </span>
+          <div className='h-max w-[100%] flex md:flex-row flex-col items-center md:justify-evenly md:gap-0 gap-10 p-5'>
+            <PricePlans
+              plan_name="Basic Plan"
+              plan_price="Free"
+              feat_head="Everything in our free plan"
+              features={["Access to basic features", "Access to basic features", "Access to basic features"]}
+              color='white'
+              headingColor='text-black'
+              textGrade='text-gray-600'
+              btnGrade='bg-slate-800'
+              btnTxtcolor='text-white'
+            />
+            <PricePlans
+              plan_name="Business Plan"
+              plan_price="$20"
+              feat_head="Everything in our business plan"
+              features={["Access to basic features", "Access to basic features", "Access to basic features"]}
+              color='bg-gradient-to-b from-slate-800 via-slate-600 to-slate-800'
+              headingColor = 'text-white'
+              textGrade='text-slate-300'
+              btnGrade='bg-lime-300'
+              btnTxtcolor='text-black'
+            />
+          </div>
+        </div>
+      </div>
+      <div className='h-max bg-gradient-to-b from-slate-800 via-slate-600 to-slate-800 text-white w-max p-3 flex flex-col items-center rounded-lg'>
+        <div className='h-max w-[85vw] flex md:flex-row flex-col justify-evenly items-center p-3'>
+          <span className='h-max w-[85vw] w-md:[22vw] flex flex-col gap-10 items-center'>
+            <p className='title w-[100%] md:text-4xl text-lime-300 text-3xl font-semibold p-2'>Designed for those who conduct meetings at scale.</p>
+            <span className='h-[150px] w-[150px] rounded-full bg-slate-800 flex flex-col justify-center items-center rotate-45 border-4 border-lime-300'>
+              <Icon icon="radix-icons:arrow-up" color="white" height={'20vh'} />
+            </span>
+          </span>
+          <div className='md:h-[45vh] md:w-[25vw] w-[80vw] flex flex-col justify-between md:items-start p-3'>
+            <BenefitsCard icon='fa-regular:smile' color='#ffe505' content='Drive more retention' />
+            <BenefitsCard icon='mdi:timer-sand' color='#ff9248' content='Speed up response times' />
+          </div>
+          <span className='md:h-[45vh] md:w-[0.3rem] h-[0.2rem] w-[105%] bg-lime-300 rounded'></span>
+          <div className='md:h-[45vh] md:w-[25vw] w-[80vw] flex flex-col justify-between md:items-start p-3'>
+            <BenefitsCard icon='uil:10-plus' color='yellow' content='Improve NPS' />
+            <BenefitsCard icon='solar:health-linear' color='red' content='Improve customer health' />
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -78,7 +78,7 @@ router.get('/event/:id', (req, res) => __awaiter(void 0, void 0, void 0, functio
     console.log(id);
     try {
         if (id) {
-            const cacheValue = yield client.get('events:1');
+            const cacheValue = yield client.get('currenteventdata:1');
             if (cacheValue) {
                 console.log("events", cacheValue);
                 res.json({ success: true, eventdata: JSON.parse(cacheValue), message: "Event receieved" });
@@ -86,7 +86,7 @@ router.get('/event/:id', (req, res) => __awaiter(void 0, void 0, void 0, functio
             else {
                 const eventdata = yield dbconnect_1.default.query('SELECT usd.firstname, usd.lastname, ed.event_name, ed.duration, ed.event_description FROM Users as usd left join Events as ed on usd.email=ed.user_email WHERE ed.id=$1 ', [id]);
                 res.json({ success: true, eventdata: eventdata.rows, message: "Event receieved" });
-                yield client.set('events:1', JSON.stringify(eventdata.rows));
+                yield client.set('currenteventdata:1', JSON.stringify(eventdata.rows));
             }
         }
         else {
@@ -101,12 +101,10 @@ router.post('/schedule/event/:id', (req, res) => __awaiter(void 0, void 0, void 
     const { id } = req.params;
     const { email, time, date } = req.body;
     console.log(email, time, date);
-    const eventsCacheValue = yield client.get('eventdata:1');
     try {
         if (id) {
             let hostEmail;
             const eventdata = yield dbconnect_1.default.query('SELECT * FROM Events WHERE id=$1', [id]);
-            yield client.set('eventdata:1', JSON.stringify(eventdata.rows));
             hostEmail = eventdata.rows[0].user_email;
             const meetingId = (0, uuid_1.v4)();
             if (meetingId) {
@@ -127,7 +125,7 @@ router.post('/schedule/event/:id', (req, res) => __awaiter(void 0, void 0, void 
                     yield sendEmail(email_message);
                     yield sendEmail(user_email_message);
                     res.json({ success: true, message: "Meeting booked" });
-                    yield client.expireat('meetings:1', 5);
+                    yield client.expireat('allmeetings:1', 5);
                 }
                 catch (emailError) {
                     console.error("Error sending email:", emailError);
