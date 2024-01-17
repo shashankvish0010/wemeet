@@ -3,6 +3,7 @@ import { Icon } from '@iconify/react';
 
 interface CardType {
     name: string,
+    username: string
     month: string,
     date: string,
     time: string,
@@ -33,7 +34,7 @@ const BookingCard: React.FC<CardType> = (props: CardType) => {
                         <p className='md:text-base text-sm'>{(`${props.description}`).slice(0,80)}</p>
                     </span>
                     <span>
-                        <p className='md:text-base text-sm font-medium'>Shashank {'<>'} {props.name}</p>
+                        <p className='md:text-base text-sm font-medium'>{props.username} {'<>'} {props.name}</p>
                     </span>
                 </div>
             </div>
