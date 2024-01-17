@@ -105,7 +105,7 @@ const Home: React.FC = () => {
           <div className='h-max w-[100%] flex md:flex-row flex-col items-center md:justify-evenly md:gap-0 gap-10 p-5'>
             <PricePlans
               plan_name="Basic Plan"
-              plan_price="Free"
+              plan_price={0}
               feat_head="Everything in our free plan"
               features={["Access to basic features", "Access to basic features", "Access to basic features"]}
               color='white'
@@ -116,7 +116,7 @@ const Home: React.FC = () => {
             />
             <PricePlans
               plan_name="Business Plan"
-              plan_price="$20"
+              plan_price={20}
               feat_head="Everything in our business plan"
               features={["Access to basic features", "Access to basic features", "Access to basic features"]}
               color='bg-gradient-to-b from-slate-800 via-slate-600 to-slate-800'

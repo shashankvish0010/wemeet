@@ -1,9 +1,10 @@
 import React from 'react'
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { useNavigate } from 'react-router'
 
 interface CardType {
     plan_name: string,
-    plan_price: string,
+    plan_price: any,
     feat_head: string,
     features: string[] | any
     color: string,
@@ -14,19 +15,41 @@ interface CardType {
 }
 
 const PricePlans: React.FC<CardType> = (props: CardType) => {
+    const navigate = useNavigate()
     const cardColor = `border-2 border-gray-300 ${props.color} md:h-[80vh] md:w-[25vw] h-[60vh] w-[70vw] rounded-3xl shadow-2xl flex flex-col gap-3 justify-around p-5`
+    const checkout = async (plan_price: number, plan_name: string) => {
+        try {
+            const response = await fetch('/checkout/plan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify({
+                    plan_name, plan_price
+                })
+            })
+            if(response){
+                const result = await response.json();
+                console.log(result);                
+            }else{
+                console.log("No response from server at checkout");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <div className={cardColor}>
             <p className={`text-xl font-semibold ${props.headingColor}`}>{props.plan_name}</p>
             <span className='flex items-center gap-2'>
-                <p className={`text-5xl font-bold ${props.headingColor}`}>{props.plan_price}</p>
+                <p className={`text-5xl font-bold ${props.headingColor}`}>${props.plan_price}</p>
                 <span className={`flex flex-col text-sm uppercase ${props.textGrade}`}>
                     <p>per user</p>
                     <p>per month</p>
                 </span>
             </span>
             <p className={`${props.headingColor}`}>Basic features</p>
-            <button className={`${props.btnGrade} ${props.btnTxtcolor} rounded-md p-2 text-white font-medium `}>Get Started</button>
+            <button onClick={()=> checkout(props.plan_price, props.plan_name)} className={`${props.btnGrade} ${props.btnTxtcolor} rounded-md p-2 text-white font-medium `}>Get Started</button>
             <span className='h-[0.2rem] w-[100%] bg-lime-300 rounded'></span>
             <span className='h-max w-[100%] flex flex-col gap-4'>
                 <span className='flex flex-col gap-1'>

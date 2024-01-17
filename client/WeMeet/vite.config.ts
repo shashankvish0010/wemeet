@@ -33,6 +33,9 @@ export default defineConfig({
       '/fetch/meetings': {
         target: "http://localhost:8080"
       },
+      '/checkout/plan': {
+        target: "http://localhost:8080"
+      },
     }
   },
 })

@@ -41,6 +41,7 @@ router.post('/checkout/plan', (req, res) => __awaiter(void 0, void 0, void 0, fu
                     success_url: 'http://localhost:5173/success',
                     cancel_url: 'http://localhost:5173/cancel',
                 });
+                console.log(session);
                 res.json({ success: true, url: session.url });
             }
         }
