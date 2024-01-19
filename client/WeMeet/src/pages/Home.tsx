@@ -23,15 +23,13 @@ const Home: React.FC = () => {
   const userContext = useContext(userAuthContext)
   const eventContext = useContext(EventsContext)
   useEffect(() => {
-    eventContext?.getEvents(userContext?.currentuser?.id);
-  }, [])
+    userContext?.login == true ? eventContext?.getEvents(userContext?.currentuser?.id) : null
+  }, [userContext?.login])
 
   const [userMeetings, setUserMeetings] = useState<meetingType[]>([])
-  useMemo(() => eventContext?.getAllMeetings(userContext?.currentuser?.email), []).then((value: any) => {
+  useMemo(() => userContext?.login == true ? eventContext?.getAllMeetings(userContext?.currentuser?.email).then((value: any) => {
     setUserMeetings(value)
-  }).catch((error: Error) => console.log(error))
-
-  console.log(userMeetings)
+  }).catch((error: Error) => console.log(error)) : null, [userContext?.login])
 
   return (
     <div className='bg-slate-100 h-max w-[100vw] flex flex-col gap-5 p-3 items-center'>
@@ -80,7 +78,7 @@ const Home: React.FC = () => {
           <Icon icon="gridicons:scheduled" color='cyan' height={'5vh'} />
           <p className='text-xl font-semibold text-white uppercase'>Upcoming Meetings</p>
         </span>
-        {userContext?.login == true ?
+        {userContext?.login == true && userMeetings ?
           userMeetings.length > 0 ?
             userMeetings?.map((current: any) => (
               <BookingCard
@@ -113,6 +111,7 @@ const Home: React.FC = () => {
               textGrade='text-gray-600'
               btnGrade='bg-slate-800'
               btnTxtcolor='text-white'
+              distGrade='bg-slate-800'
             />
             <PricePlans
               plan_name="Business Plan"
@@ -120,10 +119,11 @@ const Home: React.FC = () => {
               feat_head="Everything in our business plan"
               features={["Access to basic features", "Access to basic features", "Access to basic features"]}
               color='bg-gradient-to-b from-slate-800 via-slate-600 to-slate-800'
-              headingColor = 'text-white'
+              headingColor='text-white'
               textGrade='text-slate-300'
               btnGrade='bg-lime-300'
               btnTxtcolor='text-black'
+              distGrade='bg-lime-300'
             />
           </div>
         </div>

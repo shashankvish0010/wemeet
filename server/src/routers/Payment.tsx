@@ -28,9 +28,7 @@ router.post('/checkout/plan', async (req, res) => {
                     ],
                 success_url: 'http://localhost:5173/success',
                 cancel_url: 'http://localhost:5173/cancel',
-            })
-            console.log(session);
-            
+            })            
             res.json({ success: true, url: session.url })
         }
     }

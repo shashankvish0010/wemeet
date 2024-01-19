@@ -100,36 +100,43 @@ router.get('/event/:id', (req, res) => __awaiter(void 0, void 0, void 0, functio
 router.post('/schedule/event/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { email, time, date } = req.body;
-    console.log(email, time, date);
+    const activeDate = new Date();
+    const todayDate = [`${activeDate.getFullYear()}`, `0${activeDate.getMonth() + 1}`, `${activeDate.getDate() - 1}`];
+    const userDate = date.slice(0, 10).split('-');
     try {
         if (id) {
-            let hostEmail;
-            const eventdata = yield dbconnect_1.default.query('SELECT * FROM Events WHERE id=$1', [id]);
-            hostEmail = eventdata.rows[0].user_email;
-            const meetingId = (0, uuid_1.v4)();
-            if (meetingId) {
-                yield dbconnect_1.default.query('INSERT INTO Meetings(id, meeting_id, user_email, host_email, scheduled_time, scheduled_date ) VALUES($1, $2, $3, $4, $5, $6)', [meetingId, id, email, hostEmail, time, date]);
-                const email_message = {
-                    from: process.env.EMAIL_USER,
-                    to: hostEmail,
-                    subject: 'Meeting Scheduled',
-                    text: `Your meeting is scheduled at ${time} on ${date} so all the best. Join the meeting using http://localhost:5173/meet/${meetingId}`
-                };
-                const user_email_message = {
-                    from: process.env.EMAIL_USER,
-                    to: email,
-                    subject: 'You Scheduled a Meeting',
-                    text: `You scheduled a meeting at ${time} on ${date} so all the best. Join the meeting using http://localhost:5173/meet/${meetingId}`
-                };
-                try {
-                    yield sendEmail(email_message);
-                    yield sendEmail(user_email_message);
-                    res.json({ success: true, message: "Meeting booked" });
-                    yield client.expireat('allmeetings:1', 5);
-                }
-                catch (emailError) {
-                    console.error("Error sending email:", emailError);
-                    res.json({ success: false, message: "Error sending email", error: emailError });
+            if (todayDate[1] == userDate[1] && todayDate[2] == userDate[2] || todayDate[1] == userDate[1] && todayDate[2] > userDate[2]) {
+                res.json({ success: false, message: "Please choose next date, it must be tommorrow or later" });
+            }
+            else {
+                let hostEmail;
+                const eventdata = yield dbconnect_1.default.query('SELECT * FROM Events WHERE id=$1', [id]);
+                hostEmail = eventdata.rows[0].user_email;
+                const meetingId = (0, uuid_1.v4)();
+                if (meetingId) {
+                    yield dbconnect_1.default.query('INSERT INTO Meetings(id, meeting_id, user_email, host_email, scheduled_time, scheduled_date ) VALUES($1, $2, $3, $4, $5, $6)', [meetingId, id, email, hostEmail, time, date]);
+                    const email_message = {
+                        from: process.env.EMAIL_USER,
+                        to: hostEmail,
+                        subject: 'Meeting Scheduled',
+                        text: `Your meeting is scheduled at ${time} on ${date} so all the best. Join the meeting using http://localhost:5173/meet/${meetingId}`
+                    };
+                    const user_email_message = {
+                        from: process.env.EMAIL_USER,
+                        to: email,
+                        subject: 'You Scheduled a Meeting',
+                        text: `You scheduled a meeting at ${time} on ${date} so all the best. Join the meeting using http://localhost:5173/meet/${meetingId}`
+                    };
+                    try {
+                        yield sendEmail(email_message);
+                        yield sendEmail(user_email_message);
+                        res.json({ success: true, message: "Meeting booked" });
+                        yield client.expireat('allmeetings:1', 5);
+                    }
+                    catch (emailError) {
+                        console.error("Error sending email:", emailError);
+                        res.json({ success: false, message: "Error sending email", error: emailError });
+                    }
                 }
             }
         }

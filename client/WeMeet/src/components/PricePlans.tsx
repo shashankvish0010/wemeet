@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { userAuthContext } from '../contexts/UserAuth'
 import { useNavigate } from 'react-router'
 
 interface CardType {
@@ -12,10 +13,12 @@ interface CardType {
     headingColor: string
     btnGrade: string
     btnTxtcolor: string
+    distGrade: string
 }
 
 const PricePlans: React.FC<CardType> = (props: CardType) => {
     const navigate = useNavigate()
+    const userContext = useContext(userAuthContext)
     const cardColor = `border-2 border-gray-300 ${props.color} md:h-[80vh] md:w-[25vw] h-[60vh] w-[70vw] rounded-3xl shadow-2xl flex flex-col gap-3 justify-around p-5`
     const checkout = async (plan_price: number, plan_name: string) => {
         try {
@@ -24,14 +27,14 @@ const PricePlans: React.FC<CardType> = (props: CardType) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body:JSON.stringify({
+                body: JSON.stringify({
                     plan_name, plan_price
                 })
             })
-            if(response){
+            if (response) {
                 const result = await response.json();
-                console.log(result);                
-            }else{
+                window.location.href = result.url
+            } else {
                 console.log("No response from server at checkout");
             }
         } catch (error) {
@@ -49,8 +52,10 @@ const PricePlans: React.FC<CardType> = (props: CardType) => {
                 </span>
             </span>
             <p className={`${props.headingColor}`}>Basic features</p>
-            <button onClick={()=> checkout(props.plan_price, props.plan_name)} className={`${props.btnGrade} ${props.btnTxtcolor} rounded-md p-2 text-white font-medium `}>Get Started</button>
-            <span className='h-[0.2rem] w-[100%] bg-lime-300 rounded'></span>
+            <button onClick={() => {
+                userContext?.login === true ? checkout(props.plan_price, props.plan_name) : navigate('/login')
+            }} className={`${props.btnGrade} ${props.btnTxtcolor} rounded-md p-2 font-medium `}>Get Started</button>
+            <span className={`h-[0.2rem] w-[100%] ${props.distGrade} rounded`}></span>
             <span className='h-max w-[100%] flex flex-col gap-4'>
                 <span className='flex flex-col gap-1'>
                     <p className={`text-sm font-semibold ${props.headingColor}`}>FEATURES</p>
@@ -59,7 +64,7 @@ const PricePlans: React.FC<CardType> = (props: CardType) => {
                 <span className='h-max w-[100%] flex flex-col gap-3 items-center'>
                     {props.features?.map((feature: any) => {
                         console.log(feature);
-                        return (<span className='h-max w-[100%] flex items-center gap-1'>
+                        return (<span className='h-max w-[100%] flex gap-1'>
                             <Icon className='bg-green-300 rounded-full p-1' icon="raphael:check" color="green" height={'4vh'} />
                             <p className={`text-sm ${props.textGrade}`}>{feature}</p>
                         </span>)

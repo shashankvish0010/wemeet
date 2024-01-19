@@ -23,6 +23,7 @@ const Booking: React.FC = () => {
     const eventContext = useContext(EventsContext)
     const userContext = useContext(userAuthContext)
     const [currentEvent, setCurrentEvent] = useState<eventDataType[]>([])
+    const [message, setMessage] = useState<string>('')
     const [enableTime, setEnableTime] = useState<boolean>(false)
     const [enableInfo, setEnableInfo] = useState<boolean>(false)
     const [enable, setEnable] = useState<boolean>()
@@ -73,6 +74,7 @@ const Booking: React.FC = () => {
                     console.log(data);
                 } else {
                     console.log(data);
+                    setMessage(data.message)
                 }
             }
         } catch (error) {
@@ -97,6 +99,10 @@ const Booking: React.FC = () => {
                         </div>
                     </div>
                     <div className='md:w-[30dvw] w-[85dvw] md:h-[70vh] h-max flex flex-col gap-5 items-center p-3'>
+                        {message ?
+                            <span className='shadow p-1 font-medium bg-red-600 text-white'>{message}</span>
+                            : null
+                        }
                         <div className='md:text-2xl text-2xl text-center md:text-start font-bold'>
                             Select an appointment date
                         </div>
