@@ -18,7 +18,7 @@ app.use(require('./routers/MeetingsRoutes'))
 app.use(require('./routers/Payment'))
 const server = http.createServer(app)
 app.use(cors())
-const io = new Server(server, ({
+export const io = new Server(server, ({
     cors: {
         origin: '*',
         methods: ['GET', 'POST', 'PUT']
@@ -36,7 +36,6 @@ io.on('connection', (socket) => {
         try {
             const result = await pool.query('SELECT ud.socket_id from Users as ud LEFT JOIN Meetings as md on md.user_email=ud.email meeting_id=$1', [data.meetingId])
             console.log(result);
-            
             receiver = result.rows[0].socket_id
             sender = data.UserSocketId
             sendersOffer = data.offer
