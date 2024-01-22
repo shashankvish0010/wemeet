@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.io = void 0;
 const express_1 = __importDefault(require("express"));
 const http_1 = __importDefault(require("http"));
 const body_parser_1 = __importDefault(require("body-parser"));
@@ -31,7 +32,7 @@ app.use(require('./routers/MeetingsRoutes'));
 app.use(require('./routers/Payment'));
 const server = http_1.default.createServer(app);
 app.use((0, cors_1.default)());
-const io = new socket_io_1.Server(server, ({
+exports.io = new socket_io_1.Server(server, ({
     cors: {
         origin: '*',
         methods: ['GET', 'POST', 'PUT']
@@ -40,32 +41,30 @@ const io = new socket_io_1.Server(server, ({
 let receiver;
 let sender;
 let sendersOffer;
-io.on('connection', (socket) => {
+exports.io.on('connection', (socket) => {
     socket.emit('hello', socket.id);
-    socket.on('offer', (from, offer) => __awaiter(void 0, void 0, void 0, function* () {
+    socket.on('offer', (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const reciverSocketId = yield dbconnect_1.default.query('SELECT socketid from Users WHERE zen_no=$1', [ID]);
-            receiver = reciverSocketId.rows[0].socketid;
-            sender = from;
-            sendersOffer = offer;
-            io.to(receiver).emit('acceptOffer', sendersOffer);
+            const result = yield dbconnect_1.default.query('SELECT ud.socket_id from Users as ud LEFT JOIN Meetings as md on md.user_email=ud.email meeting_id=$1', [data.meetingId]);
+            console.log(result);
+            receiver = result.rows[0].socket_id;
+            sender = data.UserSocketId;
+            sendersOffer = data.offer;
+            exports.io.to(receiver).emit('acceptOffer', sendersOffer);
         }
         catch (error) {
             console.log(error);
         }
     }));
-    socket.on('recieved', () => {
-        io.to(receiver).emit('recieverCall', { sendersOffer, sender });
-    });
-    socket.on('callrecieved', (answer) => {
-        io.to(sender).emit('callaccepted', { answer, picked: true });
+    socket.on('answer', (answer) => {
+        exports.io.to(sender).emit('offeraccepted', { answer });
     });
     socket.on('negotiation', (offer) => {
-        io.to(receiver).emit('negotiationaccept', { sendersNegoOffer: offer });
+        exports.io.to(receiver).emit('negotiationaccept', { sendersNegoOffer: offer });
     });
     socket.on('negotiationdone', (answer) => {
-        io.to(sender).emit('acceptnegotiationanswer', { receiverNegoAnswer: answer });
+        exports.io.to(sender).emit('acceptnegotiationanswer', { receiverNegoAnswer: answer });
     });
-    socket.on('done', () => { io.emit('videocall'); });
+    socket.on('connected', () => { exports.io.emit('startMeeting'); });
 });
 server.listen(process.env.PORT, () => { Notification(); console.log(`Server Running at ${process.env.PORT}`); });
