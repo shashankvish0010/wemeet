@@ -152,7 +152,7 @@ export const EventsContextProvider = ({ children }: any) => {
         
         for (let x=0 ; x<meetingData.length ; x++) {
             monthNo = Number(`${meetingData[x].scheduled_date}`.slice(5,7)) - 1;
-            date = Number(`${meetingData[x].scheduled_date}`.slice(8,10)) - 1;
+            date = Number(`${meetingData[x].scheduled_date}`.slice(8,10)) + 1;
             months.map((monthValue: string, index: number)=>{
                 if(index == monthNo){
                     month = monthValue

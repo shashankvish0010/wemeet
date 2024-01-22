@@ -19,7 +19,7 @@ const BookingCard: React.FC<CardType> = (props: CardType) => {
             </div>
             <span className='w-[0.5rem] h-[100%] rounded bg-orange-400'></span>
             <div className='h-[100%] w-max flex flex-row gap-3 p-2 items-center'>
-                <div className='h-[100%] flex flex-col justify-evenly gap-3'>
+                <div className='h-[100%] flex flex-col justify-around gap-4'>
                     <span className='flex flex-row gap-1 items-center md:text-base text-sm'>
                         <Icon icon="basil:clock-solid" height="3vh"/>
                         {props.time}
@@ -29,9 +29,9 @@ const BookingCard: React.FC<CardType> = (props: CardType) => {
                         <p>Online</p>
                     </span>
                 </div>
-                <div className='h-[100%] w-[100%] flex flex-col p-2 justify-evenly gap-4'>
+                <div className='h-[100%] w-[100%] flex flex-col p-2 justify-around gap-4'>
                     <span>
-                        <p className='md:text-base text-sm'>{(`${props.description}`).slice(0,80)}</p>
+                        <p className='md:text-base text-sm'>{props.description.slice(0,80)}</p>
                     </span>
                     <span>
                         <p className='md:text-base text-sm font-medium'>{props.username} {'<>'} {props.name}</p>

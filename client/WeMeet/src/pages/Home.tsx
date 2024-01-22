@@ -73,10 +73,9 @@ const Home: React.FC = () => {
             : null
           : null}
       </div>
-      <div className='bg-slate-800 mt-5 h-max md:w-[70vw] w-[90vw] flex flex-col justify-evenly gap-4 items-center p-3 rounded-b-full shadow-xl'>
+      <div className='bg-slate-100 mt-5 h-max md:w-[70vw] w-[90vw] flex flex-col justify-evenly gap-4 items-center p-3 rounded-b-full shadow-xl'>
         <span className='h-max w-[100%] flex flex-row items-center justify-center gap-2'>
-          <Icon icon="gridicons:scheduled" color='cyan' height={'5vh'} />
-          <p className='text-xl font-semibold text-white uppercase'>Upcoming Meetings</p>
+          <p className='text-xl font-normal text-white uppercase'>Your Upcoming Meetings</p>
         </span>
         {userContext?.login == true && userMeetings ?
           userMeetings.length > 0 ?
