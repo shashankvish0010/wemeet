@@ -3,15 +3,15 @@ import App from './App.tsx'
 import './index.css'
 import { UserAuthProvider } from './contexts/UserAuth.tsx'
 import { EventsContextProvider } from './contexts/EventsContext.tsx'
-import { SocketProvider } from './contexts/MeetingContext.tsx'
+import { MeetingProvider } from './contexts/MeetingContext.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <EventsContextProvider>
-    <SocketProvider>
+    <MeetingProvider>
     <UserAuthProvider>
       <App />
     </UserAuthProvider>
-    </SocketProvider>
+    </MeetingProvider>
   </EventsContextProvider>
 
 )
