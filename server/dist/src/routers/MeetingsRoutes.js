@@ -46,4 +46,27 @@ router.get('/fetch/meetings/:userEmail', (req, res) => __awaiter(void 0, void 0,
         console.log(error);
     }
 }));
+router.post('/get/meeting/cred/:email', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { email } = req.params;
+        const { meetingId, meetingPassword } = req.body;
+        if (email && meetingId && meetingPassword) {
+            try {
+                const result = yield dbconnect_1.default.query('SELECT * FROM Meetings WHERE meeting_id=$1', [meetingId]);
+                if (result.rows.length > 0) {
+                    result.rows[0].host_email == email ? res.json({ success: true, host: true, message: "Host connecting..." }) : res.json({ success: false, host: false, message: "User connecting..." });
+                }
+            }
+            catch (error) {
+                console.log(error);
+            }
+        }
+        else {
+            res.json({ success: false, message: "Fill all the fields" });
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+}));
 module.exports = router;
