@@ -42,13 +42,13 @@ let sender;
 let sendersOffer;
 io.on('connection', (socket) => {
     socket.emit('hello', socket.id);
-    socket.on('call', (from, offer) => __awaiter(void 0, void 0, void 0, function* () {
+    socket.on('offer', (from, offer) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const reciverSocketId = yield dbconnect_1.default.query('SELECT socketid from Users WHERE zen_no=$1', [ID]);
             receiver = reciverSocketId.rows[0].socketid;
             sender = from;
             sendersOffer = offer;
-            io.to(receiver).emit('pickcall');
+            io.to(receiver).emit('acceptOffer', sendersOffer);
         }
         catch (error) {
             console.log(error);
