@@ -56,9 +56,7 @@ export const MeetingProvider = (props: any) => {
                 if (result.success == true) {
                     setKey(true);
                     console.log(result);
-                    result.host == true ?
-                        sendOffer() :
-                        acceptOffer()
+                    result.host == true ? sendOffer() : acceptOffer()
                 } else {
                     console.log(result);
                 }
