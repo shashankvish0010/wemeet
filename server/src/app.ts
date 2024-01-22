@@ -32,13 +32,13 @@ let sendersOffer: any;
 io.on('connection', (socket) => {
     socket.emit('hello', socket.id)
 
-    socket.on('call', async ( from, offer) => {
+    socket.on('offer', async ( from, offer) => {
         try {
             const reciverSocketId = await pool.query('SELECT socketid from Users WHERE zen_no=$1', [ID])
             receiver = reciverSocketId.rows[0].socketid
             sender = from
             sendersOffer = offer
-            io.to(receiver).emit('pickcall')
+            io.to(receiver).emit('acceptOffer', sendersOffer)
         } catch (error) {
             console.log(error);
         }
