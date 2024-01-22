@@ -32,24 +32,22 @@ let sendersOffer: any;
 io.on('connection', (socket) => {
     socket.emit('hello', socket.id)
 
-    socket.on('offer', async ( from, offer) => {
+    socket.on('offer', async ( data ) => {
         try {
-            const reciverSocketId = await pool.query('SELECT socketid from Users WHERE zen_no=$1', [ID])
-            receiver = reciverSocketId.rows[0].socketid
-            sender = from
-            sendersOffer = offer
+            const result = await pool.query('SELECT ud.socket_id from Users as ud LEFT JOIN Meetings as md on md.user_email=ud.email meeting_id=$1', [data.meetingId])
+            console.log(result);
+            
+            receiver = result.rows[0].socket_id
+            sender = data.UserSocketId
+            sendersOffer = data.offer
             io.to(receiver).emit('acceptOffer', sendersOffer)
         } catch (error) {
             console.log(error);
         }
     })
 
-    socket.on('recieved', () => {
-        io.to(receiver).emit('recieverCall', { sendersOffer, sender })
-    })
-
-    socket.on('callrecieved', (answer) => {
-        io.to(sender).emit('callaccepted', { answer, picked: true })
+    socket.on('answer', (answer) => {
+        io.to(sender).emit('offeraccepted', { answer })
     })
 
     socket.on('negotiation', (offer) => {
@@ -60,7 +58,7 @@ io.on('connection', (socket) => {
         io.to(sender).emit('acceptnegotiationanswer', { receiverNegoAnswer: answer })
     })
 
-    socket.on('done', () => { io.emit('videocall') })
+    socket.on('connected', () => { io.emit('startMeeting') })
 })
 
 server.listen(process.env.PORT, () => {Notification(); console.log(`Server Running at ${process.env.PORT}`)})

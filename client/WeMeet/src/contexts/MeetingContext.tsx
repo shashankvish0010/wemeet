@@ -88,7 +88,7 @@ export const MeetingProvider = (props: any) => {
 
     const sendOffer = useCallback(async () => {
         const offer = await peer.generateOffer();
-        offer ? socket.emit('offer', offer, UserSocketId) : console.log("offer not generated");
+        offer ? socket.emit('offer', offer, UserSocketId, {meetingId: meetingCredentials?.meetingId}) : console.log("offer not generated");
     }, [])
 
     const storeOffer = useCallback(async (sendersOffer: RTCSessionDescription) => {
