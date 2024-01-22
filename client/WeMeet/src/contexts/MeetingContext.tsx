@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useState } from 'react'
+import React, { createContext, useCallback, useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
 import peer from '../services/peer'
 const socket = io('http://localhost:8080/')
@@ -7,6 +7,17 @@ interface Contextvalue {
     userStream: MediaStream | undefined
     remoteStream: MediaStream | undefined
     sendOffer: () => void
+    acceptOffer: () => void
+    host: boolean
+    key: boolean,
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    handleSubmit: (userEmail: String) => void
+    meetingCredentials: MeetingCred
+}
+
+interface MeetingCred {
+    meetingId: string | undefined,
+    meetingPassword: string | undefined
 }
 
 export const MeetingContext = createContext<Contextvalue | null>(null)
@@ -15,6 +26,47 @@ export const MeetingProvider = (props: any) => {
     const [userStream, setUserStream] = useState<MediaStream>();
     const [remoteStream, setRemoteStream] = useState<MediaStream>();
     const [connected, setConnected] = useState<boolean>();
+    const [sendersOffer, setSenderOffer] = useState<any>();
+    const [host, setHost] = useState<boolean>(false);
+    const [key, setKey] = useState<boolean>(false)
+    const [meetingCredentials, setMeetingCredentials] = useState<MeetingCred | any>({ meetingId: '', meetingPassword: '' })
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target
+        setMeetingCredentials((meetingData: MeetingCred) => ({
+            ...meetingData,
+            [name]: value
+        }))
+    }
+
+    const handleSubmit = async (userEmail: String) => {
+        try {
+            const { meetingId, meetingPassword } = meetingCredentials
+            const response = await fetch('/get/meeting/cred/' + userEmail, ({
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    meetingId, meetingPassword
+                })
+            }))
+            if (response) {
+                const result = await response.json();
+                if (result.success == true) {
+                    setKey(true);
+                    console.log(result);
+                    result.host == true ?
+                        sendOffer() :
+                        acceptOffer()
+                } else {
+                    console.log(result);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const socketConfig = useCallback((data: String) => {
         setUserSocketId(data)
@@ -39,8 +91,13 @@ export const MeetingProvider = (props: any) => {
         offer ? socket.emit('offer', offer, UserSocketId) : console.log("offer not generated");
     }, [])
 
-    const acceptOffer = useCallback(async (sendersOffer: RTCSessionDescription) => {
-        if (sendersOffer) {
+    const storeOffer = useCallback(async (sendersOffer: RTCSessionDescription) => {
+        setSenderOffer(sendersOffer)
+        setHost(true)
+    }, [])
+
+    const acceptOffer = useCallback(async () => {
+        if (sendersOffer && host == true) {
             const answer = await peer.generateAnswer(sendersOffer);
             answer ? socket.emit('answer', answer) : console.log("answer not generated");
         }
@@ -64,7 +121,7 @@ export const MeetingProvider = (props: any) => {
 
     useEffect(() => {
         socket.on('hello', socketConfig)
-        socket.on('acceptOffer', acceptOffer)
+        socket.on('acceptOffer', storeOffer)
         socket.on('offeraccepted', offeraccepted)
         socket.on('startMeeting', startMeeting)
 
@@ -77,7 +134,7 @@ export const MeetingProvider = (props: any) => {
     }, [socket])
 
     const info: Contextvalue = {
-        userStream, remoteStream, sendOffer
+        userStream, remoteStream, sendOffer, acceptOffer, host, key, handleChange, handleSubmit, meetingCredentials
     }
     return (
         <MeetingContext.Provider value={info}>
