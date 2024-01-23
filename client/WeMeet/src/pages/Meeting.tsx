@@ -20,7 +20,6 @@ const Meeting: React.FC = () => {
                 meetingContext?.key == true ?
                     meetingContext?.host == true ?
                         <>
-
                             <div className='h-max w-max p-3'>
                                 <ReactPlayer
                                     playing

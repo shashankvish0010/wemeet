@@ -4,10 +4,11 @@ import pool from '../../dbconnect'
 import bcrypt from 'bcrypt'
 import { v4 as uuidv4 } from 'uuid'
 import jwt from 'jsonwebtoken'
+import { io } from '../app';
 
 const OTPgenerator = require('../Services/OtpGenerate');
 
-const {sendEmail} = require('../Services/Email');
+const { sendEmail } = require('../Services/Email');
 
 let actualotp: Number;
 
@@ -45,7 +46,7 @@ router.post('/user/register', async (req: any, res: any) => {
                                 const id = uuidv4();
                                 if (id) {
                                     const userRegisteration = await pool.query('INSERT INTO Users(id, firstname, lastname, email, user_password, account_verified) VALUES ($1, $2, $3, $4, $5, $6)', [id, firstname, lastname, email, hashedPassword, false]);
-                                    res.json({success: true, id, message: "User Registered"})
+                                    res.json({ success: true, id, message: "User Registered" })
                                 }
                             } else {
                                 res.json({ success: false, message: "Email not sent" })
@@ -87,13 +88,13 @@ router.post('/otp/verification/:id', async (req: any, res: any) => {
 })
 
 router.get('/resend/otp/:id', async (req: any, res: any) => {
-    const { id } = req.params;    
+    const { id } = req.params;
     const resetotp = await OTPgenerator();
     actualotp = resetotp
     const result = await pool.query('SELECT email FROM Users WHERE id=$1', [id])
     console.log(result.rows[0].email);
     const email = result.rows[0].email
-    if(result.rows[0].email){
+    if (result.rows[0].email) {
         const email_message = {
             from: process.env.EMAIL_USER,
             to: email,
@@ -101,33 +102,40 @@ router.get('/resend/otp/:id', async (req: any, res: any) => {
             text: `Your verification code for WeMeet is ${actualotp}`
         }
         const result = await sendEmail(email_message);
-        if(result){
-            res.json({success: true})
+        if (result) {
+            res.json({ success: true })
         }
     }
 })
 
-router.post('/user/login', async (req,res) => {
-    const {email,password} = req.body
-    if(!email || !password){
+router.post('/user/login', async (req, res) => {
+    const { email, password } = req.body
+    if (!email || !password) {
         res.json({ success: false, message: "Fill both fields" })
-    }else{
+    } else {
         const user = await pool.query('SELECT * FROM Users WHERE email=$1', [email])
-        if(user.rows.length > 0){
-            if(email === user.rows[0].email){
+        if (user.rows.length > 0) {
+            if (email === user.rows[0].email) {
                 const isMatch = await bcrypt.compare(password, user.rows[0].user_password)
-                if(isMatch){
-                    if(user.rows[0].account_verified === false){
+                if (isMatch) {
+                    if (user.rows[0].account_verified === false) {
                         res.json({ success: true, id: user.rows[0].id, verified: user.rows[0].account_verified, message: "Login Successfully" })
-                    }else{
-                    const token = jwt.sign(user.rows[0].id, `${process.env.USERS_SECRET_KEY}`)
-                    res.json({ success: true,userdata : user.rows[0], id: user.rows[0].id, token, verified: user.rows[0].account_verified, message: "Login Successfully" })  
+                    } else {
+                        io.on('connection', async (socket) => {
+                            if (socket.id) {
+                                const response = await pool.query('UPDATE Users SET socket_id=$1 WHERE email=$2', [socket.id, email])
+                                const token = jwt.sign(user.rows[0].id, `${process.env.USERS_SECRET_KEY}`)
+                                res.json({ success: true, userdata: user.rows[0], id: user.rows[0].id, token, verified: user.rows[0].account_verified, message: "Login Successfully" })
+                            } else {
+                                console.log("Socket Id not fetched");
+                            }
+                        })
+                    }
+                } else {
+                    res.json({ success: false, id: user.rows[0].id, verified: user.rows[0].account_verified, message: "Incorrect Password" })
                 }
-                }else{
-                    res.json({ success: false,id: user.rows[0].id, verified: user.rows[0].account_verified, message: "Incorrect Password" })
-                }
-            }else{
-                res.json({ success: false,id: user.rows[0].id, verified: user.rows[0].account_verified, message: "Email does not exists" })
+            } else {
+                res.json({ success: false, id: user.rows[0].id, verified: user.rows[0].account_verified, message: "Email does not exists" })
             }
         }
     }

@@ -18,6 +18,7 @@ const dbconnect_1 = __importDefault(require("../../dbconnect"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const uuid_1 = require("uuid");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const app_1 = require("../app");
 const OTPgenerator = require('../Services/OtpGenerate');
 const { sendEmail } = require('../Services/Email');
 let actualotp;
@@ -133,8 +134,16 @@ router.post('/user/login', (req, res) => __awaiter(void 0, void 0, void 0, funct
                         res.json({ success: true, id: user.rows[0].id, verified: user.rows[0].account_verified, message: "Login Successfully" });
                     }
                     else {
-                        const token = jsonwebtoken_1.default.sign(user.rows[0].id, `${process.env.USERS_SECRET_KEY}`);
-                        res.json({ success: true, userdata: user.rows[0], id: user.rows[0].id, token, verified: user.rows[0].account_verified, message: "Login Successfully" });
+                        app_1.io.on('connection', (socket) => __awaiter(void 0, void 0, void 0, function* () {
+                            if (socket.id) {
+                                const response = yield dbconnect_1.default.query('UPDATE Users SET socket_id=$1 WHERE email=$2', [socket.id, email]);
+                                const token = jsonwebtoken_1.default.sign(user.rows[0].id, `${process.env.USERS_SECRET_KEY}`);
+                                res.json({ success: true, userdata: user.rows[0], id: user.rows[0].id, token, verified: user.rows[0].account_verified, message: "Login Successfully" });
+                            }
+                            else {
+                                console.log("Socket Id not fetched");
+                            }
+                        }));
                     }
                 }
                 else {
