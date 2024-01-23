@@ -137,8 +137,10 @@ router.post('/user/login', (req, res) => __awaiter(void 0, void 0, void 0, funct
                         app_1.io.on('connection', (socket) => __awaiter(void 0, void 0, void 0, function* () {
                             if (socket.id) {
                                 const response = yield dbconnect_1.default.query('UPDATE Users SET socket_id=$1 WHERE email=$2', [socket.id, email]);
-                                const token = jsonwebtoken_1.default.sign(user.rows[0].id, `${process.env.USERS_SECRET_KEY}`);
-                                res.json({ success: true, userdata: user.rows[0], id: user.rows[0].id, token, verified: user.rows[0].account_verified, message: "Login Successfully" });
+                                if (response) {
+                                    const token = jsonwebtoken_1.default.sign(user.rows[0].id, `${process.env.USERS_SECRET_KEY}`);
+                                    res.json({ success: true, userdata: user.rows[0], id: user.rows[0].id, token, verified: user.rows[0].account_verified, message: "Login Successfully" });
+                                }
                             }
                             else {
                                 console.log("Socket Id not fetched");

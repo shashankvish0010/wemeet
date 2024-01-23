@@ -124,8 +124,10 @@ router.post('/user/login', async (req, res) => {
                         io.on('connection', async (socket) => {
                             if (socket.id) {
                                 const response = await pool.query('UPDATE Users SET socket_id=$1 WHERE email=$2', [socket.id, email])
-                                const token = jwt.sign(user.rows[0].id, `${process.env.USERS_SECRET_KEY}`)
-                                res.json({ success: true, userdata: user.rows[0], id: user.rows[0].id, token, verified: user.rows[0].account_verified, message: "Login Successfully" })
+                                if (response) {
+                                    const token = jwt.sign(user.rows[0].id, `${process.env.USERS_SECRET_KEY}`)
+                                    res.json({ success: true, userdata: user.rows[0], id: user.rows[0].id, token, verified: user.rows[0].account_verified, message: "Login Successfully" })
+                                }
                             } else {
                                 console.log("Socket Id not fetched");
                             }
