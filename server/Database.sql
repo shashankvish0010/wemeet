@@ -6,6 +6,7 @@ CREATE TABLE Users(
     lastname VARCHAR,
     user_password VARCHAR,
     email VARCHAR,
+    socket_id VARCHAR,
     account_verified BOOLEAN 
 )
 
