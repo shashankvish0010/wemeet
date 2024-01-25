@@ -18,7 +18,7 @@ app.use(require('./routers/MeetingsRoutes'))
 app.use(require('./routers/Payment'))
 const server = http.createServer(app)
 app.use(cors())
-export const io = new Server(server, ({
+const io = new Server(server, ({
     cors: {
         origin: '*',
         methods: ['GET', 'POST', 'PUT']
@@ -32,13 +32,29 @@ let sendersOffer: any;
 io.on('connection', (socket) => {
     socket.emit('hello', socket.id)
 
-    socket.on('offer', async ( data ) => {
+    socket.on('meetingCredential', async (data) => {
+        console.log(data);
+        const result = await pool.query('SELECT host_email FROM Meetings WHERE meeting_id=$1', [data.meetingId])
+        if (result.rows.length > 0) {
+            if (result.rows[0].host_email == data.userEmail) {
+                console.log(true, data.userEmail);
+                
+                socket.emit('validcred')
+                socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, host: true })
+            } else {
+                socket.emit('validcred')
+                socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, host: false })
+            }
+        }
+    })
+
+    socket.on('offer', async (data) => {
         try {
-            const result = await pool.query('SELECT ud.socket_id from Users as ud LEFT JOIN Meetings as md on md.user_email=ud.email meeting_id=$1', [data.meetingId])
-            console.log(result);
-            receiver = result.rows[0].socket_id
+            receiver = data.remoteSocketId
             sender = data.UserSocketId
             sendersOffer = data.offer
+            console.log("send:", sender, "recv:", receiver);
+            
             io.to(receiver).emit('acceptOffer', sendersOffer)
         } catch (error) {
             console.log(error);
@@ -60,4 +76,4 @@ io.on('connection', (socket) => {
     socket.on('connected', () => { io.emit('startMeeting') })
 })
 
-server.listen(process.env.PORT, () => {Notification(); console.log(`Server Running at ${process.env.PORT}`)})
+server.listen(process.env.PORT, () => { Notification(); console.log(`Server Running at ${process.env.PORT}`) })
