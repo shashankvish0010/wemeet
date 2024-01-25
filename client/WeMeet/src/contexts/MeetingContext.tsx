@@ -1,18 +1,17 @@
-import React, { createContext, useCallback, useEffect, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
 import peer from '../services/peer'
+import { userAuthContext } from './UserAuth'
 const socket = io('http://localhost:8080/')
 
 interface Contextvalue {
     userStream: MediaStream | undefined
     remoteStream: MediaStream | undefined
-    sendOffer: () => void
-    acceptOffer: () => void
-    host: boolean
     key: boolean,
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     handleSubmit: (userEmail: String) => void
     meetingCredentials: MeetingCred
+    remoteSocketId: string | undefined
 }
 
 interface MeetingCred {
@@ -22,13 +21,16 @@ interface MeetingCred {
 
 export const MeetingContext = createContext<Contextvalue | null>(null)
 export const MeetingProvider = (props: any) => {
-    const [UserSocketId, setUserSocketId] = useState<String>()
+    const userContext = useContext(userAuthContext)
+    let UserSocketId: string | undefined
+    let remoteSocketId: string | undefined
+    let host: boolean = false
+
+    const [key, setKey] = useState<boolean>(false)
+
     const [userStream, setUserStream] = useState<MediaStream>();
     const [remoteStream, setRemoteStream] = useState<MediaStream>();
     const [connected, setConnected] = useState<boolean>();
-    const [sendersOffer, setSenderOffer] = useState<any>();
-    const [host, setHost] = useState<boolean>(false);
-    const [key, setKey] = useState<boolean>(false)
     const [meetingCredentials, setMeetingCredentials] = useState<MeetingCred | any>({ meetingId: '', meetingPassword: '' })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,40 +42,48 @@ export const MeetingProvider = (props: any) => {
     }
 
     const handleSubmit = async (userEmail: String) => {
-        try {
-            const { meetingId, meetingPassword } = meetingCredentials
-            const response = await fetch('/get/meeting/cred/' + userEmail, ({
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    meetingId, meetingPassword
-                })
-            }))
-            if (response) {
-                const result = await response.json();
-                if (result.success == true) {
-                    setKey(true);
-                    console.log(result);
-                    result.host == true ? sendOffer() : acceptOffer()
-                } else {
-                    console.log(result);
-                }
-            }
-        } catch (error) {
-            console.log(error);
-        }
+        console.log(userEmail);
+        const { meetingId, meetingPassword } = meetingCredentials
+        socket.emit('meetingCredential', { meetingId, meetingPassword, userEmail })
+        // const response = await fetch('/get/meeting/cred/' + userEmail, ({
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         meetingId, meetingPassword
+        //     })
+        // }))
+        // if (response) {
+        //     const result = await response.json();
+        //     if (result.success == true) {
+        //         setKey(true);
+        //         console.log(result);
+        //         result.host == true ? sendOffer() : acceptOffer()
+        //     } else {
+        //         console.log(result);
+        //     }
     }
 
-    const socketConfig = useCallback((data: String) => {
-        setUserSocketId(data)
+    const validcred = () => {
+        setKey(true)
+    }
+
+    const socketConfig = useCallback((data: string) => {
+        UserSocketId = data
+        console.log(data);
+    }, [])
+
+    const userJoinedMeeting = useCallback((data: { socket_ID: string, host: boolean }) => {
+        remoteSocketId = data.socket_ID
+        data.host == false ?
+            sendOffer() : null
     }, [])
 
     const startStreaming = () => {
-        navigator.mediaDevices.getUserMedia().then((stream: any) => {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream: any) => {
             setUserStream(stream)
-            stream.getTracks().forEcah((track: any) => {
+            stream.getTracks().forEach((track: any) => {
                 peer.peer.addTrack(track, stream)
             })
         })
@@ -85,26 +95,51 @@ export const MeetingProvider = (props: any) => {
     }
 
     const sendOffer = useCallback(async () => {
+        host = true
         const offer = await peer.generateOffer();
-        offer ? socket.emit('offer', offer, UserSocketId, {meetingId: meetingCredentials?.meetingId}) : console.log("offer not generated");
+        console.log("offer", offer, UserSocketId, remoteSocketId);
+        offer ? socket.emit('offer', { offer, UserSocketId, remoteSocketId, meetingId: meetingCredentials?.meetingId }, { id: userContext?.currentuser.id }) : console.log("offer not generated");
     }, [])
 
-    const storeOffer = useCallback(async (sendersOffer: RTCSessionDescription) => {
-        setSenderOffer(sendersOffer)
-        setHost(true)
-    }, [])
-
-    const acceptOffer = useCallback(async () => {
-        if (sendersOffer && host == true) {
+    const acceptOffer = useCallback(async (sendersOffer: any) => {
+        if (sendersOffer) {
             const answer = await peer.generateAnswer(sendersOffer);
+            console.log("answer", answer);
             answer ? socket.emit('answer', answer) : console.log("answer not generated");
         }
     }, [])
 
-    const offeraccepted = useCallback(async (answer: RTCSessionDescription) => {
+    const offeraccepted = useCallback(async (answer: any) => {
         if (answer) {
-            await peer.setRemoteDescription(answer)
+            console.log("offeraccepted answer", answer);
+            await peer.setRemoteDescription(answer).then(() => {
+                socket.emit('connected')
+            }).catch((error) => console.log(error))
+        }
+    }, [])
+
+    const handleNegotiation = async () => {
+        if (host == true) {
+            const offer = await peer.generateOffer();
+            socket.emit('negotiaionOffer', offer)
+        }
+    }
+
+    const negotiationaccept = async (data: any) => {
+        const answer = await peer.generateAnswer(data.sendersNegoOffer)
+        socket.emit('negotiationdone', answer);
+    }
+
+    const acceptnegotiationanswer = async (data: any) => {
+        await peer.setRemoteDescription(data.receiverNegoAnswer).then(() => {
             socket.emit('connected')
+        }).catch((error) => console.log(error))
+    }
+
+    useEffect(() => {
+        peer.peer.addEventListener('negotiationneeded', handleNegotiation);
+        return () => {
+            peer.peer.addEventListener('negotiationneeded', handleNegotiation);
         }
     }, [])
 
@@ -119,12 +154,18 @@ export const MeetingProvider = (props: any) => {
 
     useEffect(() => {
         socket.on('hello', socketConfig)
-        socket.on('acceptOffer', storeOffer)
+        socket.on('validcred', validcred)
+        socket.on('userJoinedMeeting', userJoinedMeeting)
+        socket.on('acceptOffer', acceptOffer)
         socket.on('offeraccepted', offeraccepted)
         socket.on('startMeeting', startMeeting)
+        socket.on('negotiationaccept', negotiationaccept)
+        socket.on('acceptnegotiationanswer', acceptnegotiationanswer)
 
         return () => {
             socket.off('hello', socketConfig)
+            socket.off('validcred', validcred)
+            socket.off('userJoinedMeeting', userJoinedMeeting)
             socket.off('acceptOffer', acceptOffer)
             socket.off('offeraccepted', offeraccepted)
             socket.off('startMeeting', startMeeting)
@@ -132,7 +173,7 @@ export const MeetingProvider = (props: any) => {
     }, [socket])
 
     const info: Contextvalue = {
-        userStream, remoteStream, sendOffer, acceptOffer, host, key, handleChange, handleSubmit, meetingCredentials
+        userStream, remoteStream, remoteSocketId, key, handleChange, handleSubmit, meetingCredentials
     }
     return (
         <MeetingContext.Provider value={info}>
