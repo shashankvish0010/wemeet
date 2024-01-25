@@ -11,6 +11,7 @@ import Profile from './pages/Profile';
 import PaySuccess from './pages/PaySuccess';
 import PayCancel from './pages/PayCancel';
 import Meeting from './pages/Meeting';
+import Room from './pages/Room';
 
 const App: React.FC = () => {
   return (
@@ -23,6 +24,7 @@ const App: React.FC = () => {
         <Route path='/otp/verification/:id' element={<OtpVerification />} />
         <Route path='/add/event/:id' element={<Events />} />
         <Route path='/book/:duration/:id' element={<Booking />} />
+        <Route path='/room' element={<Room />} />
         <Route path='/meeting/:id' element={<Meeting/>} />
         <Route path='/profile' element={<Profile/>} />
         <Route path='/success' element={<PaySuccess/>} />
