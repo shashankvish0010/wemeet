@@ -37,6 +37,8 @@ router.post('/get/meeting/cred/:email', async (req,res) => {
         if(email && meetingId && meetingPassword){
             try {
                 const result = await pool.query('SELECT * FROM Meetings WHERE meeting_id=$1', [meetingId]);
+                console.log(result.rows[0], email);
+                
                 if(result.rows.length > 0){
                     result.rows[0].host_email == email ? res.json({success: true, host: true, message: "Host connecting..."}) : res.json({success: false, host: false, message: "User connecting..."})
                 }
