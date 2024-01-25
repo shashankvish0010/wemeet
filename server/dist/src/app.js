@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.io = void 0;
 const express_1 = __importDefault(require("express"));
 const http_1 = __importDefault(require("http"));
 const body_parser_1 = __importDefault(require("body-parser"));
@@ -32,7 +31,7 @@ app.use(require('./routers/MeetingsRoutes'));
 app.use(require('./routers/Payment'));
 const server = http_1.default.createServer(app);
 app.use((0, cors_1.default)());
-exports.io = new socket_io_1.Server(server, ({
+const io = new socket_io_1.Server(server, ({
     cors: {
         origin: '*',
         methods: ['GET', 'POST', 'PUT']
@@ -41,30 +40,44 @@ exports.io = new socket_io_1.Server(server, ({
 let receiver;
 let sender;
 let sendersOffer;
-exports.io.on('connection', (socket) => {
+io.on('connection', (socket) => {
     socket.emit('hello', socket.id);
+    socket.on('meetingCredential', (data) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log(data);
+        const result = yield dbconnect_1.default.query('SELECT host_email FROM Meetings WHERE meeting_id=$1', [data.meetingId]);
+        if (result.rows.length > 0) {
+            if (result.rows[0].host_email == data.userEmail) {
+                console.log(true, data.userEmail);
+                socket.emit('validcred');
+                socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, host: true });
+            }
+            else {
+                socket.emit('validcred');
+                socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, host: false });
+            }
+        }
+    }));
     socket.on('offer', (data) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const result = yield dbconnect_1.default.query('SELECT ud.socket_id from Users as ud LEFT JOIN Meetings as md on md.user_email=ud.email meeting_id=$1', [data.meetingId]);
-            console.log(result);
-            receiver = result.rows[0].socket_id;
+            receiver = data.remoteSocketId;
             sender = data.UserSocketId;
             sendersOffer = data.offer;
-            exports.io.to(receiver).emit('acceptOffer', sendersOffer);
+            console.log("send:", sender, "recv:", receiver);
+            io.to(receiver).emit('acceptOffer', sendersOffer);
         }
         catch (error) {
             console.log(error);
         }
     }));
     socket.on('answer', (answer) => {
-        exports.io.to(sender).emit('offeraccepted', { answer });
+        io.to(sender).emit('offeraccepted', { answer });
     });
     socket.on('negotiation', (offer) => {
-        exports.io.to(receiver).emit('negotiationaccept', { sendersNegoOffer: offer });
+        io.to(receiver).emit('negotiationaccept', { sendersNegoOffer: offer });
     });
     socket.on('negotiationdone', (answer) => {
-        exports.io.to(sender).emit('acceptnegotiationanswer', { receiverNegoAnswer: answer });
+        io.to(sender).emit('acceptnegotiationanswer', { receiverNegoAnswer: answer });
     });
-    socket.on('connected', () => { exports.io.emit('startMeeting'); });
+    socket.on('connected', () => { io.emit('startMeeting'); });
 });
 server.listen(process.env.PORT, () => { Notification(); console.log(`Server Running at ${process.env.PORT}`); });
