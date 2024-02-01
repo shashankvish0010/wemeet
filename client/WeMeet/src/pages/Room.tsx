@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-// import ReactPlayer from 'react-player'
+import ReactPlayer from 'react-player'
 import { MeetingContext } from '../contexts/MeetingContext'
 
 const Room: React.FC = () => {
@@ -10,21 +10,27 @@ const Room: React.FC = () => {
     }, [meetingContext?.remoteSocketId])
 
     return (
-        <div>
-            {/* <div className='h-max w-max p-3'>
-                <ReactPlayer
-                    playing
-                    url={meetingContext?.userStream}
-                    height={400}
-                    width={500} />
-            </div>
-            <div className='h-max w-max p-3'>
-                <ReactPlayer
-                    playing
-                    url={meetingContext?.remoteStream}
-                    height={400}
-                    width={500} />
-            </div> */}
+        <div className='h-screen w-screen flex flex-col justify-center items-center'>
+            {
+                meetingContext?.userStream ?
+                    <div className='h-max w-max p-3'>
+                        <ReactPlayer
+                            playing
+                            url={meetingContext?.userStream}
+                            height={400}
+                            width={500} />
+                    </div> : null
+            } {
+                meetingContext?.remoteStream ?
+                    <div className='h-max w-max p-3'>
+                        <ReactPlayer
+                            playing
+                            url={meetingContext?.remoteStream}
+                            height={400}
+                            width={500} />
+                    </div>
+                    : null
+            }
         </div>
     )
 }
