@@ -12,6 +12,12 @@ interface Contextvalue {
     handleSubmit: (userEmail: String) => void
     meetingCredentials: MeetingCred
     remoteSocketId: string | undefined
+    remoteUser: { firstname: string, lastname: string } | undefined
+    myMessage: string | undefined
+    setMyMessage: any
+    myChatMeesage: string[] | undefined
+    remoteUserChatMeesage: string[] | undefined
+    sendChat: () => void
 }
 
 interface MeetingCred {
@@ -24,14 +30,18 @@ export const MeetingProvider = (props: any) => {
     const userContext = useContext(userAuthContext)
     let UserSocketId: string | undefined
     let remoteSocketId: string | undefined
+    let remoteUserEmailAddress: string | undefined
     let host: boolean = false
 
     const [key, setKey] = useState<boolean>(false)
-
+    const [remoteUser, setRemUser] = useState<{ firstname: string, lastname: string } | undefined>()
     const [userStream, setUserStream] = useState<MediaStream>();
     const [remoteStream, setRemoteStream] = useState<MediaStream>();
     const [connected, setConnected] = useState<boolean>();
     const [meetingCredentials, setMeetingCredentials] = useState<MeetingCred | any>({ meetingId: '', meetingPassword: '' })
+    const [myMessage, setMyMessage] = useState<string | undefined>()
+    const myChatMeesage: any[] = [] 
+    const remoteUserChatMeesage: any[] = [] 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -74,8 +84,9 @@ export const MeetingProvider = (props: any) => {
         console.log(data);
     }, [])
 
-    const userJoinedMeeting = useCallback((data: { socket_ID: string, host: boolean }) => {
+    const userJoinedMeeting = useCallback((data: { socket_ID: string, email_address: string, host: boolean }) => {
         remoteSocketId = data.socket_ID
+        remoteUserEmailAddress = data.email_address
         data.host == false ?
             sendOffer() : null
     }, [])
@@ -128,12 +139,30 @@ export const MeetingProvider = (props: any) => {
     const negotiationaccept = async (data: any) => {
         const answer = await peer.generateAnswer(data.sendersNegoOffer)
         socket.emit('negotiationdone', answer);
+        setUsersData()
     }
 
     const acceptnegotiationanswer = async (data: any) => {
         await peer.setRemoteDescription(data.receiverNegoAnswer).then(() => {
             socket.emit('connected')
         }).catch((error) => console.log(error))
+    }
+
+    const setUsersData = () => {
+        socket.emit('getRemoteUser', { email: remoteUserEmailAddress })
+    }
+
+    const setremoteUser = (remoteUser: { firstname: string, lastname: string }) => {
+        setRemUser(remoteUser)
+    }
+
+    const sendChat = async () => {
+        myChatMeesage.push(myMessage)
+        socket.emit('send', { message: myChatMeesage, socketId: UserSocketId })
+    }
+
+    const messageFromRemote = (data: any) => {
+        remoteUserChatMeesage.push(data.message)
     }
 
     useEffect(() => {
@@ -161,6 +190,8 @@ export const MeetingProvider = (props: any) => {
         socket.on('startMeeting', startMeeting)
         socket.on('negotiationaccept', negotiationaccept)
         socket.on('acceptnegotiationanswer', acceptnegotiationanswer)
+        socket.on('remoteUser', setremoteUser)
+        socket.on('messageFromRemote', messageFromRemote)
 
         return () => {
             socket.off('hello', socketConfig)
@@ -171,11 +202,14 @@ export const MeetingProvider = (props: any) => {
             socket.off('startMeeting', startMeeting)
             socket.off('negotiationaccept', negotiationaccept)
             socket.off('acceptnegotiationanswer', acceptnegotiationanswer)
+            socket.off('remoteUser', setremoteUser)
+            socket.off('messageFromRemote', messageFromRemote)
         }
     }, [socket])
 
     const info: Contextvalue = {
-        userStream, remoteStream, remoteSocketId, key, handleChange, handleSubmit, meetingCredentials
+        userStream, remoteStream, remoteSocketId, key, handleChange, handleSubmit, sendChat, meetingCredentials, remoteUser, myChatMeesage, setMyMessage, remoteUserChatMeesage,
+        myMessage
     }
     return (
         <MeetingContext.Provider value={info}>
