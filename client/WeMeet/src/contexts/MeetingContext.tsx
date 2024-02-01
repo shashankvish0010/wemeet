@@ -109,10 +109,10 @@ export const MeetingProvider = (props: any) => {
         }
     }, [])
 
-    const offeraccepted = useCallback(async (answer: any) => {
-        if (answer) {
-            console.log("offeraccepted answer", answer);
-            await peer.setRemoteDescription(answer).then(() => {
+    const offeraccepted = useCallback(async (data: any) => {
+        if (data.answer) {
+            console.log("offeraccepted answer", data.answer);
+            peer.setRemoteDescription(data.answer).then(() => {
                 socket.emit('connected')
             }).catch((error) => console.log(error))
         }
@@ -169,6 +169,8 @@ export const MeetingProvider = (props: any) => {
             socket.off('acceptOffer', acceptOffer)
             socket.off('offeraccepted', offeraccepted)
             socket.off('startMeeting', startMeeting)
+            socket.off('negotiationaccept', negotiationaccept)
+            socket.off('acceptnegotiationanswer', acceptnegotiationanswer)
         }
     }, [socket])
 
