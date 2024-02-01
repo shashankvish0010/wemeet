@@ -72,7 +72,7 @@ io.on('connection', (socket) => {
     socket.on('answer', (answer) => {
         io.to(sender).emit('offeraccepted', { answer });
     });
-    socket.on('negotiation', (offer) => {
+    socket.on('negotiaionOffer', (offer) => {
         io.to(receiver).emit('negotiationaccept', { sendersNegoOffer: offer });
     });
     socket.on('negotiationdone', (answer) => {
