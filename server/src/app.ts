@@ -38,9 +38,9 @@ io.on('connection', (socket) => {
         if (result.rows.length > 0) {
             if (result.rows[0].host_email == data.userEmail) {
                 console.log(true, data.userEmail);
-                
+
                 socket.emit('validcred')
-                socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, host: true })
+                socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, email_address: data.userEmail, host: true })
             } else {
                 socket.emit('validcred')
                 socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, host: false })
@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
             sender = data.UserSocketId
             sendersOffer = data.offer
             console.log("send:", sender, "recv:", receiver);
-            
+
             io.to(receiver).emit('acceptOffer', sendersOffer)
         } catch (error) {
             console.log(error);
@@ -71,6 +71,22 @@ io.on('connection', (socket) => {
 
     socket.on('negotiationdone', (answer) => {
         io.to(sender).emit('acceptnegotiationanswer', { receiverNegoAnswer: answer })
+    })
+
+    socket.on('getRemoteUser', async (data) => {
+        const userData = await pool.query('SELECT * FROM Users WHERE email=$1', [data.email])
+        if (userData.rows.length > 0) {
+            const remoteUser = { firstname: userData.rows[0].firstname, lastname: userData.rows[0].lastname };
+            socket.emit('remoteUser', remoteUser)
+        }
+    })
+
+    socket.on('send', (data) => {
+        if(data.socketId == sender){
+            io.to(receiver).emit('messageFromRemote',data)
+        }else{
+            io.to(sender).emit('messageFromRemote',data)
+        }
     })
 
     socket.on('connected', () => { io.emit('startMeeting') })
