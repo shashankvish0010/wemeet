@@ -40,8 +40,8 @@ export const MeetingProvider = (props: any) => {
     const [connected, setConnected] = useState<boolean>();
     const [meetingCredentials, setMeetingCredentials] = useState<MeetingCred | any>({ meetingId: '', meetingPassword: '' })
     const [myMessage, setMyMessage] = useState<string | undefined>()
-    const myChatMeesage: any[] = [] 
-    const remoteUserChatMeesage: any[] = [] 
+    const myChatMeesage: any[] = []
+    const remoteUserChatMeesage: any[] = []
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -156,10 +156,10 @@ export const MeetingProvider = (props: any) => {
         setRemUser(remoteUser)
     }
 
-    const sendChat = async () => {
+    const sendChat = useCallback(async () => {
         myChatMeesage.push(myMessage)
-        socket.emit('send', { message: myChatMeesage, socketId: UserSocketId })
-    }
+        socket.emit('send', { message: myChatMeesage })
+    }, [])
 
     const messageFromRemote = (data: any) => {
         remoteUserChatMeesage.push(data.message)
