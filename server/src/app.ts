@@ -82,17 +82,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('send', (data) => {
-        console.log(data);
-        socket.broadcast.emit('messageFromRemote', data)
-        // if(data.socketId == sender){
-        //     console.log("sender",data);
-            
-        //     io.to(receiver).emit('messageFromRemote',data)
-        // }else{
-        //     console.log("receiver",data);
-
-        //     io.to(sender).emit('messageFromRemote',data)
-        // }
+        socket.broadcast.emit('messageFromRemote', {message: data.message})
     })
 
     socket.on('connected', () => { io.emit('startMeeting') })
