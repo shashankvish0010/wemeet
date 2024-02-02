@@ -86,10 +86,13 @@ io.on('connection', (socket) => {
         }
     }));
     socket.on('send', (data) => {
+        console.log(data);
         if (data.socketId == sender) {
+            console.log("sender", data);
             io.to(receiver).emit('messageFromRemote', data);
         }
         else {
+            console.log("receiver", data);
             io.to(sender).emit('messageFromRemote', data);
         }
     });
