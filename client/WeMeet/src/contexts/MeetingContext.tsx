@@ -13,11 +13,11 @@ interface Contextvalue {
     meetingCredentials: MeetingCred
     remoteSocketId: string | undefined
     remoteUser: { firstname: string, lastname: string } | undefined
-    myMessage: string | undefined
-    setMyMessage: any
-    myChatMeesage: string[] | undefined
-    remoteUserChatMeesage: string[] | undefined
-    sendChat: () => void
+    // myMessage: string | undefined
+    // setMyMessage: any
+    myChatMeesage: string[] | undefined[] | any[]
+    remoteUserChatMeesage: string[] | undefined[] | any[]
+    sendChat: (myMessage: any) => void
 }
 
 interface MeetingCred {
@@ -39,9 +39,8 @@ export const MeetingProvider = (props: any) => {
     const [remoteStream, setRemoteStream] = useState<MediaStream>();
     const [connected, setConnected] = useState<boolean>();
     const [meetingCredentials, setMeetingCredentials] = useState<MeetingCred | any>({ meetingId: '', meetingPassword: '' })
-    const [myMessage, setMyMessage] = useState<string | undefined>()
-    const myChatMeesage: any[] = []
-    const remoteUserChatMeesage: any[] = []
+    const [myChatMeesage, setMyChatMessage] = useState<any[]>([])
+    const [remoteUserChatMeesage, setRemoteUserChatMeesage] = useState<any[]>([])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -156,13 +155,14 @@ export const MeetingProvider = (props: any) => {
         setRemUser(remoteUser)
     }
 
-    const sendChat = useCallback(async () => {
-        myChatMeesage.push(myMessage)
-        socket.emit('send', { message: myChatMeesage })
+    const sendChat = useCallback(async (myMessage: any) => {
+        setMyChatMessage(prevMessage => [...prevMessage, myMessage])
+        socket.emit('send', { message: myMessage })
     }, [])
 
     const messageFromRemote = (data: any) => {
-        remoteUserChatMeesage.push(data.message)
+        setRemoteUserChatMeesage(prevMessage => [...prevMessage, data.message])
+        console.log("remotearray", remoteUserChatMeesage);
     }
 
     useEffect(() => {
@@ -208,8 +208,7 @@ export const MeetingProvider = (props: any) => {
     }, [socket])
 
     const info: Contextvalue = {
-        userStream, remoteStream, remoteSocketId, key, handleChange, handleSubmit, sendChat, meetingCredentials, remoteUser, myChatMeesage, setMyMessage, remoteUserChatMeesage,
-        myMessage
+        userStream, remoteStream, remoteSocketId, key, handleChange, handleSubmit, sendChat, meetingCredentials, remoteUser, myChatMeesage, remoteUserChatMeesage,
     }
     return (
         <MeetingContext.Provider value={info}>
