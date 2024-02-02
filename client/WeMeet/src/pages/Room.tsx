@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useContext, useEffect } from 'react'
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react'
 import ReactPlayer from 'react-player'
 import { MeetingContext } from '../contexts/MeetingContext'
 import { Icon } from '@iconify/react/dist/iconify.js'
@@ -7,6 +7,7 @@ import { userAuthContext } from '../contexts/UserAuth'
 const Room: React.FC = () => {
     const userContext = useContext(userAuthContext)
     const meetingContext = useContext(MeetingContext);
+    const [myMessage, setMyMessage] = useState<string | undefined>()
 
     useEffect(() => {
         meetingContext?.remoteSocketId ? console.log('User Joined with', meetingContext?.remoteSocketId) : null
@@ -40,44 +41,42 @@ const Room: React.FC = () => {
                     </div>
                     : null
             }
-                        <div className='h-[100vh] w-[100vw] md:w-[40vw] flex flex-col gap-3 p-3'>
-                            <div className='flex flex-col items-center gap-3 p-3'>
-                                <p className='title font-medium bg-slate-800 text-lime-300'>Participants</p>
-                                {
-                                    userContext?.currentuser && meetingContext?.remoteUser ?
-                                        <>
-                                            <p>{userContext?.currentuser?.firstname} {userContext?.currentuser?.lastname}</p>
-                                            <p>{meetingContext?.remoteUser?.firstname} {meetingContext?.remoteUser?.lastname}</p>
-                                        </>
-                                        : null
-                                }
-                            </div>
-                            <div className='h-max w-max p-3 gap-4 flex flex-col'>
-                                <div>
-                                    <span>Messages</span>
-                                    {
-                                        meetingContext?.myChatMeesage?.map((message: string) =>
-                                            <span className='ml-[100%]'>
-                                                {message}
-                                            </span>
-                                        )
-                                    }
-                                    {
-                                        meetingContext?.remoteUserChatMeesage?.map((message: string) =>
-                                            <span className='mr-[100%]'>
-                                                {message}
-                                            </span>
-                                        )
-                                    }
-                                </div>
-                                <div className='flex'>
-                                    <input type="text" placeholder='Enter Message' value={meetingContext?.myMessage} onChange={(e: ChangeEvent<HTMLInputElement>) => meetingContext?.setMyMessage(e.target.value)} />
-                                    <Icon onClick={() => meetingContext?.sendChat()} icon="cil:send" color='black' height='5vh' />
-                                </div>
-                            </div>
-                        </div>
-
-            
+            <div className='h-[100vh] w-[100vw] md:w-[40vw] flex flex-col gap-3 p-3'>
+                <div className='flex flex-col items-center gap-3 p-3'>
+                    <p className='title font-medium bg-slate-800 text-lime-300'>Participants</p>
+                    {
+                        userContext?.currentuser && meetingContext?.remoteUser ?
+                            <>
+                                <p>{userContext?.currentuser?.firstname} {userContext?.currentuser?.lastname}</p>
+                                <p>{meetingContext?.remoteUser?.firstname} {meetingContext?.remoteUser?.lastname}</p>
+                            </>
+                            : null
+                    }
+                </div>
+                <div className='h-max w-max p-3 gap-4 flex flex-col'>
+                    <div>
+                        <span>Messages</span>
+                        {
+                            meetingContext?.myChatMeesage?.map((message: any) =>
+                                <span className='ml-[100%] flex flex-col'>
+                                    {message}
+                                </span>
+                            )
+                        }
+                        {
+                            meetingContext?.remoteUserChatMeesage?.map((message: any) =>
+                                <span className='mr-[100%] flex flex-col'>
+                                    {message}
+                                </span>
+                            )
+                        }
+                    </div>
+                    <div className='flex'>
+                        <input type="text" placeholder='Enter Message' value={myMessage || ''} onChange={(e: ChangeEvent<HTMLInputElement>) => {setMyMessage(e.target.value)}} />
+                        <Icon onClick={() => {meetingContext?.sendChat(myMessage)}} icon="cil:send" color='black' height='5vh' />
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }
