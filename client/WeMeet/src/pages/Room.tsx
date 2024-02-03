@@ -14,70 +14,73 @@ const Room: React.FC = () => {
     }, [meetingContext?.remoteSocketId])
 
     return (
-        <div className='relative h-screen w-screen flex flex-col justify-center'>
-            {
-                meetingContext?.userStream ?
-                    <div className='absolute ml-[50%]'>
-                        <ReactPlayer
-                            playing
-                            url={meetingContext?.userStream}
-                            height={'20vh'}
-                            width={'30vw'} />
-                    </div> : null
-            } {
-                meetingContext?.remoteStream ?
-                    <div className='h-max w-[100%]'>
-                        <ReactPlayer
-                            playing
-                            url={meetingContext?.remoteStream}
-                            height={'80vh'}
-                            width={'70vw'} />
-                        <div className='absolute h-[10vh] w-[100%] gap-4 p-3 flex justify-center items-center'>
-                            <Icon className='bg-teal-500 rounded-full p-2' icon="cil:mic" color='white' height={'5vh'} />
-                            <Icon className='bg-teal-500 rounded-full p-2' icon="majesticons:video-line" color='white' height={'5vh'} />
-                            <Icon className='bg-red-500 rounded-full p-2' icon="ic:round-call-end" color='white' height={'5vh'} />
-                            <Icon className='bg-teal-500 rounded-full p-2' icon="basil:chat-outline" color='white' height={'5vh'} />
+        <div className='bg-slate-100 h-screen w-screen flex md:flex-row justify-center'>
+            <div className='h-[100vh] md:w-[65vw] w-[100vw] flex flex-col items-center'>
+                {
+                    meetingContext?.userStream ?
+                        <div className='h-max absolute w-[100%] ml-[100%]'>
+                            <ReactPlayer
+                                playing
+                                url={meetingContext?.userStream}
+                                height={'20vh'}
+                                width={'30vw'} />
+                        </div> : null
+                } {
+                    meetingContext?.remoteStream ?
+                        <div className='h-max w-[100%]'>
+                            <ReactPlayer
+                                playing
+                                url={meetingContext?.remoteStream}
+                                height={'80vh'}
+                                width={'60vw'} />
+                            <div className='absolute h-[10vh] w-[100%] gap-4 p-3 flex justify-center items-center'>
+                                <Icon className='bg-teal-500 rounded-full p-2' icon="cil:mic" color='white' height={'5vh'} />
+                                <Icon className='bg-teal-500 rounded-full p-2' icon="majesticons:video-line" color='white' height={'5vh'} />
+                                <Icon className='bg-red-500 rounded-full p-2' icon="ic:round-call-end" color='white' height={'5vh'} />
+                                <Icon className='bg-teal-500 rounded-full p-2' icon="basil:chat-outline" color='white' height={'5vh'} />
+                            </div>
                         </div>
-                    </div>
-                    : null
-            }
-            <div className='h-[100vh] w-[100vw] md:w-[40vw] flex flex-col gap-3 p-3'>
-                <div className='flex flex-col items-center gap-3 p-3'>
-                    <p className='title font-medium bg-slate-800 text-lime-300'>Participants</p>
+                        : null
+                }
+            </div>
+            <div className='bg-white h-[100vh] w-[100vw] md:w-[35vw] overflow-y-scroll flex flex-col gap-3 p-3 border-l-2 border-gray-200'>
+                <div className='flex flex-col gap-3 p-3'>
+                    <p className='text-xl h-max w-max font-bold bg-gray-200 p-2 rounded'>Participants</p>
+                    <span className='h-[.25rem] rounded-xl w-[100%] bg-gray-200'></span>
                     {
                         userContext?.currentuser && meetingContext?.remoteUser ?
-                            <>
-                                <p>{userContext?.currentuser?.firstname} {userContext?.currentuser?.lastname}</p>
-                                <p>{meetingContext?.remoteUser?.firstname} {meetingContext?.remoteUser?.lastname}</p>
-                            </>
+                            < div className='h-max w-max flex flex-col items-center gap-3 p-3'>
+                                <p className='h-max w-max title text-lg'>{userContext?.currentuser?.firstname} {userContext?.currentuser?.lastname}</p>
+                                <p className='h-max w-max title text-lg'>{meetingContext?.remoteUser?.firstname} {meetingContext?.remoteUser?.lastname}</p>
+                            </div>
                             : null
                     }
                 </div>
-                <div className='h-max w-max p-3 gap-4 flex flex-col'>
-                    <div>
-                        <span>Messages</span>
+                <div className='h-max w-[100%] p-3 gap-4 flex flex-col'>
+                    <h2 className='text-xl h-max w-max font-bold bg-gray-200 p-2 rounded'>Messages</h2>
+                    <span className='h-[.25rem] rounded-xl w-[100%] bg-gray-200'></span>
+                    <div className='h-max w-[100%] flex flex-col gap-2'>
+                        <p className='h-max w-max title text-base'>Your Chat</p>
                         {
-                            meetingContext?.myChatMeesage?.map((message: any) =>
-                                <span className='ml-[100%] flex flex-col'>
-                                    {message}
-                                </span>
-                            )
-                        }
-                        {
-                            meetingContext?.remoteUserChatMeesage?.map((message: any) =>
-                                <span className='mr-[100%] flex flex-col'>
-                                    {message}
-                                </span>
+                            meetingContext?.ChatMessage.map((messageData: any) =>
+                                messageData.sender == false ?
+                                    <p className='h-max w-max ml-[100%] bg-lime-300 p-2 title text-base rounded-2xl flex flex-col'>
+                                        {messageData.message}
+                                    </p>
+                                    :
+                                    <p className='h-max w-max mr-[100%] bg-slate-800 text-white p-2 title text-base rounded-2xl flex flex-col'>
+                                        {messageData.message}
+                                    </p>
                             )
                         }
                     </div>
-                    <div className='flex'>
-                        <input type="text" placeholder='Enter Message' value={myMessage || ''} onChange={(e: ChangeEvent<HTMLInputElement>) => {setMyMessage(e.target.value)}} />
-                        <Icon onClick={() => {meetingContext?.sendChat(myMessage)}} icon="cil:send" color='black' height='5vh' />
+                    <div className='flex flex-row items-center h-max w-[100%] gap-3'>
+                        <input className='h-[8vh] w-[100%] rounded border-2 border-gray-200 p-2 text-base font-normal focus-visible:outline-none shadow-xl' type="text" placeholder='Type Your Message' value={myMessage || ''} onChange={(e: ChangeEvent<HTMLInputElement>) => { setMyMessage(e.target.value) }} />
+                        <Icon className='bg-lime-300 rounded p-3 h-[8vh] w-max' onClick={() => { meetingContext?.sendChat(myMessage) }} icon="cil:send" color='black' height='5vh' />
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 
