@@ -86,7 +86,7 @@ io.on('connection', (socket) => {
         }
     }));
     socket.on('send', (data) => {
-        socket.broadcast.emit('messageFromRemote', { message: data.message });
+        socket.broadcast.emit('messageFromRemote', { message: data.message, sender: true });
     });
     socket.on('connected', () => { io.emit('startMeeting'); });
 });
