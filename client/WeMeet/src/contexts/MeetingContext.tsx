@@ -13,10 +13,7 @@ interface Contextvalue {
     meetingCredentials: MeetingCred
     remoteSocketId: string | undefined
     remoteUser: { firstname: string, lastname: string } | undefined
-    // myMessage: string | undefined
-    // setMyMessage: any
-    myChatMeesage: string[] | undefined[] | any[]
-    remoteUserChatMeesage: string[] | undefined[] | any[]
+    ChatMessage: string[] | any
     sendChat: (myMessage: any) => void
 }
 
@@ -39,8 +36,7 @@ export const MeetingProvider = (props: any) => {
     const [remoteStream, setRemoteStream] = useState<MediaStream>();
     const [connected, setConnected] = useState<boolean>();
     const [meetingCredentials, setMeetingCredentials] = useState<MeetingCred | any>({ meetingId: '', meetingPassword: '' })
-    const [myChatMeesage, setMyChatMessage] = useState<any[]>([])
-    const [remoteUserChatMeesage, setRemoteUserChatMeesage] = useState<any[]>([])
+    const [ChatMessage, setChatMessage] = useState<string[] | any[]>([])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -115,6 +111,7 @@ export const MeetingProvider = (props: any) => {
         if (sendersOffer) {
             const answer = await peer.generateAnswer(sendersOffer);
             console.log("answer", answer);
+            startMeeting()
             answer ? socket.emit('answer', answer) : console.log("answer not generated");
         }
     }, [])
@@ -123,6 +120,7 @@ export const MeetingProvider = (props: any) => {
         if (data.answer) {
             console.log("offeraccepted answer", data.answer);
             peer.setRemoteDescription(data.answer).then(() => {
+                startMeeting()
                 socket.emit('connected')
             }).catch((error) => console.log(error))
         }
@@ -137,12 +135,14 @@ export const MeetingProvider = (props: any) => {
 
     const negotiationaccept = async (data: any) => {
         const answer = await peer.generateAnswer(data.sendersNegoOffer)
+        startMeeting()
         socket.emit('negotiationdone', answer);
         setUsersData()
     }
 
     const acceptnegotiationanswer = async (data: any) => {
         await peer.setRemoteDescription(data.receiverNegoAnswer).then(() => {
+            startMeeting()
             socket.emit('connected')
         }).catch((error) => console.log(error))
     }
@@ -156,13 +156,13 @@ export const MeetingProvider = (props: any) => {
     }
 
     const sendChat = useCallback(async (myMessage: any) => {
-        setMyChatMessage(prevMessage => [...prevMessage, myMessage])
+        setChatMessage(prevMessage => [...prevMessage, { message: myMessage, sender: false }])
         socket.emit('send', { message: myMessage })
     }, [])
 
     const messageFromRemote = (data: any) => {
-        setRemoteUserChatMeesage(prevMessage => [...prevMessage, data.message])
-        console.log("remotearray", remoteUserChatMeesage);
+        setChatMessage(prevMessage => [...prevMessage, { message: data.message, sender: data.sender }])
+        console.log("remotearray", ChatMessage);
     }
 
     useEffect(() => {
@@ -187,7 +187,7 @@ export const MeetingProvider = (props: any) => {
         socket.on('userJoinedMeeting', userJoinedMeeting)
         socket.on('acceptOffer', acceptOffer)
         socket.on('offeraccepted', offeraccepted)
-        socket.on('startMeeting', startMeeting)
+        // socket.on('startMeeting', startMeeting)
         socket.on('negotiationaccept', negotiationaccept)
         socket.on('acceptnegotiationanswer', acceptnegotiationanswer)
         socket.on('remoteUser', setremoteUser)
@@ -199,7 +199,7 @@ export const MeetingProvider = (props: any) => {
             socket.off('userJoinedMeeting', userJoinedMeeting)
             socket.off('acceptOffer', acceptOffer)
             socket.off('offeraccepted', offeraccepted)
-            socket.off('startMeeting', startMeeting)
+            // socket.off('startMeeting', startMeeting)
             socket.off('negotiationaccept', negotiationaccept)
             socket.off('acceptnegotiationanswer', acceptnegotiationanswer)
             socket.off('remoteUser', setremoteUser)
@@ -208,7 +208,7 @@ export const MeetingProvider = (props: any) => {
     }, [socket])
 
     const info: Contextvalue = {
-        userStream, remoteStream, remoteSocketId, key, handleChange, handleSubmit, sendChat, meetingCredentials, remoteUser, myChatMeesage, remoteUserChatMeesage,
+        userStream, remoteStream, remoteSocketId, key, handleChange, handleSubmit, sendChat, meetingCredentials, remoteUser, ChatMessage
     }
     return (
         <MeetingContext.Provider value={info}>
