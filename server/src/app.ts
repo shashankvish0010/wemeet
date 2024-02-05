@@ -33,17 +33,20 @@ io.on('connection', (socket) => {
     socket.emit('hello', socket.id)
 
     socket.on('meetingCredential', async (data) => {
-        console.log(data);
         const result = await pool.query('SELECT host_email FROM Meetings WHERE meeting_id=$1', [data.meetingId])
         if (result.rows.length > 0) {
             if (result.rows[0].host_email == data.userEmail) {
-                console.log(true, data.userEmail);
-
-                socket.emit('validcred')
-                socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, email_address: data.userEmail, host: true })
+                const hostData = await pool.query('SELECT * FROM Users WHERE email=$1', [data.userEmail])
+                if(hostData.rows.length > 0){
+                    socket.emit('validcred')
+                    socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, email_address: data.userEmail, firstname: hostData.rows[0].firstname, lastname: hostData.rows[0].lastname, host: true })
+                }
             } else {
-                socket.emit('validcred')
-                socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, host: false })
+                const userData = await pool.query('SELECT * FROM Users WHERE email=$1', [data.userEmail])
+                if(userData.rows.length > 0){
+                    socket.emit('validcred')
+                    socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, email_address: data.userEmail, firstname: userData.rows[0].firstname, lastname: userData.rows[0].lastname, host: false })
+                }
             }
         }
     })
@@ -54,7 +57,6 @@ io.on('connection', (socket) => {
             sender = data.UserSocketId
             sendersOffer = data.offer
             console.log("send:", sender, "recv:", receiver);
-
             io.to(receiver).emit('acceptOffer', sendersOffer)
         } catch (error) {
             console.log(error);
@@ -65,27 +67,11 @@ io.on('connection', (socket) => {
         io.to(sender).emit('offeraccepted', { answer })
     })
 
-    socket.on('negotiaionOffer', (offer) => {
-        io.to(receiver).emit('negotiationaccept', { sendersNegoOffer: offer })
-    })
-
-    socket.on('negotiationdone', (answer) => {
-        io.to(sender).emit('acceptnegotiationanswer', { receiverNegoAnswer: answer })
-    })
-
-    socket.on('getRemoteUser', async (data) => {
-        const userData = await pool.query('SELECT * FROM Users WHERE email=$1', [data.email])
-        if (userData.rows.length > 0) {
-            const remoteUser = { firstname: userData.rows[0].firstname, lastname: userData.rows[0].lastname };
-            socket.emit('remoteUser', remoteUser)
-        }
-    })
+    socket.on('connected', () => { io.emit('startMeeting') })
 
     socket.on('send', (data) => {
-        socket.broadcast.emit('messageFromRemote', {message: data.message, sender: true})
+        socket.broadcast.emit('messageFromRemote', { message: data.message, sender: true })
     })
-
-    socket.on('connected', () => { io.emit('startMeeting') })
 })
 
 server.listen(process.env.PORT, () => { Notification(); console.log(`Server Running at ${process.env.PORT}`) })
