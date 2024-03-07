@@ -126,24 +126,22 @@ router.post('/user/login', (req, res) => __awaiter(void 0, void 0, void 0, funct
     else {
         const user = yield dbconnect_1.default.query('SELECT * FROM Users WHERE email=$1', [email]);
         if (user.rows.length > 0) {
-            if (email === user.rows[0].email) {
-                const isMatch = yield bcrypt_1.default.compare(password, user.rows[0].user_password);
-                if (isMatch) {
-                    if (user.rows[0].account_verified === false) {
-                        res.json({ success: true, id: user.rows[0].id, verified: user.rows[0].account_verified, message: "Login Successfully" });
-                    }
-                    else {
-                        const token = jsonwebtoken_1.default.sign(user.rows[0].id, `${process.env.USERS_SECRET_KEY}`);
-                        res.json({ success: true, userdata: user.rows[0], id: user.rows[0].id, token, verified: user.rows[0].account_verified, message: "Login Successfully" });
-                    }
+            const isMatch = yield bcrypt_1.default.compare(password, user.rows[0].user_password);
+            if (isMatch) {
+                if (user.rows[0].account_verified === false) {
+                    res.json({ success: true, id: user.rows[0].id, verified: user.rows[0].account_verified, message: "Login Successfully" });
                 }
                 else {
-                    res.json({ success: false, id: user.rows[0].id, verified: user.rows[0].account_verified, message: "Incorrect Password" });
+                    const token = jsonwebtoken_1.default.sign(user.rows[0].id, `${process.env.USERS_SECRET_KEY}`);
+                    res.json({ success: true, userdata: user.rows[0], id: user.rows[0].id, token, verified: user.rows[0].account_verified, message: "Login Successfully" });
                 }
             }
             else {
-                res.json({ success: false, id: user.rows[0].id, verified: user.rows[0].account_verified, message: "Email does not exists" });
+                res.json({ success: false, id: user.rows[0].id, verified: user.rows[0].account_verified, message: "Incorrect Password" });
             }
+        }
+        else {
+            res.json({ success: false, message: "Email does not exists" });
         }
     }
 }));
