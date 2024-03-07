@@ -96,12 +96,13 @@ const sortTodaysMeetings = (array) => {
     }
 };
 const Notification = () => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     console.log("enter");
     try {
         const cacheValue = yield client.get('meetings:1');
         if (cacheValue) {
             const cacheData = JSON.parse(cacheValue);
-            if (cacheData.length > 1) {
+            if (cacheData.length > 0) {
                 cacheData === null || cacheData === void 0 ? void 0 : cacheData.map((data) => {
                     console.log("dat", data.scheduled_date);
                     const currentDataTime = data.scheduled_date;
@@ -112,7 +113,7 @@ const Notification = () => __awaiter(void 0, void 0, void 0, function* () {
                 sortTodaysMeetings(todayMeetings);
             }
             else {
-                console.log(cacheData[0].toLocaleDateString().split('/'));
+                console.log((_a = cacheData === null || cacheData === void 0 ? void 0 : cacheData.toLocaleDateString()) === null || _a === void 0 ? void 0 : _a.split('/'));
             }
         }
         else {
