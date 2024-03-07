@@ -37,16 +37,16 @@ const Home: React.FC = () => {
         <div className='h-[100%] md:w-[40%] p-4 rounded-md flex flex-col justify-evenly gap-2 items-center'>
           <h1 className='md:text-6xl text-2xl text-center md:text-start font-bold uppercase'>Simplifying your Meetings.</h1>
           <div className='h-max w-[100%] flex flex-col gap-2 p-3'>
-            <li className='flex gap-2 items-center'>
-              <Icon icon="mdi:star-three-points" height={'2vh'} />
+            <li className='md:w-max w-[80vw] flex gap-2 items-center'>
+              <Icon icon="mdi:star-three-points" height={'1rem'} />
               <p className='font-semibold text-md text-slate-800'>
                 Schedule and host your meetings.
               </p>
             </li>
-            <li className='flex gap-2 items-center'>
-              <Icon icon="mdi:star-three-points" height={'2vh'} />
+            <li className='md:w-max w-[80vw] flex gap-2 items-center'>
+              <Icon icon="mdi:star-three-points" height={'1rem'} />
               <p className='font-semibold text-md text-slate-800'>
-                Offers you immersive scheduling and group video chat experience.
+                Offers you immersive scheduling and video chat experience.
               </p>
             </li>
           </div>
@@ -56,10 +56,10 @@ const Home: React.FC = () => {
           <img className='rounded-2xl shadow-xl' src={HeadBanner} width={"400dvw"} />
         </div>
       </div>
-      <div className='h-max w-screen flex items-center justify-center p-3'>
-        <button onClick={() => { navigate('/add/event/' + userContext?.currentuser?.id) }} className='text-md font-medium w-max rounded-full bg-slate-800 p-3 shadow-lg text-white'>Add Your Events</button>
-      </div>
-      <div className='mt-5 h-max w-screen flex md:flex-row gap-3 flex-col items-center md:justify-evenly p-3'>
+      <span className='w-[85vw] p-3'>
+        <p className='title md:text-3xl bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 text-transparent bg-clip-text text-2xl'>Event Updates.</p>
+        </span>
+      <div className='h-max w-screen flex md:flex-row gap-3 flex-col items-center md:justify-evenly p-3'>
         {userContext?.login === true ?
           eventContext?.userEvents && eventContext.userEvents.length > 0
             ? eventContext.userEvents.map((current: any) => (
@@ -73,9 +73,12 @@ const Home: React.FC = () => {
             : null
           : null}
       </div>
-      <div className='bg-slate-100 mt-5 h-max md:w-[70vw] w-[90vw] flex flex-col justify-evenly gap-4 items-center p-3 rounded-b-full shadow-xl'>
-        <span className='h-max w-[100%] flex flex-row items-center justify-center gap-2'>
-          <p className='text-xl font-normal text-white uppercase'>Your Upcoming Meetings</p>
+      <div className='h-max w-screen flex items-center justify-center p-3'>
+        <button onClick={() => { navigate('/add/event/' + userContext?.currentuser?.id) }} className='text-md font-medium w-max rounded-full bg-slate-800 p-3 shadow-lg text-white'>Add Your Events</button>
+      </div>
+      <div className='bg-lime-300 mt-5 h-max w-max flex flex-col justify-evenly gap-4 items-center p-3 rounded-3xl shadow-xl'>
+        <span className='h-max w-[85vw] p-3'>
+        <p className='title md:text-3xl bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 text-transparent bg-clip-text text-2xl'>Your upcoming meetings.</p>
         </span>
         {userContext?.login == true && userMeetings ?
           userMeetings.length > 0 ?
@@ -97,7 +100,7 @@ const Home: React.FC = () => {
       <div className='h-max w-max flex flex-col p-3'>
         <div className='h-max w-[85vw] flex flex-col justify-evenly items-center p-3'>
           <span className='h-max w-[100%] p-3 flex items-center rounded-lg'>
-            <p className='title h-[20vh] md:w-[50%] md:text-5xl bg-gradient-to-r from-slate-800 via-slate-600 to-slate-800 text-transparent bg-clip-text text-3xl'>We've got a plan that's perfect for you.</p>
+            <p className='title h-[20vh] md:w-[50%] md:text-5xl bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 text-transparent bg-clip-text text-3xl'>We've got a plan that's perfect for you.</p>
           </span>
           <div className='h-max w-[100%] flex md:flex-row flex-col items-center md:justify-evenly md:gap-0 gap-10 p-5'>
             <PricePlans
@@ -105,7 +108,7 @@ const Home: React.FC = () => {
               plan_price={0}
               feat_head="Everything in our free plan"
               features={["Access to basic features", "Access to basic features", "Access to basic features"]}
-              color='white'
+              color='bg-white'
               headingColor='text-black'
               textGrade='text-gray-600'
               btnGrade='bg-slate-800'
@@ -124,10 +127,10 @@ const Home: React.FC = () => {
               btnTxtcolor='text-black'
               distGrade='bg-lime-300'
             />
-          </div>
+        </div>
         </div>
       </div>
-      <div className='h-max bg-gradient-to-b from-slate-800 via-slate-600 to-slate-800 text-white w-max p-3 flex flex-col items-center rounded-lg'>
+      <div className='h-max bg-gradient-to-b from-slate-800 via-slate-600 to-slate-800 text-white w-max p-3 flex flex-col items-center rounded-3xl shadow-2xl'>
         <div className='h-max w-[85vw] flex md:flex-row flex-col justify-evenly items-center p-3'>
           <span className='h-max w-[85vw] w-md:[22vw] flex flex-col gap-10 items-center'>
             <p className='title w-[100%] md:text-4xl text-lime-300 text-3xl font-semibold p-2'>Designed for those who conduct meetings at scale.</p>
