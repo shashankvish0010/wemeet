@@ -27,7 +27,7 @@ const Headers: React.FC = () => {
             <Icon className='lg:h-max md:h-max h-[4vh] cursor-pointer' height={'6vh'} icon="solar:logout-outline" onClick={() => { usercontext.dispatch({ type: "LOGOUT" }) }} />
           </span>)
           : (<Link to='/register'>
-            <button className='bg-slate-800 rounded-sm p-1 md:text-md font-medium text-white hover:shadow-md transition duration-300 ease-in-out transform hover:-translate-y+1 hover:scale-105'>Login/SignUp</button>
+            <button className='bg-slate-800 rounded-sm p-2 md:text-md font-medium text-white hover:shadow-md transition duration-300 ease-in-out transform hover:-translate-y+1 hover:scale-105'>Login/SignUp</button>
           </Link>)
         }
       </div>
