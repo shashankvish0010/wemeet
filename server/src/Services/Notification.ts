@@ -94,7 +94,7 @@ export const Notification = async () => {
         const cacheValue = await client.get('meetings:1')
         if (cacheValue) {
             const cacheData = JSON.parse(cacheValue)
-            if (cacheData.length > 1) {
+            if (cacheData.length > 0) {
                 cacheData?.map((data: any) => {
                     console.log("dat", data.scheduled_date);
                     const currentDataTime = data.scheduled_date
@@ -105,7 +105,7 @@ export const Notification = async () => {
                 sortTodaysMeetings(todayMeetings)
             }
             else {
-                console.log(cacheData[0].toLocaleDateString().split('/'));
+                console.log(cacheData?.toLocaleDateString()?.split('/'));
             }
         } else {
             const response = await pool.query('SELECT * from Meetings');
