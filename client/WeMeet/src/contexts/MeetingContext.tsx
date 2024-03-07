@@ -15,9 +15,10 @@ interface Contextvalue {
     remoteUser: { firstname: string, lastname: string } | undefined
     ChatMessage: string[] | any
     sendChat: (myMessage: any) => void
-    controlMic: () => void
-    controlVideo: () => void
     handleNegotiation: () => void
+    endMeeting: () => void
+    toggleVideoMute: () => void
+    toggleAudioMute: () => void
 }
 
 interface MeetingCred {
@@ -35,26 +36,41 @@ export const MeetingProvider = (props: any) => {
     const [key, setKey] = useState<boolean>(false)
     const [remoteUser, setRemUser] = useState<{ firstname: string, lastname: string } | undefined>()
     const [userStream, setUserStream] = useState<MediaStream | any>();
-    const [remoteStream, setRemoteStream] = useState<MediaStream>();
+    const [remoteStream, setRemoteStream] = useState<MediaStream | any>();
     const [connected, setConnected] = useState<boolean>();
     const [meetingCredentials, setMeetingCredentials] = useState<MeetingCred | any>({ meetingId: '', meetingPassword: '' })
     const [ChatMessage, setChatMessage] = useState<string[] | any[]>([])
+    const [isVideoMuted, setIsVideoMuted] = useState(false);
+    const [isAudioMuted, setIsAudioMuted] = useState(false);
 
     //******************** Meeting Controller ************************/
-
-    let mic = true
-    let video = true
-
-    const controlMic = () => {
-        mic = !mic
-        startStreaming()
-        console.log(mic);
+    
+  const toggleVideoMute = () => {
+    if (userStream) {
+      userStream.getVideoTracks().forEach((track: any) => {
+        track.enabled = !isVideoMuted;
+      });
+      setIsVideoMuted(!isVideoMuted);
     }
+  };
 
-    const controlVideo = () => {
-        video = !video
-        startStreaming()
-        console.log(video);
+  const toggleAudioMute = () => {
+    if (userStream) {
+      userStream.getAudioTracks().forEach((track: any) => {
+        track.enabled = !isAudioMuted;
+      });
+      setIsAudioMuted(!isAudioMuted);
+    }
+  };
+
+    const endMeeting = () => {
+        const userMediaTracks = userStream.getTracks();
+        userMediaTracks.forEach((track: any) => track.stop());
+            setUserStream(null);
+    setRemoteStream(null);
+        // Close the connection
+        Peerconnection.peer.close();
+        window.location.href = '/'
     }
 
     //******************** Video Chat Meeting ************************/
@@ -93,13 +109,13 @@ export const MeetingProvider = (props: any) => {
     }, [])
 
     const startStreaming = useCallback(() => {
-        navigator.mediaDevices.getUserMedia({ video: video, audio: mic }).then((stream) => {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
             setUserStream(stream)
             stream?.getTracks().forEach((track: any) => {
                 Peerconnection.peer.addTrack(track, stream)
             })
         }).catch((error) => console.log(error))
-    }, [userStream, connected, video, mic])
+    }, [userStream, connected])
 
     const startMeeting = useCallback(() => {
         startStreaming()
@@ -137,6 +153,8 @@ export const MeetingProvider = (props: any) => {
             acceptOffer
         }
     }, [])
+
+    //********************************* Chat Messages ******************************************/
 
     const sendChat = useCallback(async (myMessage: any) => {
         setChatMessage(prevMessage => [...prevMessage, { message: myMessage, sender: false }])
@@ -178,7 +196,7 @@ export const MeetingProvider = (props: any) => {
     }, [socket])
 
     const info: Contextvalue = {
-        userStream, remoteStream, remoteSocketId, key, controlMic, controlVideo, handleChange, handleSubmit, sendChat, meetingCredentials, remoteUser, ChatMessage, handleNegotiation
+        userStream, remoteStream, remoteSocketId, key, toggleAudioMute, toggleVideoMute, endMeeting, handleChange, handleSubmit, sendChat, meetingCredentials, remoteUser, ChatMessage, handleNegotiation
     }
     return (
         <MeetingContext.Provider value={info}>
