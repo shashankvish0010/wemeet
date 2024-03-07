@@ -9,9 +9,9 @@ export const sendEmail = async (email_message: any) => {
         }
     });
 
-    return await transporter.sendMail(email_message).then(()=>{
+    return await transporter.sendMail(email_message).then(() => {
         return true
-    }).catch((error: Error)=>{
+    }).catch((error: Error) => {
         console.log(error);
         return false
     })

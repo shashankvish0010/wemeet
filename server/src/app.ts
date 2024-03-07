@@ -37,13 +37,13 @@ io.on('connection', (socket) => {
         if (result.rows.length > 0) {
             if (result.rows[0].host_email == data.userEmail) {
                 const hostData = await pool.query('SELECT * FROM Users WHERE email=$1', [data.userEmail])
-                if(hostData.rows.length > 0){
+                if (hostData.rows.length > 0) {
                     socket.emit('validcred')
                     socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, email_address: data.userEmail, firstname: hostData.rows[0].firstname, lastname: hostData.rows[0].lastname, host: true })
                 }
             } else {
                 const userData = await pool.query('SELECT * FROM Users WHERE email=$1', [data.userEmail])
-                if(userData.rows.length > 0){
+                if (userData.rows.length > 0) {
                     socket.emit('validcred')
                     socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, email_address: data.userEmail, firstname: userData.rows[0].firstname, lastname: userData.rows[0].lastname, host: false })
                 }
