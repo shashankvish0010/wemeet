@@ -16,7 +16,7 @@ const Room: React.FC = () => {
     return (
         <div className='bg-slate-100 h-screen w-screen flex md:flex-row flex-col justify-center'>
             <div className='h-[100vh] md:w-[65vw] w-[100vw] flex flex-col items-center'>
-            <button className='bg-lime-300 font-semibold text-black uppercase p-2 rounded' onClick={() => { meetingContext?.handleNegotiation() }}>Start Meeting</button>
+                <button className='bg-lime-300 font-semibold text-black uppercase p-2 rounded' onClick={() => { meetingContext?.handleNegotiation() }}>Start Meeting</button>
                 {
                     meetingContext?.userStream ?
                         <span className='rounded border-2 border-slate-100 h-[20vh] absolute w-[30vw] mt-[10%] md:mt-[5%] ml-[20%] md:ml-[40%]'>
@@ -34,10 +34,10 @@ const Room: React.FC = () => {
                                 url={meetingContext?.remoteStream}
                                 height='100%'
                                 width='100%' />
-                            <div className='bg-transparent h-[10vh] w-max gap-4 p-3 flex justify-center items-center'>
-                                <Icon onClick={meetingContext?.controlMic} className='cursor-pointer bg-teal-500 rounded-full p-2' icon="cil:mic" color='white' height={'6vh'} />
-                                <Icon onClick={meetingContext?.controlVideo} className='cursor-pointer bg-teal-500 rounded-full p-2' icon="majesticons:video-line" color='white' height={'6vh'} />
-                                <Icon className='bg-red-500 rounded-full p-2' icon="ic:round-call-end" color='white' height={'6vh'} />
+                            <div className='bg-slate-100 h-[10vh] w-max gap-4 p-3 flex justify-center items-center'>
+                                <Icon onClick={() => { meetingContext?.toggleAudioMute() }} className='cursor-pointer bg-teal-500 rounded-full p-2' icon="cil:mic" color='white' height={'6vh'} />
+                                <Icon onClick={() => { meetingContext?.toggleVideoMute() }} className='cursor-pointer bg-teal-500 rounded-full p-2' icon="majesticons:video-line" color='white' height={'6vh'} />
+                                <Icon onClick={() => { meetingContext?.endMeeting() }} className='cursor-pointer bg-red-500 rounded-full p-2' icon="ic:round-call-end" color='white' height={'6vh'} />
                                 <Icon className='bg-teal-500 rounded-full p-2' icon="basil:chat-outline" color='white' height={'6vh'} />
                             </div>
                         </div>
