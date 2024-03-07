@@ -61,7 +61,7 @@ const Register: React.FC = () => {
             <span className='shadow p-1 font-medium bg-slate-800 text-white'>{message}</span>
             : null
             }
-            <div className='w-max h-max flex flex-col justify-evenly gap-5 p-5 shadow'>
+            <div className='bg-white border-2 rounded-xl w-max h-max flex flex-col justify-evenly gap-5 p-5 shadow'>
                 <h1 className='text-2xl font-semibold'>Register</h1>
                 <span className='w-[100%] h-[0.2rem] bg-slate-800 rounded'></span>
                 <form method='POST' className='flex flex-col justify-arounf items-center gap-3'>
