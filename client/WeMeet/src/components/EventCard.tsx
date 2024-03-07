@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Icon } from '@iconify/react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+
 interface CardType {
     id: string,
     name: string,
@@ -8,28 +10,37 @@ interface CardType {
 }
 
 const EventCard: React.FC<CardType> = (props: CardType) => {
+    const [state, setState] = useState<{ value: string, copied: boolean }>({
+        value: '',
+        copied: false
+    })
     return (
-        <div className='bg-slate-800 h-max text-white md:w-[25vw] w-[70vw] flex flex-col rounded-2xl shadow-xl p-3 gap-4 justify-evenly items-center'>
-            <span className='h-max w-[100%]'>
-                <h1 className='text-2xl font-semibold'>{props.name}</h1>
-            </span>
-            <span className='w-[100%] h-[0.3rem] bg-cyan-400 rounded'></span>
-            <div className='h-max w-[100%] flex flex-col justify-evenly gap-4 p-3'>
-                <span className='flex flex-row items-center gap-2 md:text-xl text-base font-semibold'>
-                    <span className='bg-cyan-400 rounded-full p-2'><Icon icon="ci:timer" color='black'/></span>
-                    {props.duration} mins.
+        <div className='bg-white border-2 rounded-2xl shadow-xl h-max md:w-[35vw] w-[80vw] flex flex-col items-center overflow-x-hidden'>
+            <span className='h-[0.6rem] w-[100%] bg-indigo-600'></span>
+            <div className='h-[100%] w-[100%] flex flex-col justify-evenly p-3 gap-3'>
+                <span className='w-[100%] flex justify-end items-center gap-2'>
+                    <Icon icon="mdi:edit" color='orange' height={'1.5rem'} />
+                    <Icon icon="mdi:delete" color='red' height={'1.5rem'} />
                 </span>
-                <span className='text-medium md:text-lg text-base font-normal'>
-                    {props.description}
-                </span>
+                <p className='text-xl'>{props.name}</p>
+                <p className='text-base'>{props.duration}min, {props.description}</p>
+                <p className='cursor-pointer text-blue-500 text-lg'>View Booking Page</p>
             </div>
-            <div className='flex flex-col gap-4 p-3 justify-evenly h-max w-[100%]'>
-            <span className='text-medium md:text-lg text-base font-semibold'>
-                    Event scheduling URL:
-                </span>                
-                <span className='w-[100%] text-blue-300 md:text-base text-xs md:font-medium'>
-                    http://localhost:5173/book/{props.duration}/{props.id}
-                </span>
+            <span className='bg-gray-200 h-[0.2rem] w-[100%] rounded'></span>
+            <div className='flex justify-between items-center h-max w-[100%] p-3'>
+                {
+                    state.copied == false ?
+                        <p className='text-base font-medium'>Copy Your Booking Link</p>
+                        :
+                        <span className='h-max w-max flex flex-row items-center gap-2'>
+                            <Icon icon="subway:tick" height='1rem' color='green'/>
+                            <p className='text-base font-medium'>Link Copied to clipboard</p>
+                        </span>
+
+                }
+                <CopyToClipboard text={state.value} onCopy={() => setState({ value: `http://localhost:5173/book/${props.duration}/${props.id}`, copied: true })}>
+                    <Icon className='cursor-pointer' icon="ph:copy" color='#2196F3' height={'2rem'} />
+                </CopyToClipboard>
             </div>
         </div>
     )
