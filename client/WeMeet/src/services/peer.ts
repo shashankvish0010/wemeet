@@ -4,31 +4,30 @@ class Peerconnection {
     constructor() {
 
         if (!this.peer) {
-
             this.peer = new RTCPeerConnection({
                 iceServers: [
                     {
-                        urls: "stun:stun.relay.metered.ca:80",
+                      urls: "stun:stun.relay.metered.ca:80",
                     },
                     {
-                        urls: "turn:standard.relay.metered.ca:80",
-                        username: "3a3eb5b58d20f748a57f4847",
-                        credential: "YwyjBiZv/hEMZQsx",
+                      urls: "turn:global.relay.metered.ca:80",
+                      username: "3a3eb5b58d20f748a57f4847",
+                      credential: "YwyjBiZv/hEMZQsx",
                     },
                     {
-                        urls: "turn:standard.relay.metered.ca:80?transport=tcp",
-                        username: "3a3eb5b58d20f748a57f4847",
-                        credential: "YwyjBiZv/hEMZQsx",
+                      urls: "turn:global.relay.metered.ca:80?transport=tcp",
+                      username: "3a3eb5b58d20f748a57f4847",
+                      credential: "YwyjBiZv/hEMZQsx",
                     },
                     {
-                        urls: "turn:standard.relay.metered.ca:443",
-                        username: "3a3eb5b58d20f748a57f4847",
-                        credential: "YwyjBiZv/hEMZQsx",
+                      urls: "turn:global.relay.metered.ca:443",
+                      username: "3a3eb5b58d20f748a57f4847",
+                      credential: "YwyjBiZv/hEMZQsx",
                     },
                     {
-                        urls: "turns:standard.relay.metered.ca:443?transport=tcp",
-                        username: "3a3eb5b58d20f748a57f4847",
-                        credential: "YwyjBiZv/hEMZQsx",
+                      urls: "turns:global.relay.metered.ca:443?transport=tcp",
+                      username: "3a3eb5b58d20f748a57f4847",
+                      credential: "YwyjBiZv/hEMZQsx",
                     },
                 ],
             }
