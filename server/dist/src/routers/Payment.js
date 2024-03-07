@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const stripe_1 = __importDefault(require("stripe"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const stripe = new stripe_1.default('sk_test_51OZfGTSDLOYDoEuJJrmO9Spf2IQ8PbZtTYb2btyDESNNu1H4Ro5Cc1x32QRBG4QVVX4um77wAO9IobaQ5rdwHQHQ00Iy82r1mv');
 router.post('/checkout/plan', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var { plan_price, plan_name } = req.body;
@@ -38,8 +40,8 @@ router.post('/checkout/plan', (req, res) => __awaiter(void 0, void 0, void 0, fu
                             quantity: 1
                         }
                     ],
-                    success_url: 'http://localhost:5173/success',
-                    cancel_url: 'http://localhost:5173/cancel',
+                    success_url: `${process.env.BASE_URL}/success`,
+                    cancel_url: `${process.env.BASE_URL}/cancel`,
                 });
                 res.json({ success: true, url: session.url });
             }
