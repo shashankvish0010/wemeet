@@ -41,11 +41,10 @@ const sortTodaysMeetings = (array) => {
             let updateTime;
             let sendTime;
             for (let i = 0; i < meetings.length; i++) {
-                console.log(time, meetings[i].scheduled_time);
-                if (time + 15 == meetings[i].scheduled_time || Number(`${new Date().getHours()}${new Date().getMinutes() + 15}`) == meetings[i].scheduled_time) {
+                if (time + 10 == meetings[i].scheduled_time || Number(`${new Date().getHours()}${new Date().getMinutes() + 15}`) == meetings[i].scheduled_time) {
                     console.log("enter scheduler TT");
                     sendUpdates.push(meetings[i]);
-                    updateTime = meetings[i].scheduled_time - 15;
+                    updateTime = meetings[i].scheduled_time - 10;
                     sendTime = meetings[i].scheduled_time;
                 }
             }
@@ -61,7 +60,20 @@ const sortTodaysMeetings = (array) => {
     }
 };
 const sendNotification = (reminderTime, sendToTime) => {
-    schedule.scheduleJob(reminderTime, () => {
+    const reminderTimeutcDate = new Date(reminderTime);
+    reminderTimeutcDate.setHours(reminderTimeutcDate.getHours() + 5);
+    reminderTimeutcDate.setMinutes(reminderTimeutcDate.getMinutes() + 30);
+    const reminderMinutes = reminderTimeutcDate.getMinutes();
+    const reminderhours = reminderTimeutcDate.getHours();
+    const reminderCronExpression = `${reminderMinutes} ${reminderhours} ${reminderTimeutcDate.getDate()} ${reminderTimeutcDate.getMonth() + 1} *`;
+    const sendToTimeutcDate = new Date(sendToTime);
+    sendToTimeutcDate.setHours(sendToTimeutcDate.getHours() + 5);
+    sendToTimeutcDate.setMinutes(sendToTimeutcDate.getMinutes() + 30);
+    const sendToTimeminutes = sendToTimeutcDate.getMinutes();
+    const sendToTimehours = sendToTimeutcDate.getHours();
+    const sendToTimeCronExpression = `${sendToTimeminutes} ${sendToTimehours} ${sendToTimeutcDate.getDate()} ${sendToTimeutcDate.getMonth() + 1} *`;
+    console.log(reminderCronExpression, sendToTimeCronExpression);
+    schedule.scheduleJob(reminderCronExpression, () => {
         sendUpdates === null || sendUpdates === void 0 ? void 0 : sendUpdates.map((data) => __awaiter(void 0, void 0, void 0, function* () {
             const host_email_message = {
                 from: process.env.EMAIL_USER,
@@ -79,7 +91,7 @@ const sendNotification = (reminderTime, sendToTime) => {
             yield sendEmail(user_email_message);
         }));
     });
-    schedule.scheduleJob(sendToTime, () => {
+    schedule.scheduleJob(sendToTimeCronExpression, () => {
         sendUpdates === null || sendUpdates === void 0 ? void 0 : sendUpdates.map((data) => __awaiter(void 0, void 0, void 0, function* () {
             const host_email_message = {
                 from: process.env.EMAIL_USER,
