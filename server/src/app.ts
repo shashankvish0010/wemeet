@@ -76,7 +76,6 @@ io.on('connection', (socket) => {
 })
 
 server.listen(process.env.PORT, () => {
-    // schedule.scheduleJob('0 * * * * *', () => cleanUp())
-    cleanUp()
+    schedule.scheduleJob('0 0 * * * ', () => cleanUp())
     console.log(`Server Running at ${process.env.PORT}`)
 })
