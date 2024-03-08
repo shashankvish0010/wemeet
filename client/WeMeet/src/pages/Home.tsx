@@ -8,6 +8,7 @@ import EventCard from '../components/EventCard'
 import BookingCard from '../components/BookingCard'
 import BenefitsCard from '../components/BenefitsCard'
 import PricePlans from '../components/PricePlans'
+import {motion} from 'framer-motion'
 
 interface meetingType {
   duration: string
@@ -34,7 +35,8 @@ const Home: React.FC = () => {
   return (
     <div className='bg-slate-100 h-max w-[100vw] flex flex-col gap-5 p-3 items-center'>
       <div className='flex md:flex-row flex-col items-center justify-evenly p-4'>
-        <div className='h-[100%] md:w-[40%] p-4 rounded-md flex flex-col justify-evenly gap-2 items-center'>
+        <motion.div initial={{opacity: 0, x: -100}} animate={{opacity: 1, x: 0}} transition={{behaviour: "smooth", duration:0.7}}
+        className='h-[100%] md:w-[40%] p-4 rounded-md flex flex-col justify-evenly gap-2 items-center'>
           <h1 className='md:text-6xl text-2xl text-center md:text-start font-bold uppercase'>Simplifying your Meetings.</h1>
           <div className='h-max w-[100%] flex flex-col gap-2 p-3'>
             <li className='md:w-max w-[80vw] flex gap-2 items-center'>
@@ -45,15 +47,16 @@ const Home: React.FC = () => {
             </li>
             <li className='md:w-max w-[80vw] flex gap-2 items-center'>
               <Icon icon="mdi:star-three-points" height={'1rem'} />
-              <p className='font-semibold text-md text-slate-800'>
+              <p className='font-semibold w-[100%] text-md text-slate-800'>
                 Offers you immersive scheduling and video chat experience.
               </p>
             </li>
           </div>
           <button className='text-md font-medium w-max rounded-full bg-slate-800 p-3 shadow-lg text-white'>GET STARTED</button>
-        </div>
+        </motion.div>
         <div className='md:w-[40%] w-[85vw] flex justify-center items-center'>
-          <img className='rounded-2xl shadow-xl' src={HeadBanner} width={"400dvw"} />
+          <motion.img initial={{opacity:0, x: 100}} animate={{opacity:1, x: 0}} transition={{behaviour: "smooth", duration:0.7}}
+           className='rounded-2xl shadow-xl' src={HeadBanner} width={"400vw"} />
         </div>
       </div>
       <span className='w-[85vw] p-3'>
@@ -133,7 +136,7 @@ const Home: React.FC = () => {
       <div className='h-max bg-gradient-to-b from-slate-800 via-slate-600 to-slate-800 text-white w-max p-3 flex flex-col items-center rounded-3xl shadow-2xl'>
         <div className='h-max w-[85vw] flex md:flex-row flex-col justify-evenly items-center p-3'>
           <span className='h-max w-[85vw] w-md:[22vw] flex flex-col gap-10 items-center'>
-            <p className='title w-[100%] md:text-4xl text-lime-300 text-3xl font-semibold p-2'>Designed for those who conduct meetings at scale.</p>
+            <p className='title w-[100%] md:text-4xl text-lime-300 text-3xl p-2'>Designed for those who conduct meetings at scale.</p>
             <span className='h-[150px] w-[150px] rounded-full bg-slate-800 flex flex-col justify-center items-center rotate-45 border-4 border-lime-300'>
               <Icon icon="radix-icons:arrow-up" color="white" height={'20vh'} />
             </span>
