@@ -84,9 +84,9 @@ const Booking: React.FC = () => {
 
     return (
         userContext?.login == true ?
-            <div className='bg-slate-100 h-max w-screen flex flex-col p-3'>
-                <div className='h-max w-screen flex md:flex-row flex-col justify-evenly p-4'>
-                    <div className='md:w-[30dvw] w-[85dvw] md:h-[70vh] h-max p-3'>
+            <div className='bg-slate-100 md:h-screen h-max w-screen flex flex-col p-3'>
+                <div className='h-max w-screen flex md:flex-row flex-col justify-evenly gap-5 p-4'>
+                    <div className='md:w-[30vw] w-[85dvw] md:h-[70vh] h-max p-3'>
                         <div className='h-max w-[100%] flex flex-col justify-center gap-4'>
                             <h1 className='text-xl font-semibold'>{`${currentEvent[0]?.firstname} ${currentEvent[0]?.lastname}`}</h1>
                             <p className='text-base font-medium'>{`${currentEvent[0]?.event_name}`}</p>
@@ -98,9 +98,11 @@ const Booking: React.FC = () => {
                             <span className='h-max flex gap-1'><p className='text-base font-medium'>{`${currentEvent[0]?.event_name} will host on`}</p><p className='flex items-center logo text-base'>WeMeet</p></span>
                         </div>
                     </div>
-                    <div className='md:w-[30dvw] w-[85dvw] md:h-[70vh] h-max flex flex-col gap-5 items-center p-3'>
+                    <span className='md:block hidden h-[100%] w-[.2rem] bg-slate-800 rounded'></span>
+                    <span className='md:hidden block w-[100%] h-[.2rem] bg-slate-800 rounded'></span>
+                    <div className='md:w-[30dvw] w-[85vw] md:h-[70vh] h-max flex flex-col gap-5 items-center p-3'>
                         {message ?
-                            <span className='shadow p-1 font-medium bg-red-600 text-white'>{message}</span>
+                            <span className='shadow p-1 font-medium bg-white text-black'>{message}</span>
                             : null
                         }
                         <div className='md:text-2xl text-2xl text-center md:text-start font-bold'>
@@ -110,11 +112,13 @@ const Booking: React.FC = () => {
                             <Calendar onChange={onChange} value={date} />
                         </div>
                     </div>
-                    <div className='h-[70vh] md:w-[30dvw] w-[85dvw] flex flex-col gap-5 items-center'>
+                    <span className='hidden md:block h-[100%] w-[.2rem] bg-slate-800 rounded'></span>
+                    <span className='md:hidden block w-[100%] h-[.2rem] bg-slate-800 rounded'></span>
+                    <div className='h-[70vh] md:w-[30vw] w-[85dvw] flex flex-col gap-5 items-center'>
                         <div className='md:text-2xl text-2xl text-center md:text-start font-bold'>
                             Select an appointment time
                         </div>
-                        <div className='h-max w-screen flex flex-row justify-center gap-5 p-3'>
+                        <div className='h-max w-max flex flex-row justify-center gap-5 p-3'>
                             <button onClick={() => setEnable(true)} className='bg-slate-800 p-2 font-medium text-white rounded'>AM</button>
                             <button onClick={() => setEnable(false)} className='bg-slate-800 p-2 font-medium text-white rounded'>PM</button>
                         </div>
@@ -133,18 +137,18 @@ const Booking: React.FC = () => {
                         <button onClick={() => { setEnableInfo(true); setEnableTime(false) }} className='bg-slate-800 p-2 font-medium text-white rounded'>Proceed</button>
                     </div>
                 </div>
-                <div className='bg-slate-800 w-[100vw] flex justify-center items-center p-3'>
-                    {
-                        enableInfo == true && enableTime == false ?
-                            <div className='w-[100vw] flex justify-evenly items-center h-[10vh]'>
-                                <span className='flex flex-col gap-1'>
-                                    <p className='text-base text-center text-white'>Enter Your Email</p>
-                                    <input className='focus:outline-none px-2 h-[2.25rem] w-[75vw] md:w-[55vw] border rounded' type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
-                                </span>
-                                <button onClick={() => bookEvent(params.id)} className='bg-slate-100 p-2 font-medium rounded'>Book</button>
-                            </div>
-                            : null
-                    }
+                <div className='h-max w-screen flex justify-center items-center'>
+                {
+                    enableInfo == true && enableTime == false ?
+                        <div className='bg-slate-800 border-2 shadow-xl h-max md:h-[20vh] md:w-max w-[80vw] flex md:flex-row flex-col gap-6 items-center p-5 rounded-xl'>
+                            <span className='flex flex-col gap-2'>
+                                <p className='text-base text-center text-white'>Enter Your Email</p>
+                                <input className='focus:outline-none px-2 h-[2.25rem] w-[70vw] md:w-[55vw] border rounded' type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+                            </span>
+                            <button onClick={() => bookEvent(params.id)} className='bg-slate-100 p-2 font-medium rounded'>Book</button>
+                        </div>
+                        : null
+                }
                 </div>
             </div>
             :
