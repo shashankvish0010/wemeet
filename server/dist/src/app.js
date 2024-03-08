@@ -19,8 +19,9 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 const socket_io_1 = require("socket.io");
 const dbconnect_1 = __importDefault(require("../dbconnect"));
-const { Notification } = require('./Services/Notification');
+const { cleanUp } = require('./Services/Notification');
 const app = (0, express_1.default)();
+const schedule = require('node-schedule');
 dotenv_1.default.config();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
@@ -81,4 +82,8 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('messageFromRemote', { message: data.message, sender: true });
     });
 });
-server.listen(process.env.PORT, () => { Notification(); console.log(`Server Running at ${process.env.PORT}`); });
+server.listen(process.env.PORT, () => {
+    // schedule.scheduleJob('0 * * * * *', () => cleanUp())
+    cleanUp();
+    console.log(`Server Running at ${process.env.PORT}`);
+});
