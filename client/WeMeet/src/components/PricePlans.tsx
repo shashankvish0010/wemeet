@@ -42,7 +42,8 @@ const PricePlans: React.FC<CardType> = (props: CardType) => {
         }
     }
     return (
-        <div className={cardColor}>
+        <div
+        className={cardColor}>
             <p className={`text-xl font-semibold ${props.headingColor}`}>{props.plan_name}</p>
             <span className='flex items-center gap-2'>
                 <p className={`text-5xl font-bold ${props.headingColor}`}>${props.plan_price}</p>
