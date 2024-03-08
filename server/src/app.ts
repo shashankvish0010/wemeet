@@ -5,8 +5,9 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import { Server } from 'socket.io'
 import pool from '../dbconnect'
-const { Notification } = require('./Services/Notification');
+const { cleanUp } = require('./Services/Notification');
 const app = express()
+const schedule = require('node-schedule')
 
 dotenv.config()
 app.use(cors())
@@ -74,4 +75,8 @@ io.on('connection', (socket) => {
     })
 })
 
-server.listen(process.env.PORT, () => { Notification(); console.log(`Server Running at ${process.env.PORT}`) })
+server.listen(process.env.PORT, () => {
+    // schedule.scheduleJob('0 * * * * *', () => cleanUp())
+    cleanUp()
+    console.log(`Server Running at ${process.env.PORT}`)
+})
