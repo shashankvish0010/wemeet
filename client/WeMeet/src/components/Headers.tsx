@@ -10,7 +10,7 @@ const Headers: React.FC = () => {
 
   return (
     <>
-      <div className='bg-slate-100 h-[10vh] w-[100vw] flex flex-row items-center justify-around p-3'>
+      <div className='bg-slate-100 h-[10vh] w-[100vw] flex flex-row items-center md:justify-around justify-between p-3'>
         <div onClick={() => { navigate('/') }} className='cursor-pointer h-max w-max flex gap-2 items-center'>
           <Icon icon="simple-icons:gotomeeting" height={'3vh'} />
           <h1 className='logo md:text-2xl text-xl'>WeMeet</h1>
@@ -42,7 +42,7 @@ const Headers: React.FC = () => {
               <Icon className='lg:h-max md:h-max h-[4vh] cursor-pointer' height={'6vh'} icon="solar:logout-outline" onClick={() => { usercontext.dispatch({ type: "LOGOUT" }) }} />
             </span>)
             : (<Link to='/register'>
-              <button className='bg-slate-800 rounded-sm p-2 md:text-md font-medium text-white hover:shadow-md transition duration-300 ease-in-out transform hover:-translate-y+1 hover:scale-105'>Login/SignUp</button>
+              <button className='md:block hidden bg-slate-800 rounded-sm p-2 md:text-md font-medium text-white hover:shadow-md transition duration-300 ease-in-out transform hover:-translate-y+1 hover:scale-105'>Login/SignUp</button>
             </Link>)
           }
         </div>
@@ -55,6 +55,8 @@ const Headers: React.FC = () => {
               <Link to='/'>Home</Link>
               <Link to='/'>About</Link>
               <Link to='/'>Contact</Link>
+              <Link to='/'>Register</Link>
+              <Link to='/'>Login</Link>
             </ul>
           </motion.div>
           : null
