@@ -1,0 +1,22 @@
+[
+    {
+        "step": "step one",
+        "title": "Create an account / Login",
+        "description": "Login with your registered account or create a new account to register"
+    },
+    {
+        "step": "step two",
+        "title": "Manage Events",
+        "description": "You can add and book multiple events / meeting options from 15min to 60min."
+    },
+    {
+        "step": "step three",
+        "title": "Schedule Meetings",
+        "description": "Schedule or book meetings with ease just by booking link shared to you."
+    },
+    {
+        "step": "step four",
+        "title": "Hop on.",
+        "description": "You can have one to one video chat at scheduled time, you also get real time chat feature."
+    }
+]
