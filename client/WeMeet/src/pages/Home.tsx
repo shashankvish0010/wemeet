@@ -14,6 +14,7 @@ import Login_img from '../assets/3d-render-secure-login-password-illustration.jp
 import Events_img from '../assets/add_event.jpg'
 import Book_Meetings from '../assets/meeting.jpg'
 import Call from '../assets/onetoone.jpg'
+import Footer from '../components/Footer'
 
 interface meetingType {
   duration: string
@@ -38,6 +39,7 @@ const Home: React.FC = () => {
   }).catch((error: Error) => console.log(error)) : null, [userContext?.login])
 
   return (
+    <>
     <div className='bg-slate-100 h-max w-[100vw] flex flex-col gap-5 p-3 items-center'>
       <div className='flex md:flex-row flex-col items-center justify-evenly p-4'>
         <motion.div initial={{ opacity: 0, x: -100 }} animate={{ opacity: 1, x: 0 }} transition={{ behaviour: "smooth", duration: 0.7 }}
@@ -168,7 +170,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className='h-max bg-gradient-to-b from-slate-800 via-slate-600 to-slate-800 text-white w-max p-3 flex flex-col items-center rounded-3xl shadow-2xl'>
+      <div className='h-max bg-gradient-to-b from-slate-800 via-slate-600 to-slate-800 text-white w-max p-3 flex flex-col items-center rounded-3xl shadow-2xl mb-5'>
         <div className='h-max w-[85vw] flex md:flex-row flex-col justify-evenly items-center p-3'>
           <span className='h-max w-[85vw] w-md:[22vw] flex flex-col gap-10 items-center'>
             <p className='title w-[100%] md:text-4xl text-lime-300 text-3xl p-2'>Designed for those who conduct meetings at scale.</p>
@@ -188,6 +190,8 @@ const Home: React.FC = () => {
         </div>
       </div>
     </div>
+          <Footer/>
+        </>
   )
 }
 
