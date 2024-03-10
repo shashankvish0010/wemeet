@@ -57,7 +57,7 @@ const Room: React.FC = () => {
                             : null
                     }
                 </div>
-                <div className='h-max w-[100%] p-3 gap-4 flex flex-col'>
+                <div className='hidden h-max w-[100%] p-3 gap-4 md:flex flex-col'>
                     <h2 className='text-xl h-max w-max font-bold bg-gray-200 p-2 rounded'>Messages</h2>
                     <span className='h-[.25rem] rounded-xl w-[100%] bg-gray-200'></span>
                     <div className='h-max w-[80%] flex flex-col gap-2'>
@@ -87,7 +87,7 @@ const Room: React.FC = () => {
                             )
                         }
                     </div>
-                    <div className='flex flex-row items-center h-max w-[100%] gap-3'>
+                    <div className='hidden md:flex flex-row items-center h-max w-[100%] gap-3'>
                         <input className='h-[8vh] w-[80%] rounded border-2 border-gray-200 p-2 text-base font-normal focus-visible:outline-none shadow-xl' type="text" placeholder='Type Your Message' value={myMessage || ''} onChange={(e: ChangeEvent<HTMLInputElement>) => { setMyMessage(e.target.value) }} />
                         <Icon className='bg-lime-300 rounded p-3 h-[8vh] w-max' onClick={() => { meetingContext?.sendChat(myMessage) }} icon="cil:send" color='black' height='5vh' />
                     </div>
