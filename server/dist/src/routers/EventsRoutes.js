@@ -106,40 +106,41 @@ router.post('/schedule/event/:id', (req, res) => __awaiter(void 0, void 0, void 
     const userDate = date.slice(0, 10).split('-');
     try {
         if (id) {
-            // if (todayDate[1] == userDate[1] && todayDate[2] == userDate[2] || todayDate[1] == userDate[1] && todayDate[2] > userDate[2]) {
-            //     res.json({ success: false, message: "Please choose next date, it must be tommorrow or later" })
-            // } else {
-            let hostEmail;
-            const eventdata = yield dbconnect_1.default.query('SELECT * FROM Events WHERE id=$1', [id]);
-            hostEmail = eventdata.rows[0].user_email;
-            const meetingId = (0, uuid_1.v4)();
-            if (meetingId) {
-                yield dbconnect_1.default.query('INSERT INTO Meetings(id, meeting_id, user_email, host_email, scheduled_time, scheduled_date ) VALUES($1, $2, $3, $4, $5, $6)', [meetingId, id, email, hostEmail, time, date]);
-                yield (0, Notification_1.cleanUp)();
-                const email_message = {
-                    from: process.env.EMAIL_USER,
-                    to: hostEmail,
-                    subject: 'Meeting Scheduled',
-                    text: `Your meeting is scheduled at ${time} on ${date} so all the best. Join the meeting using https://wemeet-psi.vercel.app/meet/${meetingId} and your Meeting Id is ${meetingId} and Passwords is wemeet12`
-                };
-                const user_email_message = {
-                    from: process.env.EMAIL_USER,
-                    to: email,
-                    subject: 'You Scheduled a Meeting',
-                    text: `You scheduled a meeting at ${time} on ${date} so all the best. Join the meeting using https://wemeet-psi.vercel.app/meet/${meetingId} and your Meeting Id is ${meetingId} and Passwords is wemeet12`
-                };
-                try {
-                    yield sendEmail(email_message);
-                    yield sendEmail(user_email_message);
-                    res.json({ success: true, message: "Meeting booked" });
-                    yield client.expireat('allmeetings:1', 5);
-                }
-                catch (emailError) {
-                    console.error("Error sending email:", emailError);
-                    res.json({ success: false, message: "Error sending email", error: emailError });
+            if (todayDate[1] == userDate[1] && todayDate[2] == userDate[2] || todayDate[1] == userDate[1] && todayDate[2] > userDate[2]) {
+                res.json({ success: false, message: "Please choose next date, it must be tommorrow or later" });
+            }
+            else {
+                let hostEmail;
+                const eventdata = yield dbconnect_1.default.query('SELECT * FROM Events WHERE id=$1', [id]);
+                hostEmail = eventdata.rows[0].user_email;
+                const meetingId = (0, uuid_1.v4)();
+                if (meetingId) {
+                    yield dbconnect_1.default.query('INSERT INTO Meetings(id, meeting_id, user_email, host_email, scheduled_time, scheduled_date ) VALUES($1, $2, $3, $4, $5, $6)', [meetingId, id, email, hostEmail, time, date]);
+                    yield (0, Notification_1.cleanUp)();
+                    const email_message = {
+                        from: process.env.EMAIL_USER,
+                        to: hostEmail,
+                        subject: 'Meeting Scheduled',
+                        text: `Your meeting is scheduled at ${time} on ${date} so all the best. Join the meeting using https://wemeet-psi.vercel.app/meet/${meetingId} and your Meeting Id is ${meetingId} and Passwords is wemeet12`
+                    };
+                    const user_email_message = {
+                        from: process.env.EMAIL_USER,
+                        to: email,
+                        subject: 'You Scheduled a Meeting',
+                        text: `You scheduled a meeting at ${time} on ${date} so all the best. Join the meeting using https://wemeet-psi.vercel.app/meet/${meetingId} and your Meeting Id is ${meetingId} and Passwords is wemeet12`
+                    };
+                    try {
+                        yield sendEmail(email_message);
+                        yield sendEmail(user_email_message);
+                        res.json({ success: true, message: "Meeting booked" });
+                        yield client.expireat('allmeetings:1', 5);
+                    }
+                    catch (emailError) {
+                        console.error("Error sending email:", emailError);
+                        res.json({ success: false, message: "Error sending email", error: emailError });
+                    }
                 }
             }
-            // }
         }
         else {
             res.json({ succes: false, message: "Host email not found" });

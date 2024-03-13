@@ -90,9 +90,9 @@ router.post('/schedule/event/:id', async (req, res) => {
     const userDate = date.slice(0, 10).split('-');
     try {
         if (id) {
-            // if (todayDate[1] == userDate[1] && todayDate[2] == userDate[2] || todayDate[1] == userDate[1] && todayDate[2] > userDate[2]) {
-            //     res.json({ success: false, message: "Please choose next date, it must be tommorrow or later" })
-            // } else {
+            if (todayDate[1] == userDate[1] && todayDate[2] == userDate[2] || todayDate[1] == userDate[1] && todayDate[2] > userDate[2]) {
+                res.json({ success: false, message: "Please choose next date, it must be tommorrow or later" })
+            } else {
             let hostEmail
             const eventdata = await pool.query('SELECT * FROM Events WHERE id=$1', [id]);
             hostEmail = eventdata.rows[0].user_email
@@ -126,7 +126,7 @@ router.post('/schedule/event/:id', async (req, res) => {
                 }
 
             }
-            // }
+            }
         } else {
             res.json({ succes: false, message: "Host email not found" })
         }
