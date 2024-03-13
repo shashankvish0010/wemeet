@@ -7,7 +7,7 @@ const socket = io('https://wemeet-backend.onrender.com/')
 interface Contextvalue {
     userStream: MediaStream | undefined
     remoteStream: MediaStream | undefined
-    key: boolean,
+    key: {valid: boolean, message: string},
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     handleSubmit: (userEmail: String) => void
     meetingCredentials: MeetingCred
@@ -33,7 +33,7 @@ export const MeetingProvider = (props: any) => {
     let remoteSocketId: string | undefined
     let host: boolean = false
 
-    const [key, setKey] = useState<boolean>(false)
+    const [key, setKey] = useState<{valid: boolean, message: string}>({valid: false, message: ''})
     const [remoteUser, setRemUser] = useState<{ firstname: string, lastname: string } | undefined>()
     const [userStream, setUserStream] = useState<MediaStream | any>();
     const [remoteStream, setRemoteStream] = useState<MediaStream | any>();
@@ -90,8 +90,11 @@ export const MeetingProvider = (props: any) => {
         socket.emit('meetingCredential', { meetingId, meetingPassword, userEmail })
     }
 
-    const validcred = (data: {key: boolean}) => {
-        setKey(data.key)
+    const validcred = (data: {key: boolean, message: string}) => {
+        setKey({
+            valid: data.key,
+            message: data.message
+        })
     }
 
     const socketConfig = useCallback((data: string) => {
