@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
 import Peerconnection from '../services/peer'
 // import { userAuthContext } from './UserAuth'
-const socket = io('http://localhost:8080/')
+const socket = io('https://wemeet-backend.onrender.com/')
 
 interface Contextvalue {
     userStream: MediaStream | undefined
@@ -44,30 +44,30 @@ export const MeetingProvider = (props: any) => {
     const [isAudioMuted, setIsAudioMuted] = useState(false);
 
     //******************** Meeting Controller ************************/
-    
-  const toggleVideoMute = () => {
-    if (userStream) {
-      userStream.getVideoTracks().forEach((track: any) => {
-        track.enabled = !isVideoMuted;
-      });
-      setIsVideoMuted(!isVideoMuted);
-    }
-  };
 
-  const toggleAudioMute = () => {
-    if (userStream) {
-      userStream.getAudioTracks().forEach((track: any) => {
-        track.enabled = !isAudioMuted;
-      });
-      setIsAudioMuted(!isAudioMuted);
-    }
-  };
+    const toggleVideoMute = () => {
+        if (userStream) {
+            userStream.getVideoTracks().forEach((track: any) => {
+                track.enabled = !isVideoMuted;
+            });
+            setIsVideoMuted(!isVideoMuted);
+        }
+    };
+
+    const toggleAudioMute = () => {
+        if (userStream) {
+            userStream.getAudioTracks().forEach((track: any) => {
+                track.enabled = !isAudioMuted;
+            });
+            setIsAudioMuted(!isAudioMuted);
+        }
+    };
 
     const endMeeting = () => {
         const userMediaTracks = userStream.getTracks();
         userMediaTracks.forEach((track: any) => track.stop());
-            setUserStream(null);
-    setRemoteStream(null);
+        setUserStream(null);
+        setRemoteStream(null);
         // Close the connection
         Peerconnection.peer.close();
         window.location.href = '/'

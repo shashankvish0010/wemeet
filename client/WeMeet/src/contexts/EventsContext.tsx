@@ -88,7 +88,7 @@ export const EventsContextProvider = ({ children }: any) => {
 
     const getEvents = async (id: string) => {
         try {
-            const response = await fetch('/get/events/' + id, {
+            const response = await fetch('https://wemeet-backend.onrender.com/get/events/' + id, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json"
@@ -115,7 +115,7 @@ export const EventsContextProvider = ({ children }: any) => {
         e.preventDefault();
         const { name, duration, description } = event;
         try {
-            const response = await fetch('/create/event/' + id, {
+            const response = await fetch('https://wemeet-backend.onrender.com/create/event/' + id, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -174,7 +174,7 @@ export const EventsContextProvider = ({ children }: any) => {
     const getAllMeetings = async (userEmail: string) => {
         console.log("enter", userEmail);
         try {
-            const response = await fetch('/fetch/meetings/' + userEmail, {
+            const response = await fetch('https://wemeet-backend.onrender.com/fetch/meetings/' + userEmail, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"

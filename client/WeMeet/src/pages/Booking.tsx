@@ -35,7 +35,7 @@ const Booking: React.FC = () => {
 
     const getEventDetails = async (meetingId: string) => {
         try {
-            const response = await fetch('/event/' + meetingId, {
+            const response = await fetch('https://wemeet-backend.onrender.com/event/' + meetingId, {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json"
@@ -59,7 +59,7 @@ const Booking: React.FC = () => {
     const bookEvent = async (id: string) => {
         const time = eventContext?.bookTime
         try {
-            const response = await fetch('/schedule/event/' + id, {
+            const response = await fetch('https://wemeet-backend.onrender.com/schedule/event/' + id, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

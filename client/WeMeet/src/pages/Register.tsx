@@ -31,7 +31,7 @@ const Register: React.FC = () => {
         e.preventDefault()
         const { firstname, lastname, email, password, confirm_password } = user        
         try {
-            const response = await fetch('/user/register', {
+            const response = await fetch('https://wemeet-backend.onrender.com/user/register', {
                 method: "POST",
                 headers: {
                     "Content-Type" : "application/json"

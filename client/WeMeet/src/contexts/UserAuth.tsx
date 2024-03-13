@@ -44,7 +44,7 @@ export const UserAuthProvider = ({children}: any) => {
             case "LOGIN": {
                 const { email, password } = user
                 try {
-                    const response = await fetch('/user/login', {
+                    const response = await fetch('https://wemeet-backend.onrender.com/user/login', {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
