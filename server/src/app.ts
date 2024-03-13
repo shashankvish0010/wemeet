@@ -37,7 +37,6 @@ io.on('connection', (socket) => {
     socket.emit('hello', socket.id)
 
     socket.on('meetingCredential', async (data) => {
-        console.log("enter");
 
         const result = await pool.query('SELECT host_email FROM Meetings WHERE meeting_id=$1', [data.meetingId])
         if (result?.rows[0].length > 0) {
@@ -45,7 +44,6 @@ io.on('connection', (socket) => {
                 const hostData = await pool.query('SELECT * FROM Users WHERE email=$1', [data.userEmail])
                 if (hostData.rows.length > 0) {
                     console.log("enter");
-                    
                     socket.emit('validcred')
                     socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, email_address: data.userEmail, firstname: hostData.rows[0].firstname, lastname: hostData.rows[0].lastname, host: true })
                 }

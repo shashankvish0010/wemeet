@@ -47,7 +47,6 @@ let sendersOffer;
 io.on('connection', (socket) => {
     socket.emit('hello', socket.id);
     socket.on('meetingCredential', (data) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log("enter");
         const result = yield dbconnect_1.default.query('SELECT host_email FROM Meetings WHERE meeting_id=$1', [data.meetingId]);
         if ((result === null || result === void 0 ? void 0 : result.rows[0].length) > 0) {
             if (result.rows[0].host_email == data.userEmail) {
