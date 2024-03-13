@@ -90,8 +90,8 @@ export const MeetingProvider = (props: any) => {
         socket.emit('meetingCredential', { meetingId, meetingPassword, userEmail })
     }
 
-    const validcred = () => {
-        setKey(true)
+    const validcred = (data: {key: boolean}) => {
+        setKey(data.key)
     }
 
     const socketConfig = useCallback((data: string) => {
