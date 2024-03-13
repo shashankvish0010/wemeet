@@ -65,15 +65,8 @@ router.get('/event/:id', async (req, res) => {
     console.log(id);
     try {
         if (id) {
-            const cacheValue = await client.get('currenteventdata:1')
-            if (cacheValue) {
-                console.log("events", cacheValue);
-                res.json({ success: true, eventdata: JSON.parse(cacheValue), message: "Event receieved" })
-            } else {
                 const eventdata = await pool.query('SELECT usd.firstname, usd.lastname, ed.event_name, ed.duration, ed.event_description FROM Users as usd left join Events as ed on usd.email=ed.user_email WHERE ed.id=$1 ', [id]);
                 res.json({ success: true, eventdata: eventdata.rows, message: "Event receieved" })
-                await client.set('currenteventdata:1', JSON.stringify(eventdata.rows))
-            }
         } else {
             res.json({ success: false, message: "Event ID not receieved" })
         }

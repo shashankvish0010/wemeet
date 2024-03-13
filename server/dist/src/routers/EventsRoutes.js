@@ -79,16 +79,8 @@ router.get('/event/:id', (req, res) => __awaiter(void 0, void 0, void 0, functio
     console.log(id);
     try {
         if (id) {
-            const cacheValue = yield client.get('currenteventdata:1');
-            if (cacheValue) {
-                console.log("events", cacheValue);
-                res.json({ success: true, eventdata: JSON.parse(cacheValue), message: "Event receieved" });
-            }
-            else {
-                const eventdata = yield dbconnect_1.default.query('SELECT usd.firstname, usd.lastname, ed.event_name, ed.duration, ed.event_description FROM Users as usd left join Events as ed on usd.email=ed.user_email WHERE ed.id=$1 ', [id]);
-                res.json({ success: true, eventdata: eventdata.rows, message: "Event receieved" });
-                yield client.set('currenteventdata:1', JSON.stringify(eventdata.rows));
-            }
+            const eventdata = yield dbconnect_1.default.query('SELECT usd.firstname, usd.lastname, ed.event_name, ed.duration, ed.event_description FROM Users as usd left join Events as ed on usd.email=ed.user_email WHERE ed.id=$1 ', [id]);
+            res.json({ success: true, eventdata: eventdata.rows, message: "Event receieved" });
         }
         else {
             res.json({ success: false, message: "Event ID not receieved" });
