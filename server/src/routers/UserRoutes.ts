@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router()
 import pool from '../../dbconnect'
-import bcrypt from 'bcrypt'
+// import bcrypt from 'bcrypt'
 import { v4 as uuidv4 } from 'uuid'
 import jwt from 'jsonwebtoken'
 const OTPgenerator = require('../Services/OtpGenerate');
@@ -25,9 +25,9 @@ router.post('/user/register', async (req: any, res: any) => {
                     res.json({ success: false, message: "Email already regsitered" })
                 } else {
                     if (password === confirm_password) {
-                        const salt = Number(bcrypt.genSalt(10))
-                        const hashedPassword = await bcrypt.hash(password, salt)
-                        if (hashedPassword) {
+                        // const salt = Number(bcrypt.genSalt(10))
+                        // const hashedPassword = await bcrypt.hash(password, salt)
+                        if (password) {
                             const generatedotp = await OTPgenerator();
                             actualotp = generatedotp
                             console.log(actualotp);
@@ -43,7 +43,7 @@ router.post('/user/register', async (req: any, res: any) => {
                             if (result == true) {
                                 const id = uuidv4();
                                 if (id) {
-                                    const userRegisteration = await pool.query('INSERT INTO Users(id, firstname, lastname, email, user_password, account_verified) VALUES ($1, $2, $3, $4, $5, $6)', [id, firstname, lastname, email, hashedPassword, false]);
+                                    const userRegisteration = await pool.query('INSERT INTO Users(id, firstname, lastname, email, user_password, account_verified) VALUES ($1, $2, $3, $4, $5, $6)', [id, firstname, lastname, email, password, false]);
                                     res.json({ success: true, id, message: "User Registered" })
                                 }
                             } else {
@@ -113,8 +113,8 @@ router.post('/user/login', async (req, res) => {
     } else {
         const user = await pool.query('SELECT * FROM Users WHERE email=$1', [email])
         if (user.rows.length > 0) {
-            const isMatch = await bcrypt.compare(password, user.rows[0].user_password)
-            if (isMatch) {
+            // const isMatch = await bcrypt.compare(password, user.rows[0].user_password)
+            if (password == user.rows[0].user_password) {
                 if (user.rows[0].account_verified === false) {
                     res.json({ success: true, id: user.rows[0].id, verified: user.rows[0].account_verified, message: "Login Successfully" })
                 } else {

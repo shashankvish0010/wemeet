@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userRegistration = exports.actualotp = void 0;
 const dbconnect_1 = __importDefault(require("../../dbconnect"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
+// import bcrypt from 'bcrypt'
 const uuid_1 = require("uuid");
 const OTPgenerator = require('../Services/OtpGenerate');
 const sendEmail = require('../Services/Email');
@@ -33,9 +33,9 @@ const userRegistration = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 }
                 else {
                     if (password === confirm_password) {
-                        const salt = Number(bcrypt_1.default.genSalt(10));
-                        const hashedPassword = yield bcrypt_1.default.hash(password, salt);
-                        if (hashedPassword) {
+                        // const salt = Number(bcrypt.genSalt(10))
+                        // const hashedPassword = await bcrypt.hash(password, salt)
+                        if (password) {
                             yield OTPgenerator();
                             console.log(exports.actualotp);
                             const email_message = {

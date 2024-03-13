@@ -1,5 +1,5 @@
 import pool from '../../dbconnect'
-import bcrypt from 'bcrypt'
+// import bcrypt from 'bcrypt'
 import {v4 as uuidv4} from 'uuid'
 const OTPgenerator = require('../Services/OtpGenerate');
 
@@ -21,9 +21,9 @@ export const userRegistration = async (req: any, res: any) => {
                     res.json({ success: false, message: "Email already regsitered" })
                 } else {
                     if (password === confirm_password) {
-                        const salt = Number(bcrypt.genSalt(10))
-                        const hashedPassword = await bcrypt.hash(password, salt)
-                        if (hashedPassword) {
+                        // const salt = Number(bcrypt.genSalt(10))
+                        // const hashedPassword = await bcrypt.hash(password, salt)
+                        if (password) {
                             await OTPgenerator();
                             console.log(actualotp);
                             const email_message = {

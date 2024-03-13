@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const dbconnect_1 = __importDefault(require("../../dbconnect"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
+// import bcrypt from 'bcrypt'
 const uuid_1 = require("uuid");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const OTPgenerator = require('../Services/OtpGenerate');
@@ -37,9 +37,9 @@ router.post('/user/register', (req, res) => __awaiter(void 0, void 0, void 0, fu
                 }
                 else {
                     if (password === confirm_password) {
-                        const salt = Number(bcrypt_1.default.genSalt(10));
-                        const hashedPassword = yield bcrypt_1.default.hash(password, salt);
-                        if (hashedPassword) {
+                        // const salt = Number(bcrypt.genSalt(10))
+                        // const hashedPassword = await bcrypt.hash(password, salt)
+                        if (password) {
                             const generatedotp = yield OTPgenerator();
                             actualotp = generatedotp;
                             console.log(actualotp);
@@ -53,7 +53,7 @@ router.post('/user/register', (req, res) => __awaiter(void 0, void 0, void 0, fu
                             if (result == true) {
                                 const id = (0, uuid_1.v4)();
                                 if (id) {
-                                    const userRegisteration = yield dbconnect_1.default.query('INSERT INTO Users(id, firstname, lastname, email, user_password, account_verified) VALUES ($1, $2, $3, $4, $5, $6)', [id, firstname, lastname, email, hashedPassword, false]);
+                                    const userRegisteration = yield dbconnect_1.default.query('INSERT INTO Users(id, firstname, lastname, email, user_password, account_verified) VALUES ($1, $2, $3, $4, $5, $6)', [id, firstname, lastname, email, password, false]);
                                     res.json({ success: true, id, message: "User Registered" });
                                 }
                             }
@@ -126,8 +126,8 @@ router.post('/user/login', (req, res) => __awaiter(void 0, void 0, void 0, funct
     else {
         const user = yield dbconnect_1.default.query('SELECT * FROM Users WHERE email=$1', [email]);
         if (user.rows.length > 0) {
-            const isMatch = yield bcrypt_1.default.compare(password, user.rows[0].user_password);
-            if (isMatch) {
+            // const isMatch = await bcrypt.compare(password, user.rows[0].user_password)
+            if (password == user.rows[0].user_password) {
                 if (user.rows[0].account_verified === false) {
                     res.json({ success: true, id: user.rows[0].id, verified: user.rows[0].account_verified, message: "Login Successfully" });
                 }
