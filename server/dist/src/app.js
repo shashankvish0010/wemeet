@@ -48,7 +48,8 @@ io.on('connection', (socket) => {
     socket.emit('hello', socket.id);
     socket.on('meetingCredential', (data) => __awaiter(void 0, void 0, void 0, function* () {
         const result = yield dbconnect_1.default.query('SELECT host_email FROM Meetings WHERE meeting_id=$1', [data.meetingId]);
-        if ((result === null || result === void 0 ? void 0 : result.rows[0].length) > 0) {
+        console.log(result.rows.length);
+        if (result.rows.length > 0) {
             if (result.rows[0].host_email == data.userEmail) {
                 const hostData = yield dbconnect_1.default.query('SELECT * FROM Users WHERE email=$1', [data.userEmail]);
                 if (hostData.rows.length > 0) {
