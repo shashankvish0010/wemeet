@@ -28,7 +28,7 @@ const Meeting: React.FC = () => {
                             <input className='px-2 h-[2.25rem] w-[65vw] md:w-[35vw] border rounded' type="password" name='meetingPassword' value={meetingContext?.meetingCredentials?.meetingPassword} onChange={meetingContext?.handleChange} />
                         </span>
                     </form>
-                    <button onClick={() => { meetingContext?.handleSubmit(userContext?.currentuser.email) }} className='bg-slate-800 p-2 font-medium text-white rounded'>Log In</button>
+                    <button onClick={() => { meetingContext?.handleSubmit(userContext?.currentuser.email); navigate('/room') }} className='bg-slate-800 p-2 font-medium text-white rounded'>Join</button>
                 </div>
                 :
                 <div className='bg-slate-100 h-screen w-screen flex flex-col items-center justify-center p-3 gap-3'>
