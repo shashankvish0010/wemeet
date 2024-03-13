@@ -3,9 +3,11 @@ import { createContext, useState } from 'react'
 interface ContextValue {
     event: eventType
     handleSubmit: (e: React.FormEvent, id: string | undefined) => any
+    handleEditSubmit: (e: React.FormEvent, id: string | undefined) => any
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     getEvents: (id: string) => void
     getAllMeetings: (userEmail: string) => any
+    deleteEvent: (id: string) => void
     message: string | undefined | null
     userEvents: any
     time: number[]
@@ -139,37 +141,81 @@ export const EventsContextProvider = ({ children }: any) => {
         }
     }
 
+    const handleEditSubmit = async (e: React.FormEvent, id: string | undefined) => {
+        e.preventDefault();
+        const { name, duration, description } = event;
+        try {
+            const response = await fetch('https://wemeet-backend.onrender.com/put/event/' + id, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name, duration, description
+                })
+            })
+            if (response) {
+                const data = await response.json();
+                if (data.success == true) {
+                    console.log(data);
+                } else {
+                    console.log(data);
+                    setMessage(data.message)
+                }
+            } else {
+                console.log("Didn't Got any Response");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const deleteEvent = async (id: string) => {
+        try {
+            const response = await fetch('https://wemeet-backend.onrender.com/delete/event/' + id, {
+                method: 'DELETE',
+                headers: { "Content-Type": "application/json" }
+            })
+            if (response) {
+                const result = await response.json();
+                console.log(result);
+            } else {
+                console.log("Response not delivered");
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     let months: string[] = [
         "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
     ]
 
     const filterMeetingData = (meetingData: any) => {
-        const filteredData: any [] = []
+        const filteredData: any[] = []
         let monthNo: number;
         let date: number
         let month: string | undefined
         console.log("meetingData");
-        
-        for (let x=0 ; x<meetingData.length ; x++) {
-            monthNo = Number(`${meetingData[x].scheduled_date}`.slice(5,7)) - 1;
-            date = Number(`${meetingData[x].scheduled_date}`.slice(8,10)) + 1;
-            months.map((monthValue: string, index: number)=>{
-                if(index == monthNo){
+
+        for (let x = 0; x < meetingData.length; x++) {
+            monthNo = Number(`${meetingData[x].scheduled_date}`.slice(5, 7)) - 1;
+            date = Number(`${meetingData[x].scheduled_date}`.slice(8, 10)) + 1;
+            months.map((monthValue: string, index: number) => {
+                if (index == monthNo) {
                     month = monthValue
                 }
             })
-                filteredData.push({
-                    eventName: meetingData[x].event_name,
-                    eventDescription: meetingData[x].event_description,
-                    eventDuration: meetingData[x].duration,
-                    hostName: meetingData[x].firstname,
-                    meetingDate: date,
-                    meetingMonth: month,
-                    meetingTime: meetingData[x].scheduled_time,
-                })
-            }        
-            return filteredData    
+            filteredData.push({
+                eventName: meetingData[x].event_name,
+                eventDescription: meetingData[x].event_description,
+                eventDuration: meetingData[x].duration,
+                hostName: meetingData[x].firstname,
+                meetingDate: date,
+                meetingMonth: month,
+                meetingTime: meetingData[x].scheduled_time,
+            })
         }
+        return filteredData
+    }
 
     const getAllMeetings = async (userEmail: string) => {
         console.log("enter", userEmail);
@@ -182,21 +228,21 @@ export const EventsContextProvider = ({ children }: any) => {
             });
             if (response) {
                 const data = await response.json();
-                if (data.success == true) { 
-                    console.log(data);                    
-                 return filterMeetingData(data.meetingData)
+                if (data.success == true) {
+                    console.log(data);
+                    return filterMeetingData(data.meetingData)
                 } else {
                     console.log(data);
                 }
-            }else{
-                console.log("Didn't Got any Response");   
+            } else {
+                console.log("Didn't Got any Response");
             }
         } catch (error) {
             console.log(error);
         }
     }
 
-    const info: ContextValue = { event, handleChange, handleSubmit, getEvents, calcTime, getAllMeetings, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
+    const info: ContextValue = { event, handleChange, handleEditSubmit, handleSubmit, deleteEvent, getEvents, calcTime, getAllMeetings, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
     return (
         <EventsContext.Provider value={info}>
             {children}
