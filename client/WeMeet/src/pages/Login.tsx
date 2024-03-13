@@ -37,7 +37,7 @@ const Login: React.FC = () => {
                 </form>
                 <span className='w-[100%] flex items-center justify-evenly'>
                     <p className='font-medium'>Create a new account</p>
-                    <span onClick={()=>navigate('/signup')} className='text-blue-600 cursor-pointer hover:font-medium'>Regsiter</span>
+                    <span onClick={()=>navigate('/register')} className='text-blue-600 cursor-pointer hover:font-medium'>Regsiter</span>
                 </span>
                 <button onClick={()=>{userauth?.dispatch({type: "LOGIN"})}} className='bg-slate-800 p-2 font-medium text-white rounded'>Log In</button>
             </div>
