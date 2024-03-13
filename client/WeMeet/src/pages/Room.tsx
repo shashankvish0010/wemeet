@@ -14,7 +14,7 @@ const Room: React.FC = () => {
     }, [meetingContext?.remoteSocketId])
 
     return (
-        <div className='bg-slate-100 h-max h-screen w-screen flex md:flex-row flex-col justify-center'>
+        <div className='bg-slate-100 h-max md:h-screen w-screen flex md:flex-row flex-col justify-center'>
             <div className='md:h-[100vh] h-max md:w-[65vw] w-[100vw] flex flex-col items-center'>
                 <button className='bg-lime-300 font-semibold text-black uppercase p-2 rounded' onClick={() => { meetingContext?.handleNegotiation() }}>Start Meeting</button>
                 {
