@@ -52,6 +52,7 @@ io.on('connection', (socket) => {
             if (result.rows[0].host_email == data.userEmail) {
                 const hostData = yield dbconnect_1.default.query('SELECT * FROM Users WHERE email=$1', [data.userEmail]);
                 if (hostData.rows.length > 0) {
+                    console.log("enter");
                     socket.emit('validcred');
                     socket.broadcast.emit('userJoinedMeeting', { socket_ID: socket.id, email_address: data.userEmail, firstname: hostData.rows[0].firstname, lastname: hostData.rows[0].lastname, host: true });
                 }
