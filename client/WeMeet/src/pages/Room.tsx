@@ -15,7 +15,7 @@ const Room: React.FC = () => {
 
     return (
         <div className='bg-slate-100 h-screen w-screen flex md:flex-row flex-col justify-center'>
-            <div className='h-[100vh] md:w-[65vw] w-[100vw] flex flex-col items-center'>
+            <div className='md:h-[100vh] h-max md:w-[65vw] w-[100vw] flex flex-col items-center'>
                 <button className='bg-lime-300 font-semibold text-black uppercase p-2 rounded' onClick={() => { meetingContext?.handleNegotiation() }}>Start Meeting</button>
                 {
                     meetingContext?.userStream ?
@@ -44,7 +44,7 @@ const Room: React.FC = () => {
                         : null
                 }
             </div>
-            <div className='bg-white h-[100vh] w-[100vw] md:w-[35vw] overflow-y-scroll flex flex-col gap-3 p-3 border-l-2 border-gray-200'>
+            <div className='bg-white md:h-[100vh] h-max w-[100vw] md:w-[35vw] overflow-y-scroll flex flex-col gap-3 p-3 border-l-2 border-gray-200'>
                 <div className='flex flex-col gap-3 p-3'>
                     <p className='text-xl h-max w-max font-bold bg-gray-200 p-2 rounded'>Participants</p>
                     <span className='h-[.25rem] rounded-xl w-[100%] bg-gray-200'></span>
