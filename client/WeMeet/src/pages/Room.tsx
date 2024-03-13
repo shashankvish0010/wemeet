@@ -37,7 +37,7 @@ const Room: React.FC = () => {
                         </div>
                         : null
                 }
-                <div className='bg-slate-100 h-[10vh] w-max gap-4 p-3 flex justify-center items-center'>
+                <div className='bg-slate-100 h-[10vh] mt-auto w-max gap-4 p-3 flex justify-center items-center'>
                     <Icon onClick={() => { meetingContext?.toggleAudioMute() }} className='cursor-pointer bg-teal-500 rounded-full p-2' icon="cil:mic" color='white' height={'6vh'} />
                     <Icon onClick={() => { meetingContext?.toggleVideoMute() }} className='cursor-pointer bg-teal-500 rounded-full p-2' icon="majesticons:video-line" color='white' height={'6vh'} />
                     <Icon onClick={() => { meetingContext?.endMeeting() }} className='cursor-pointer bg-red-500 rounded-full p-2' icon="ic:round-call-end" color='white' height={'6vh'} />
