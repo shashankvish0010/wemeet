@@ -75,6 +75,33 @@ router.get('/event/:id', async (req, res) => {
     }
 });
 
+router.put('/put/event/:id', async (req, res) => {
+    const { id } = req.params;
+    const {name, duration, description} = req.body;
+    try {
+        if (id && name && duration && description) {
+            const newEditedEvent = await pool.query('UPDATE Events set event_name=$1, duration=$2, event_description=$3 WHERE id=$4', [id, name, duration, description]);
+            if(newEditedEvent){
+                res.json({ success: true, message: "Event Updated" })
+            }
+        } else {
+            res.json({ success: false, message: "Event ID not receieved" })
+        }
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+router.delete('/delete/event/:id', async (req,res)=>{
+    const {id} = req.params;
+    if(id){
+        const result = await pool.query('Delete from Events WHERE id=$1', [id]);
+        if(result){
+            res.json({ success: true, message: "Event Deleted" })
+        }
+    }
+})
+
 router.post('/schedule/event/:id', async (req, res) => {
     const { id } = req.params;
     const { email, time, date } = req.body
