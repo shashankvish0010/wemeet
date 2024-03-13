@@ -96,7 +96,9 @@ router.post('/schedule/event/:id', async (req, res) => {
             let hostEmail
             const eventdata = await pool.query('SELECT * FROM Events WHERE id=$1', [id]);
             hostEmail = eventdata.rows[0].user_email
-
+            if(email == hostEmail) {
+                res.json({ success: false, message: "You cannot book your own event" })
+            } else {
             const meetingId = uuidv4();
             if (meetingId) {
                 await pool.query('INSERT INTO Meetings(id, meeting_id, user_email, host_email, scheduled_time, scheduled_date ) VALUES($1, $2, $3, $4, $5, $6)',
@@ -127,6 +129,7 @@ router.post('/schedule/event/:id', async (req, res) => {
 
             }
             }
+        }
         } else {
             res.json({ succes: false, message: "Host email not found" })
         }
