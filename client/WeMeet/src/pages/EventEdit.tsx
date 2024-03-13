@@ -26,7 +26,7 @@ const EventsEdit: React.FC = () => {
                                 <form method='POST' className='flex flex-col justify-arounf items-center gap-3'>
                                     <span className='flex flex-col gap-1'>
                                         <p className='text-sm text-gray-600'>Event Name</p>
-                                        <input className='px-2 h-[2.25rem] w-[65vw] md:w-[35vw] border rounded' type="text" name='name' defaultValue={event?.name} value={event?.name} onChange={eventContext?.handleChange} />
+                                        <input className='px-2 h-[2.25rem] w-[65vw] md:w-[35vw] border rounded' type="text" name='name' defaultValue={event?.event_name} value={event?.name} onChange={eventContext?.handleChange} />
                                     </span>
                                     <span className='flex flex-col gap-1'>
                                         <p className='text-sm text-gray-600'>Duration - in miunutes</p>
@@ -34,7 +34,7 @@ const EventsEdit: React.FC = () => {
                                     </span>
                                     <span className='flex flex-col gap-1'>
                                         <p className='text-sm text-gray-600'>Description</p>
-                                        <input className='px-2 h-[2.25rem] w-[65vw] md:w-[35vw] border rounded' type="text" name='description' defaultValue={event?.description}  value={event?.description} onChange={eventContext?.handleChange} />
+                                        <input className='px-2 h-[2.25rem] w-[65vw] md:w-[35vw] border rounded' type="text" name='description' defaultValue={event?.event_description}  value={event?.description} onChange={eventContext?.handleChange} />
                                     </span>
                                 </form>
                                 <button onClick={(e) => { e.preventDefault(); eventContext?.handleEditSubmit(e, params.id) }} className='bg-slate-800 p-2 font-medium text-white rounded'>Create Event</button>
