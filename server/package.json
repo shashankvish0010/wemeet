@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "wemeet backend",
   "main": "dist/src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,7 +10,7 @@
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/app.js\""
   },
   "keywords": [],
-  "author": "",
+  "author": "Shashank Vishwakarma",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
