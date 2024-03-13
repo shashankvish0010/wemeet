@@ -18,10 +18,13 @@ app.use(require('./routers/EventsRoutes'));
 app.use(require('./routers/MeetingsRoutes'))
 app.use(require('./routers/Payment'))
 const server = http.createServer(app)
-app.use(cors())
+app.use(cors({
+    origin: 'https://wemeet-psi.vercel.app',
+    methods: ['GET', 'POST', 'PUT'],
+}));
 const io = new Server(server, ({
     cors: {
-        origin: 'https://wemeet-psi.vercel.app/',
+        origin: 'https://wemeet-psi.vercel.app',
         methods: ['GET', 'POST', 'PUT']
     }
 }))
