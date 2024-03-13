@@ -38,7 +38,7 @@ const EventCard: React.FC<CardType> = (props: CardType) => {
                         </span>
 
                 }
-                <CopyToClipboard text={state.value} onCopy={() => setState({ value: `http://localhost:5173/book/${props.duration}/${props.id}`, copied: true })}>
+                <CopyToClipboard text={state.value} onCopy={() => setState({ value: `https://wemeet-psi.vercel.app/${props.duration}/${props.id}`, copied: true })}>
                     <Icon className='cursor-pointer' icon="ph:copy" color='#2196F3' height={'2rem'} />
                 </CopyToClipboard>
             </div>
