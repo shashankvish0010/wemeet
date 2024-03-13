@@ -6,11 +6,11 @@ import { useNavigate } from 'react-router'
 const Meeting: React.FC = () => {
     const meetingContext = useContext(MeetingContext)
     const userContext = useContext(userAuthContext)
-    const [message, setMessage] = useState<string>('')
+    const [message, setMessage] = useState<string | undefined>()
     const navigate = useNavigate()
 
     useEffect(() => {
-        meetingContext?.key == true ? navigate('/room') : setMessage('Invalid Credentials')
+        meetingContext?.key?.valid == true ? navigate('/room') : setMessage(meetingContext?.key?.message)
     }, [meetingContext?.key])
 
     return (
