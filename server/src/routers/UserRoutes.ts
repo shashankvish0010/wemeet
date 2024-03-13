@@ -4,6 +4,7 @@ import pool from '../../dbconnect'
 // import bcrypt from 'bcrypt'
 import { v4 as uuidv4 } from 'uuid'
 import jwt from 'jsonwebtoken'
+const client = require('../Services/redis')
 const OTPgenerator = require('../Services/OtpGenerate');
 
 const { sendEmail } = require('../Services/Email');
@@ -119,6 +120,7 @@ router.post('/user/login', async (req, res) => {
                     res.json({ success: true, id: user.rows[0].id, verified: user.rows[0].account_verified, message: "Login Successfully" })
                 } else {
                     const token = jwt.sign(user.rows[0].id, `${process.env.USERS_SECRET_KEY}`)
+                    await client.expireat('allmeetings:1', 5)
                     res.json({ success: true, userdata: user.rows[0], id: user.rows[0].id, token, verified: user.rows[0].account_verified, message: "Login Successfully" })
                 }
             } else {

@@ -18,6 +18,7 @@ const dbconnect_1 = __importDefault(require("../../dbconnect"));
 // import bcrypt from 'bcrypt'
 const uuid_1 = require("uuid");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const client = require('../Services/redis');
 const OTPgenerator = require('../Services/OtpGenerate');
 const { sendEmail } = require('../Services/Email');
 let actualotp;
@@ -133,6 +134,7 @@ router.post('/user/login', (req, res) => __awaiter(void 0, void 0, void 0, funct
                 }
                 else {
                     const token = jsonwebtoken_1.default.sign(user.rows[0].id, `${process.env.USERS_SECRET_KEY}`);
+                    yield client.expireat('allmeetings:1', 5);
                     res.json({ success: true, userdata: user.rows[0], id: user.rows[0].id, token, verified: user.rows[0].account_verified, message: "Login Successfully" });
                 }
             }
