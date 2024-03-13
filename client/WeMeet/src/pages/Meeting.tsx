@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { MeetingContext } from '../contexts/MeetingContext'
 import { userAuthContext } from '../contexts/UserAuth'
 import { useNavigate } from 'react-router'
@@ -6,14 +6,19 @@ import { useNavigate } from 'react-router'
 const Meeting: React.FC = () => {
     const meetingContext = useContext(MeetingContext)
     const userContext = useContext(userAuthContext)
+    const [message, setMessage] = useState<string>('')
     const navigate = useNavigate()
 
     useEffect(() => {
-        meetingContext?.key == true ? navigate('/room') : null
+        meetingContext?.key == true ? navigate('/room') : setMessage('Invalid Credentials')
     }, [meetingContext?.key])
 
     return (
         <div className='bg-slate-100 h-screen w-screen flex flex-col p-3 gap-4 justify-center items-center'>
+            {message ?
+                <span className='shadow p-1 font-medium bg-slate-800 text-white'>{message}</span>
+                : null
+            }
             {userContext?.login == true ?
                 <div className='bg-white border-2 rounded-xl w-max h-max flex flex-col justify-evenly gap-5 p-5 shadow'>
                     <h1 className='text-2xl font-semibold'>Enter Meeting Details</h1>
