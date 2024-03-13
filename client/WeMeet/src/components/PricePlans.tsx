@@ -22,7 +22,7 @@ const PricePlans: React.FC<CardType> = (props: CardType) => {
     const cardColor = `border-2 ${props.color} md:h-[80vh] md:w-[25vw] h-[60vh] w-[70vw] rounded-3xl shadow-2xl flex flex-col gap-3 justify-around p-5`
     const checkout = async (plan_price: number, plan_name: string) => {
         try {
-            const response = await fetch('/checkout/plan', {
+            const response = await fetch('https://wemeet-backend.onrender.com/checkout/plan', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
