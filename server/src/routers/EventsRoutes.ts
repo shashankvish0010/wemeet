@@ -101,14 +101,14 @@ router.post('/schedule/event/:id', async (req, res) => {
                     from: process.env.EMAIL_USER,
                     to: hostEmail,
                     subject: 'Meeting Scheduled',
-                    text: `Your meeting is scheduled at ${time} on ${date} so all the best. Join the meeting using https://wemeet-psi.vercel.app/meet/${meetingId} and your Meeting Id is ${meetingId} and Passwords is wemeet12`
+                    text: `Your meeting is scheduled at ${time} on ${date} so all the best. Join the meeting using https://wemeet-psi.vercel.app/meeting/${meetingId} and your Meeting Id is ${meetingId} and Passwords is wemeet12`
                 }
 
                 const user_email_message = {
                     from: process.env.EMAIL_USER,
                     to: email,
                     subject: 'You Scheduled a Meeting',
-                    text: `You scheduled a meeting at ${time} on ${date} so all the best. Join the meeting using https://wemeet-psi.vercel.app/meet/${meetingId} and your Meeting Id is ${meetingId} and Passwords is wemeet12`
+                    text: `You scheduled a meeting at ${time} on ${date} so all the best. Join the meeting using https://wemeet-psi.vercel.app/meeting/${meetingId} and your Meeting Id is ${meetingId} and Passwords is wemeet12`
                 }
                 try {
                     await sendEmail(email_message);
