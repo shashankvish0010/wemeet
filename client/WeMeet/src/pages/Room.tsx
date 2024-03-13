@@ -19,12 +19,13 @@ const Room: React.FC = () => {
                 <button className='bg-lime-300 font-semibold text-black uppercase p-2 rounded' onClick={() => { meetingContext?.handleNegotiation() }}>Start Meeting</button>
                 {
                     meetingContext?.userStream ?
-                        <span className='rounded border-2 bg-slate-800 border-slate-100 h-[20vh] absolute w-[30vw] mt-[10%] md:mt-[5%] ml-[20%] md:ml-[40%]'>
+                        <span className='rounded border-2 bg-white-800 border-slate-100 h-[25vh] absolute w-[20vw] mt-[10%] md:mt-[5%] ml-[20%] md:ml-[40%]'>
                             <ReactPlayer
                                 playing
                                 url={meetingContext?.userStream}
                                 height='100%'
                                 width='100%' />
+                            <p className='md:text-base text-sm font-medium'>{userContext?.currentuser.firstname}</p>
                         </span> : null
                 } {
                     meetingContext?.remoteStream ?
@@ -34,6 +35,7 @@ const Room: React.FC = () => {
                                 url={meetingContext?.remoteStream}
                                 height='100%'
                                 width='100%' />
+                            <p className='md:text-base text-sm font-medium'>{meetingContext?.remoteUser?.firstname}</p>
                         </div>
                         : null
                 }
