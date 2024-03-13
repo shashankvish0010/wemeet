@@ -12,11 +12,11 @@ const EventsEdit: React.FC = () => {
     const [message, setMessage] = useState<string | undefined | null>();
     const [editEvent, setEditEvent] = useState<{
         name: string | undefined,
-        duration: Number | undefined,
+        duration: string | undefined,
         description: string | undefined
     }>({
         name: '',
-        duration: undefined,
+        duration: '',
         description: ''
     })
 
@@ -77,7 +77,7 @@ const EventsEdit: React.FC = () => {
                                     </span>
                                     <span className='flex flex-col gap-1'>
                                         <p className='text-sm text-gray-600'>Duration - in miunutes</p>
-                                        <input className='px-2 h-[2.25rem] w-[65vw] md:w-[35vw] border rounded' type="number" name='duration' defaultValue={event?.duration} value={editEvent?.name} onChange={handleChange} />
+                                        <input className='px-2 h-[2.25rem] w-[65vw] md:w-[35vw] border rounded' type="number" name='duration' defaultValue={event?.duration} value={editEvent?.duration} onChange={handleChange} />
                                     </span>
                                     <span className='flex flex-col gap-1'>
                                         <p className='text-sm text-gray-600'>Description</p>
