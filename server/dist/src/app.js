@@ -34,7 +34,7 @@ const server = http_1.default.createServer(app);
 app.use((0, cors_1.default)());
 const io = new socket_io_1.Server(server, ({
     cors: {
-        origin: process.env.BASE_URL,
+        origin: 'https://wemeet-psi.vercel.app/',
         methods: ['GET', 'POST', 'PUT']
     }
 }));

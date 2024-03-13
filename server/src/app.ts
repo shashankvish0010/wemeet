@@ -21,7 +21,7 @@ const server = http.createServer(app)
 app.use(cors())
 const io = new Server(server, ({
     cors: {
-        origin: process.env.BASE_URL,
+        origin: 'https://wemeet-psi.vercel.app/',
         methods: ['GET', 'POST', 'PUT']
     }
 }))
