@@ -3,7 +3,6 @@ import { createContext, useState } from 'react'
 interface ContextValue {
     event: eventType
     handleSubmit: (e: React.FormEvent, id: string | undefined) => any
-    handleEditSubmit: (e: React.FormEvent, id: string | undefined) => any
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     getEvents: (id: string) => void
     getAllMeetings: (userEmail: string) => any
@@ -141,33 +140,6 @@ export const EventsContextProvider = ({ children }: any) => {
         }
     }
 
-    const handleEditSubmit = async (e: React.FormEvent, id: string | undefined) => {
-        e.preventDefault();
-        const { name, duration, description } = event;
-        try {
-            const response = await fetch('https://wemeet-backend.onrender.com/put/event/' + id, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    name, duration, description
-                })
-            })
-            if (response) {
-                const data = await response.json();
-                if (data.success == true) {
-                    console.log(data);
-                } else {
-                    console.log(data);
-                    setMessage(data.message)
-                }
-            } else {
-                console.log("Didn't Got any Response");
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     const deleteEvent = async (id: string) => {
         try {
             const response = await fetch('https://wemeet-backend.onrender.com/delete/event/' + id, {
@@ -242,7 +214,7 @@ export const EventsContextProvider = ({ children }: any) => {
         }
     }
 
-    const info: ContextValue = { event, handleChange, handleEditSubmit, handleSubmit, deleteEvent, getEvents, calcTime, getAllMeetings, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
+    const info: ContextValue = { event, handleChange, handleSubmit, deleteEvent, getEvents, calcTime, getAllMeetings, bookTime, setBookTime, message, userEvents, time, intervals, timing, settiming }
     return (
         <EventsContext.Provider value={info}>
             {children}
