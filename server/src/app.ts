@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
     socket.emit('hello', socket.id)
 
     socket.on('meetingCredential', async (data) => {
-        const result = await pool.query('SELECT host_email FROM Meetings WHERE meeting_id=$1', [data.meetingId])
+        const result = await pool.query('SELECT host_email FROM Meetings WHERE id=$1', [data.meetingId])
         console.log(result.rows.length);
         
         if (result.rows.length > 0) {
