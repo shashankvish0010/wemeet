@@ -120,13 +120,13 @@ router.post('/schedule/event/:id', (req, res) => __awaiter(void 0, void 0, void 
                     from: process.env.EMAIL_USER,
                     to: hostEmail,
                     subject: 'Meeting Scheduled',
-                    text: `Your meeting is scheduled at ${time} on ${date} so all the best. Join the meeting using http://localhost:5173/meet/${meetingId}`
+                    text: `Your meeting is scheduled at ${time} on ${date} so all the best. Join the meeting using https://wemeet-psi.vercel.app/meet/${meetingId} and your Meeting Id is ${meetingId} and Passwords is wemeet12`
                 };
                 const user_email_message = {
                     from: process.env.EMAIL_USER,
                     to: email,
                     subject: 'You Scheduled a Meeting',
-                    text: `You scheduled a meeting at ${time} on ${date} so all the best. Join the meeting using http://localhost:5173/meet/${meetingId}`
+                    text: `You scheduled a meeting at ${time} on ${date} so all the best. Join the meeting using https://wemeet-psi.vercel.app/meet/${meetingId} and your Meeting Id is ${meetingId} and Passwords is wemeet12`
                 };
                 try {
                     yield sendEmail(email_message);
