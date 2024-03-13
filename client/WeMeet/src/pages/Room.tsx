@@ -15,11 +15,11 @@ const Room: React.FC = () => {
 
     return (
         <div className='bg-slate-100 h-max md:h-screen w-screen flex md:flex-row flex-col justify-center'>
-            <div className='md:h-[100vh] h-max md:w-[65vw] w-[100vw] flex flex-col items-center'>
+            <div className='relative md:h-[100vh] h-max md:w-[65vw] w-[100vw] flex flex-col items-center'>
                 <button className='bg-lime-300 font-semibold text-black uppercase p-2 rounded' onClick={() => { meetingContext?.handleNegotiation() }}>Start Meeting</button>
                 {
                     meetingContext?.userStream ?
-                        <span className='rounded border-2 border-slate-100 h-[20vh] absolute w-[30vw] mt-[10%] md:mt-[5%] ml-[20%] md:ml-[40%]'>
+                        <span className='rounded border-2 bg-slate-800 border-slate-100 h-[20vh] absolute w-[30vw] mt-[10%] md:mt-[5%] ml-[20%] md:ml-[40%]'>
                             <ReactPlayer
                                 playing
                                 url={meetingContext?.userStream}
@@ -34,15 +34,15 @@ const Room: React.FC = () => {
                                 url={meetingContext?.remoteStream}
                                 height='100%'
                                 width='100%' />
-                            <div className='bg-slate-100 h-[10vh] w-max gap-4 p-3 flex justify-center items-center'>
-                                <Icon onClick={() => { meetingContext?.toggleAudioMute() }} className='cursor-pointer bg-teal-500 rounded-full p-2' icon="cil:mic" color='white' height={'6vh'} />
-                                <Icon onClick={() => { meetingContext?.toggleVideoMute() }} className='cursor-pointer bg-teal-500 rounded-full p-2' icon="majesticons:video-line" color='white' height={'6vh'} />
-                                <Icon onClick={() => { meetingContext?.endMeeting() }} className='cursor-pointer bg-red-500 rounded-full p-2' icon="ic:round-call-end" color='white' height={'6vh'} />
-                                <Icon className='bg-teal-500 rounded-full p-2' icon="basil:chat-outline" color='white' height={'6vh'} />
-                            </div>
                         </div>
                         : null
                 }
+                <div className='bg-slate-100 h-[10vh] w-max gap-4 p-3 flex justify-center items-center'>
+                    <Icon onClick={() => { meetingContext?.toggleAudioMute() }} className='cursor-pointer bg-teal-500 rounded-full p-2' icon="cil:mic" color='white' height={'6vh'} />
+                    <Icon onClick={() => { meetingContext?.toggleVideoMute() }} className='cursor-pointer bg-teal-500 rounded-full p-2' icon="majesticons:video-line" color='white' height={'6vh'} />
+                    <Icon onClick={() => { meetingContext?.endMeeting() }} className='cursor-pointer bg-red-500 rounded-full p-2' icon="ic:round-call-end" color='white' height={'6vh'} />
+                    <Icon className='bg-teal-500 rounded-full p-2' icon="basil:chat-outline" color='white' height={'6vh'} />
+                </div>
             </div>
             <div className='bg-white md:h-[100vh] h-max w-[100vw] md:w-[35vw] overflow-y-scroll flex flex-col gap-3 p-3 border-l-2 border-gray-200'>
                 <div className='flex flex-col gap-3 p-3'>
