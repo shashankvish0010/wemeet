@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react'
 import { Icon } from '@iconify/react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { EventsContext } from '../contexts/EventsContext';
-import { useNavigate } from 'react-router';
 
 interface CardType {
     id: string,
@@ -12,7 +11,6 @@ interface CardType {
 }
 
 const EventCard: React.FC<CardType> = (props: CardType) => {
-    const navigate = useNavigate()
     const eventContext = useContext(EventsContext)
     const [state, setState] = useState<{ value: string, copied: boolean }>({
         value: '',
@@ -23,7 +21,6 @@ const EventCard: React.FC<CardType> = (props: CardType) => {
             <span className='h-[0.6rem] w-[100%] bg-indigo-600'></span>
             <div className='h-[100%] w-[100%] flex flex-col justify-evenly p-3 gap-3'>
                 <span className='w-[100%] flex justify-end items-center gap-2'>
-                    <Icon className='cursor:pointer' onClick={() => navigate('/event/edit/' + props.id)} icon="mdi:edit" color='orange' height={'1.5rem'} />
                     <Icon className='cursor:pointer' onClick={() => eventContext?.deleteEvent(props.id)} icon="mdi:delete" color='red' height={'1.5rem'} />
                 </span>
                 <p className='text-xl'>{props.name}</p>
