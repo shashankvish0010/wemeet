@@ -12,6 +12,7 @@ import PaySuccess from './pages/PaySuccess';
 import PayCancel from './pages/PayCancel';
 import Meeting from './pages/Meeting';
 import Room from './pages/Room';
+import About from './pages/About';
 
 const App: React.FC = () => {
   return (
@@ -29,6 +30,7 @@ const App: React.FC = () => {
         <Route path='/profile' element={<Profile/>} />
         <Route path='/success' element={<PaySuccess/>} />
         <Route path='/cancel' element={<PayCancel/>} />
+        <Route path='/about' element={<About/>} />
       </Routes>
     </Router>
   )

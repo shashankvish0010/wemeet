@@ -15,27 +15,27 @@ const Headers: React.FC = () => {
           <Icon icon="simple-icons:gotomeeting" height={'3vh'} />
           <h1 className='logo md:text-2xl text-xl'>WeMeet</h1>
         </div>
-        <motion.div initial={{opacity: 0, y: -100}} animate={{opacity:1, y: 0}} transition={{behaviour: "smooth", duration: 0.7}}
-         className='h-[10vh] w-max'>
+        <motion.div initial={{ opacity: 0, y: -100 }} animate={{ opacity: 1, y: 0 }} transition={{ behaviour: "smooth", duration: 0.7 }}
+          className='h-[10vh] w-max'>
           <ul className='hidden md:flex flex-row p-2 justify-evenly w-[30vw] font-medium bg-slate-800 text-white shadow-lg rounded-b-full'>
             <Link to='/'>Home</Link>
-            <Link to='/'>About</Link>
-            <Link to='/'>Contact</Link>
+            <Link to='/about'>About</Link>
+            <li onClick={() => window.location.href = 'https://portfolio-six-gold-87.vercel.app/'}>Contact</li>
           </ul>
         </motion.div>
         <div className='h-max w-max flex items-center gap-2'>
-        {
-          open == true ?
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, rotate: 90 }} transition={{ behaviour: "smooth" }}
-              onClick={() => setOpen(!open)} className='md:hidden block h-max w-max'>
-              <Icon icon="oui:cross" height={'2rem'} color='indigo' />
-            </motion.div>
-            :
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ behaviour: "smooth" }}
-              onClick={() => setOpen(!open)} className='md:hidden block h-max w-max'>
-              <Icon icon="quill:hamburger" height={'2rem'} color='indigo' />
-            </motion.div>
-        }
+          {
+            open == true ?
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, rotate: 90 }} transition={{ behaviour: "smooth" }}
+                onClick={() => setOpen(!open)} className='md:hidden block h-max w-max'>
+                <Icon icon="oui:cross" height={'2rem'} color='indigo' />
+              </motion.div>
+              :
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ behaviour: "smooth" }}
+                onClick={() => setOpen(!open)} className='md:hidden block h-max w-max'>
+                <Icon icon="quill:hamburger" height={'2rem'} color='indigo' />
+              </motion.div>
+          }
           {usercontext?.login == true ?
             (<span className='flex flex-row items-center'>
               <Icon className='lg:h-max md:h-max h-[4vh] cursor-pointer' height={'6vh'} icon="prime:user" onClick={() => { navigate('/profile') }} />
