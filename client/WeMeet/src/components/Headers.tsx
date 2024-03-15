@@ -53,10 +53,13 @@ const Headers: React.FC = () => {
             className='absolute md:hidden block h-max w-screen bg-slate-800 items-center p-3'>
             <ul className='h-[25vh] text-white uppercase md:hidden flex flex-col justify-around text-sm'>
               <Link to='/'>Home</Link>
-              <Link to='/'>About</Link>
-              <Link to='/'>Contact</Link>
-              <Link to='/'>Register</Link>
-              <Link to='/'>Login</Link>
+              <Link to='/about'>About</Link>
+              <li onClick={() => window.location.href = '/https://portfolio-six-gold-87.vercel.app/'}>Contact</li>
+              {
+                usercontext?.login == true ?
+                  <li onClick={() => { usercontext.dispatch({ type: "LOGOUT" }) }} >Logout</li> :
+                  <Link to='/register'>Register</Link>
+              }
             </ul>
           </motion.div>
           : null
